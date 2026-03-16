@@ -316,10 +316,10 @@ const EPICDB = (() => {
     // ── Init: load from server into localStorage on page load ───
     async function init() {
         if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
-            if (!localStorage.getItem('epic_synced_to_prod_final')) {
+            if (!localStorage.getItem('epic_synced_to_prod_final_v2')) {
                 console.log('Running one-time sync of local data to Vercel production...');
                 await syncToServer();
-                localStorage.setItem('epic_synced_to_prod_final', 'true');
+                localStorage.setItem('epic_synced_to_prod_final_v2', 'true');
             }
         }
         await getUsers();

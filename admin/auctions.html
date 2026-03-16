@@ -726,7 +726,9 @@
         .modal-overlay {
             display: none;
             position: fixed;
-            inset: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw;
+            height: 100vh;
             background: rgba(0, 0, 0, 0.5);
             z-index: 1300;
             backdrop-filter: blur(3px);
@@ -1646,6 +1648,17 @@
                         <textarea id="edit-description" style="min-height:110px" placeholder="Full auction item description shown on the public page…"></textarea>
                     </div>
                 </div>
+
+                <div class="form-section">
+                    <div class="form-section-title">Images</div>
+                    <div class="form-group">
+                        <label class="btn-secondary" style="display:inline-block;padding:0.4rem 0.8rem;cursor:pointer;font-size:0.85rem;">
+                            📁 Choose file (PNG, JPG)
+                            <input type="file" accept="image/*" style="display:none;" onchange="addImageFile(this)">
+                        </label>
+                        <div id="imageStrip" style="display:flex;gap:0.8rem;margin-top:1rem;flex-wrap:wrap;"></div>
+                    </div>
+                </div>
                 
                 <div class="form-section">
                     <div class="form-section-title" style="display:flex;align-items:center;gap:0.5rem;">📝 General Notes</div>
@@ -1775,6 +1788,7 @@
             <button class="btn-primary" onclick="saveAuction()">&#128190; Save Auction</button>
         </div>
     </div>
+</div>
 
     <!-- ═══════════════════ CREATE AUCTION MODAL ═══════════════════ -->
     <div class="modal-overlay" id="addModal" style="align-items:flex-start;padding:1.5rem 1rem;overflow-y:auto;">

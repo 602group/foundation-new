@@ -196,15 +196,28 @@ const EPICDB = (() => {
     }
 
     // ── Messages ────────────────────────────────────────────────
+    function refreshMessageBadges(messages) {
+        try {
+            const unread = messages.filter(m => m.unread !== false && m.status !== 'closed').length;
+            document.querySelectorAll('.nav-msg-badge').forEach(b => {
+                b.textContent = unread;
+                b.style.display = unread > 0 ? 'inline-block' : 'none';
+            });
+        } catch (e) {}
+    }
+
     async function getMessages() {
         const messages = await apiGet('/messages');
         if (messages && messages.length > 0) {
             try { localStorage.setItem('epic_messages', JSON.stringify(messages)); } catch(e) { }
+            refreshMessageBadges(messages);
             return messages;
         } else if (messages && messages.length === 0) {
             try { return JSON.parse(localStorage.getItem('epic_messages')) || []; } catch { return []; }
         }
-        try { return JSON.parse(localStorage.getItem('epic_messages')) || []; } catch { return []; }
+        const fallback = (() => { try { return JSON.parse(localStorage.getItem('epic_messages')) || []; } catch { return []; } })();
+        refreshMessageBadges(fallback);
+        return fallback;
     }
     async function saveMessage(msg) { return apiPost('/messages', msg); }
     async function deleteMessage(id) {

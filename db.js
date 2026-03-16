@@ -103,14 +103,13 @@ const EPICDB = (() => {
         }
     }
 
-    // ── Courses ─────────────────────────────────────────────────
+    // ── Courses ──────────────────────────────────────────────────
     async function getCourses() {
         const remote = await apiGet('/courses');
         let local = [];
         try { local = JSON.parse(localStorage.getItem('epic_courses')) || []; } catch { local = []; }
-
+        
         if (remote && remote.length > 0) {
-            // Merge: always preserve local images even if the DB saved without them
             const merged = remote.map(rc => {
                 const lc = local.find(c => c.id === rc.id);
                 if (!lc) return rc;
@@ -128,20 +127,25 @@ const EPICDB = (() => {
                 if (lc.updated_at && rc.updated_at && lc.updated_at > rc.updated_at) return lc;
                 return rc;
             });
+
             // Also include any local-only courses not yet pushed to DB
             local.forEach(lc => {
-                if (!merged.find(c => c.id === lc.id)) merged.push(lc);
+                if (!merged.find(c => c.id === lc.id)) {
+                    merged.push(lc);
+                    saveCourse(lc).catch(() => console.warn('Silent local course sync failed'));
+                }
             });
             
             // Ensure any new codebase defaults (like Torrey Pines) exist
             if (typeof getDefaultCourses === 'function') {
                 getDefaultCourses().forEach(def => {
-                    if (!merged.find(c => c.id === def.id)) merged.push(def);
+                    if (!merged.find(c => c.id === def.id)) {
+                        merged.push(def);
+                    }
                 });
             }
 
             // Final guardrail: restore images from dedicated per-course localStorage keys
-            // These are saved by admin/courses.html saveCourse() as 'epic_imgs_[courseId]'
             merged.forEach(c => {
                 const hasImages = (c.featured_image_url && c.featured_image_url.startsWith('data:')) ||
                                   (c.gallery && c.gallery.some(g => g && g.startsWith('data:')));

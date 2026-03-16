@@ -150,16 +150,23 @@ const EPICDB = (() => {
             return merged;
         }
 
-        // No remote data — fall back to local, then seed
-        if (local.length > 0) {
-            if (typeof getDefaultCourses === 'function') {
+        // No remote data — if we previously synced, the user might have legitimately deleted all courses.
+        // But to prevent data loss on a true network failure, we only return [] if we know the DB is actually empty, 
+        // which means remote !== null.
+        if (remote && remote.length === 0) {
+            const empty = [];
+            // Seed defaults only if localStorage is also empty to avoid looping
+            if (local.length === 0 && typeof getDefaultCourses === 'function') {
                 getDefaultCourses().forEach(def => {
-                    if (!local.find(c => c.id === def.id)) local.push(def);
+                    empty.push(def);
+                    saveCourse(def).catch(e => console.warn(e));
                 });
             }
-            try { localStorage.setItem('epic_courses', JSON.stringify(local)); } catch(e) { console.warn('localStorage quota exceeded for epic_courses'); }
-            return local;
+            try { localStorage.setItem('epic_courses', JSON.stringify(empty)); } catch(e) {}
+            return empty;
         }
+
+        if (local.length > 0) return local;
         if (typeof loadSharedCourses === 'function') return loadSharedCourses();
         return [];
     }
@@ -213,7 +220,9 @@ const EPICDB = (() => {
             refreshMessageBadges(messages);
             return messages;
         } else if (messages && messages.length === 0) {
-            try { return JSON.parse(localStorage.getItem('epic_messages')) || []; } catch { return []; }
+            try { localStorage.setItem('epic_messages', JSON.stringify([])); } catch(e) { }
+            refreshMessageBadges([]);
+            return [];
         }
         const fallback = (() => { try { return JSON.parse(localStorage.getItem('epic_messages')) || []; } catch { return []; } })();
         refreshMessageBadges(fallback);
@@ -234,7 +243,8 @@ const EPICDB = (() => {
             try { localStorage.setItem('epic_tasks', JSON.stringify(taskObj)); } catch(e) { }
             return taskObj;
         } else if (tasks && tasks.length === 0) {
-            try { return JSON.parse(localStorage.getItem('epic_tasks')) || {}; } catch { return {}; }
+            try { localStorage.setItem('epic_tasks', JSON.stringify({})); } catch(e) {}
+            return {};
         }
         try { return JSON.parse(localStorage.getItem('epic_tasks')) || {}; } catch { return {}; }
     }
@@ -245,15 +255,13 @@ const EPICDB = (() => {
 
     // ── Bids ────────────────────────────────────────────────────
     async function getBids() {
-        // admin/bids.html doesn't actually use epic_bids, it derives bids from epic_users! 
-        // Wait, does it? `admin/bids.html` loads from `epic_users` purchases and bids array!
-        // So `epic_bids` is unused locally by the admin panel currently, but we made an API for it.
         const bids = await apiGet('/bids');
         if (bids && bids.length > 0) {
             try { localStorage.setItem('epic_bids', JSON.stringify(bids)); } catch(e) { }
             return bids;
         } else if (bids && bids.length === 0) {
-            try { return JSON.parse(localStorage.getItem('epic_bids')) || []; } catch { return []; }
+            try { localStorage.setItem('epic_bids', JSON.stringify([])); } catch(e) {}
+            return [];
         }
         try { return JSON.parse(localStorage.getItem('epic_bids')) || []; } catch { return []; }
     }
@@ -266,7 +274,8 @@ const EPICDB = (() => {
             try { localStorage.setItem('epic_newsletter', JSON.stringify(items)); } catch(e) { }
             return items;
         } else if (items && items.length === 0) {
-            try { return JSON.parse(localStorage.getItem('epic_newsletter')) || []; } catch { return []; }
+            try { localStorage.setItem('epic_newsletter', JSON.stringify([])); } catch(e) {}
+            return [];
         }
         try { return JSON.parse(localStorage.getItem('epic_newsletter')) || []; } catch { return []; }
     }
@@ -319,10 +328,10 @@ const EPICDB = (() => {
     // ── Init: load from server into localStorage on page load ───
     async function init() {
         if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
-            if (!localStorage.getItem('epic_synced_to_prod_final_v2')) {
+            if (!localStorage.getItem('epic_synced_to_prod_final_v3')) {
                 console.log('Running one-time sync of local data to Vercel production...');
                 await syncToServer();
-                localStorage.setItem('epic_synced_to_prod_final_v2', 'true');
+                localStorage.setItem('epic_synced_to_prod_final_v3', 'true');
             }
         }
         await getUsers();

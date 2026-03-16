@@ -128,22 +128,8 @@ const EPICDB = (() => {
                 return rc;
             });
 
-            // Also include any local-only courses not yet pushed to DB
-            local.forEach(lc => {
-                if (!merged.find(c => c.id === lc.id)) {
-                    merged.push(lc);
-                    saveCourse(lc).catch(() => console.warn('Silent local course sync failed'));
-                }
-            });
-            
-            // Ensure any new codebase defaults (like Torrey Pines) exist
-            if (typeof getDefaultCourses === 'function') {
-                getDefaultCourses().forEach(def => {
-                    if (!merged.find(c => c.id === def.id)) {
-                        merged.push(def);
-                    }
-                });
-            }
+            // Remote is our SINGLE SOURCE OF TRUTH for existence.
+            // If it's not in 'remote', it doesn't belong in 'merged'.
 
             // Final guardrail: restore images from dedicated per-course localStorage keys
             merged.forEach(c => {

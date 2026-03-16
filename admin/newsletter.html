@@ -262,6 +262,7 @@
         </div>
     </div>
 
+    <script src="../db.js"></script>
     <script>
         const KEY = 'epic_newsletter';
 
@@ -311,6 +312,7 @@
             let list = load();
             list = list.filter(s => s.email !== email);
             save(list);
+            if (window.EPICDB && EPICDB.deleteNewsletter) EPICDB.deleteNewsletter(email);
             render();
         }
 
@@ -337,7 +339,10 @@
             URL.revokeObjectURL(url);
         }
 
-        render();
+        (async function init() {
+            if (window.EPICDB) await EPICDB.init();
+            render();
+        })();
     
         // Live unread-message badge
         (function() {

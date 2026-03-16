@@ -10,7 +10,7 @@
  */
 
 const EPICDB = (() => {
-    const BASE = '/api';
+    const BASE = 'https://foundation-website-rose.vercel.app/api';
 
     // ── Core fetch helpers ──────────────────────────────────────
     async function apiGet(path) {
@@ -57,9 +57,11 @@ const EPICDB = (() => {
     // ── Users ───────────────────────────────────────────────────
     async function getUsers() {
         const users = await apiGet('/users');
-        if (users) {
+        if (users && users.length > 0) {
             try { localStorage.setItem('epic_users', JSON.stringify(users)); } catch(e) { console.warn('localStorage quota exceeded for epic_users'); }
             return users;
+        } else if (users && users.length === 0) {
+            try { return JSON.parse(localStorage.getItem('epic_users')) || []; } catch { return []; }
         }
         // Fallback to localStorage if API fails
         try { return JSON.parse(localStorage.getItem('epic_users')) || []; }
@@ -77,9 +79,11 @@ const EPICDB = (() => {
     // ── Auctions ────────────────────────────────────────────────
     async function getAuctions() {
         const auctions = await apiGet('/auctions');
-        if (auctions) {
+        if (auctions && auctions.length > 0) {
             try { localStorage.setItem('epic_auctions', JSON.stringify(auctions)); } catch(e) { console.warn('localStorage quota exceeded for epic_auctions'); }
             return auctions;
+        } else if (auctions && auctions.length === 0) {
+            try { return JSON.parse(localStorage.getItem('epic_auctions')) || []; } catch { return []; }
         }
         try { return JSON.parse(localStorage.getItem('epic_auctions')) || []; }
         catch { return []; }
@@ -187,9 +191,11 @@ const EPICDB = (() => {
     // ── Events ──────────────────────────────────────────────────
     async function getEvents() {
         const events = await apiGet('/events');
-        if (events) {
+        if (events && events.length > 0) {
             localStorage.setItem('epic_events', JSON.stringify(events));
             return events;
+        } else if (events && events.length === 0) {
+            try { return JSON.parse(localStorage.getItem('epic_events')) || []; } catch { return []; }
         }
         try { return JSON.parse(localStorage.getItem('epic_events')) || []; }
         catch { return []; }
@@ -197,6 +203,73 @@ const EPICDB = (() => {
 
     async function saveEvent(event) {
         return apiPost('/events', event);
+    }
+
+    // ── Messages ────────────────────────────────────────────────
+    async function getMessages() {
+        const messages = await apiGet('/messages');
+        if (messages && messages.length > 0) {
+            try { localStorage.setItem('epic_messages', JSON.stringify(messages)); } catch(e) { }
+            return messages;
+        } else if (messages && messages.length === 0) {
+            try { return JSON.parse(localStorage.getItem('epic_messages')) || []; } catch { return []; }
+        }
+        try { return JSON.parse(localStorage.getItem('epic_messages')) || []; } catch { return []; }
+    }
+    async function saveMessage(msg) { return apiPost('/messages', msg); }
+    async function deleteMessage(id) {
+        try { await fetch(BASE + '/messages?id=' + encodeURIComponent(id), { method: 'DELETE' }); } catch(e) {}
+    }
+
+    // ── Tasks ───────────────────────────────────────────────────
+    async function getTasks() {
+        const tasks = await apiGet('/tasks');
+        if (tasks && tasks.length > 0) {
+            // tasks is an array from API. tasks.html expects an object keyed by id.
+            const taskObj = {};
+            tasks.forEach(t => { if (t && t.id) taskObj[t.id] = t; });
+            try { localStorage.setItem('epic_tasks', JSON.stringify(taskObj)); } catch(e) { }
+            return taskObj;
+        } else if (tasks && tasks.length === 0) {
+            try { return JSON.parse(localStorage.getItem('epic_tasks')) || {}; } catch { return {}; }
+        }
+        try { return JSON.parse(localStorage.getItem('epic_tasks')) || {}; } catch { return {}; }
+    }
+    async function saveTask(task) { return apiPost('/tasks', task); }
+    async function deleteTask(id) {
+        try { await fetch(BASE + '/tasks?id=' + encodeURIComponent(id), { method: 'DELETE' }); } catch(e) {}
+    }
+
+    // ── Bids ────────────────────────────────────────────────────
+    async function getBids() {
+        // admin/bids.html doesn't actually use epic_bids, it derives bids from epic_users! 
+        // Wait, does it? `admin/bids.html` loads from `epic_users` purchases and bids array!
+        // So `epic_bids` is unused locally by the admin panel currently, but we made an API for it.
+        const bids = await apiGet('/bids');
+        if (bids && bids.length > 0) {
+            try { localStorage.setItem('epic_bids', JSON.stringify(bids)); } catch(e) { }
+            return bids;
+        } else if (bids && bids.length === 0) {
+            try { return JSON.parse(localStorage.getItem('epic_bids')) || []; } catch { return []; }
+        }
+        try { return JSON.parse(localStorage.getItem('epic_bids')) || []; } catch { return []; }
+    }
+    async function saveBid(bid) { return apiPost('/bids', bid); }
+
+    // ── Newsletters ─────────────────────────────────────────────
+    async function getNewsletters() {
+        const items = await apiGet('/newsletters');
+        if (items && items.length > 0) {
+            try { localStorage.setItem('epic_newsletter', JSON.stringify(items)); } catch(e) { }
+            return items;
+        } else if (items && items.length === 0) {
+            try { return JSON.parse(localStorage.getItem('epic_newsletter')) || []; } catch { return []; }
+        }
+        try { return JSON.parse(localStorage.getItem('epic_newsletter')) || []; } catch { return []; }
+    }
+    async function saveNewsletter(item) { return apiPost('/newsletters', item); }
+    async function deleteNewsletter(id) {
+        try { await fetch(BASE + '/newsletters?id=' + encodeURIComponent(id), { method: 'DELETE' }); } catch(e) {}
     }
 
     // ── Sync: push all current localStorage data to the DB ──────
@@ -214,18 +287,62 @@ const EPICDB = (() => {
         for (const e of events) {
             await apiPost('/events', e);
         }
+        const courses = JSON.parse(localStorage.getItem('epic_courses') || '[]');
+        for (const c of courses) {
+            await apiPost('/courses', c);
+        }
+        const messages = JSON.parse(localStorage.getItem('epic_messages') || '[]');
+        for (const m of messages) {
+            await apiPost('/messages', m);
+        }
+        const tasksRaw = JSON.parse(localStorage.getItem('epic_tasks') || '{}');
+        const tasks = Array.isArray(tasksRaw) ? tasksRaw : Object.values(tasksRaw);
+        for (const t of tasks) {
+            await apiPost('/tasks', t);
+        }
+        const bidsRaw = JSON.parse(localStorage.getItem('epic_bids') || '[]');
+        const bids = Array.isArray(bidsRaw) ? bidsRaw : Object.values(bidsRaw);
+        for (const b of bids) {
+            await apiPost('/bids', b);
+        }
+        const nlRaw = JSON.parse(localStorage.getItem('epic_newsletter') || '[]');
+        const newsletters = Array.isArray(nlRaw) ? nlRaw : Object.values(nlRaw);
+        for (const n of newsletters) {
+            await apiPost('/newsletters', n);
+        }
         console.log('EPICDB: sync complete.');
     }
 
     // ── Init: load from server into localStorage on page load ───
     async function init() {
+        if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
+            if (!localStorage.getItem('epic_synced_to_prod_final')) {
+                console.log('Running one-time sync of local data to Vercel production...');
+                await syncToServer();
+                localStorage.setItem('epic_synced_to_prod_final', 'true');
+            }
+        }
         await getUsers();
         await getAuctions();
         await getEvents();
         await getCourses();
+        await getMessages();
+        await getTasks();
+        await getBids();
+        await getNewsletters();
     }
 
-    return { init, getUsers, saveUser, createUser, getAuctions, saveAuction, deleteAuction, getEvents, saveEvent, getCourses, saveCourse, deleteCourse, syncToServer };
+    return { 
+        init, syncToServer,
+        getUsers, saveUser, createUser, 
+        getAuctions, saveAuction, deleteAuction, 
+        getEvents, saveEvent, 
+        getCourses, saveCourse, deleteCourse,
+        getMessages, saveMessage, deleteMessage,
+        getTasks, saveTask, deleteTask,
+        getBids, saveBid,
+        getNewsletters, saveNewsletter, deleteNewsletter
+    };
 })();
 
 // Auto-init on every page load

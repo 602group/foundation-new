@@ -375,6 +375,7 @@
 
                     // Save modified auction payload
                     localStorage.setItem('epic_auctions', JSON.stringify(auctions));
+                    if (typeof EPICDB !== 'undefined' && EPICDB.saveAuction) EPICDB.saveAuction(auc);
                 }
             } catch (err) {
                 console.error("Failed to intelligently recalculate global auction data:", err);

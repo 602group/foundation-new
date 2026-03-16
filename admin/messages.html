@@ -504,6 +504,7 @@
         </div>
     </div>
 
+    <script src="../db.js"></script>
     <script>
         const MSGS_KEY = 'epic_messages';
         const SUBJECT_LABELS = { auction: 'Auction Inquiry', events: 'Events/Trips', general: 'General Question', support: 'Technical Support' };
@@ -596,7 +597,11 @@
             const m = msgs.find(x => x.id === id);
             if (!m) return;
             const idx = msgs.findIndex(x => x.id === id);
-            if (msgs[idx].unread !== false) { msgs[idx].unread = false; saveMsgs(msgs); }
+            if (msgs[idx].unread !== false) { 
+                msgs[idx].unread = false; 
+                saveMsgs(msgs); 
+                if (typeof EPICDB !== 'undefined' && EPICDB.saveMessage) EPICDB.saveMessage(msgs[idx]);
+            }
 
             const srcTag = m.source === 'auction_request_form' ? ' · Auction Request Form'
                     : m.source === 'travel_preference_form' ? ' · Travel Preference Form'
@@ -631,6 +636,7 @@
             msgs[idx].status = document.getElementById('drawerStatusSelect').value;
             msgs[idx].notes = document.getElementById('drawerNotes').value;
             saveMsgs(msgs);
+            if (typeof EPICDB !== 'undefined' && EPICDB.saveMessage) EPICDB.saveMessage(msgs[idx]);
             renderTable();
         }
 
@@ -641,6 +647,7 @@
             if (idx === -1) return;
             msgs[idx].notes = document.getElementById('drawerNotes').value;
             saveMsgs(msgs);
+            if (typeof EPICDB !== 'undefined' && EPICDB.saveMessage) EPICDB.saveMessage(msgs[idx]);
         }
 
         function deleteCurrentMsg() {
@@ -652,6 +659,7 @@
         function deleteMsg(id) {
             const msgs = loadMsgs().filter(m => m.id !== id);
             saveMsgs(msgs);
+            if (typeof EPICDB !== 'undefined' && EPICDB.deleteMessage) EPICDB.deleteMessage(id);
             if (currentMsgId === id) closeDrawer();
             else renderTable();
         }
@@ -662,11 +670,18 @@
             if (idx === -1) return;
             msgs[idx].status = status;
             saveMsgs(msgs);
+            if (typeof EPICDB !== 'undefined' && EPICDB.saveMessage) EPICDB.saveMessage(msgs[idx]);
             renderTable();
         }
 
         function markAllRead() {
-            const msgs = loadMsgs().map(m => ({ ...m, unread: false }));
+            const msgs = loadMsgs().map(m => {
+                if (m.unread !== false) {
+                    m.unread = false;
+                    if (typeof EPICDB !== 'undefined' && EPICDB.saveMessage) EPICDB.saveMessage(m);
+                }
+                return m;
+            });
             saveMsgs(msgs);
             renderTable();
         }

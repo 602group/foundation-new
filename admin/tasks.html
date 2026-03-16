@@ -631,6 +631,10 @@
             if (t.isAuto) saved[id] = { ...saved[id], status: newStatus };
             else { if (!saved[id]) saved[id] = {}; saved[id].status = newStatus; }
             localStorage.setItem(TASKS_KEY, JSON.stringify(saved));
+            
+            t.status = newStatus;
+            if (typeof EPICDB !== 'undefined' && EPICDB.saveTask) EPICDB.saveTask(t);
+            
             refreshTasks();
         }
 
@@ -805,6 +809,10 @@
             if (el('dIsAuto').value !== '1') { tObj.id = id; tObj.isManual = true; }
             saved[id] = { ...saved[id], ...tObj };
             localStorage.setItem(TASKS_KEY, JSON.stringify(saved));
+            
+            const fullTask = allTasks.find(x => x.id === id) || { id };
+            if (typeof EPICDB !== 'undefined' && EPICDB.saveTask) EPICDB.saveTask({ ...fullTask, ...saved[id] });
+            
             closeDrawer();
             refreshTasks();
         }
@@ -816,6 +824,7 @@
             if (!saved[id]) saved[id] = {};
             saved[id].deleted = true;
             localStorage.setItem(TASKS_KEY, JSON.stringify(saved));
+            if (typeof EPICDB !== 'undefined' && EPICDB.deleteTask) EPICDB.deleteTask(id);
             closeDrawer();
             refreshTasks();
         }

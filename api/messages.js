@@ -33,7 +33,10 @@ module.exports = async function handler(req, res) {
 
         if (req.method === 'POST') {
             const message = req.body;
-            if (!message || !message.id) return res.status(400).json({ error: 'Missing message id' });
+            if (!message) return res.status(400).json({ error: 'Missing message body' });
+            if (!message.id) {
+                message.id = 'msg_' + Date.now() + Math.random().toString(36).substr(2, 5);
+            }
             await client.query(
                 `INSERT INTO epic_messages (id, data) VALUES ($1, $2)
                  ON CONFLICT (id) DO UPDATE SET data = $2, updated_at = NOW()`,

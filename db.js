@@ -114,15 +114,9 @@ const EPICDB = (() => {
                 const lc = local.find(c => c.id === rc.id);
                 if (!lc) return rc;
                 
-                // If DB version has no images but local does, keep local images
-                const hasRemoteImages = (rc.featured_image_url && rc.featured_image_url.startsWith('data:')) || 
-                                        (rc.gallery && rc.gallery.some(g => g && g.startsWith('data:')));
-                const hasLocalImages  = (lc.featured_image_url && lc.featured_image_url.startsWith('data:')) || 
-                                        (lc.gallery && lc.gallery.some(g => g && g.startsWith('data:')));
-
-                if (hasLocalImages && !hasRemoteImages) {
-                    return { ...rc, featured_image_url: lc.featured_image_url, gallery: lc.gallery };
-                }
+                // Pure remote synchronization
+                if (lc.updated_at && rc.updated_at && lc.updated_at > rc.updated_at) return lc;
+                return rc;
 
                 if (lc.updated_at && rc.updated_at && lc.updated_at > rc.updated_at) return lc;
                 return rc;
@@ -130,21 +124,7 @@ const EPICDB = (() => {
 
             // Remote is our SINGLE SOURCE OF TRUTH for existence.
             // If it's not in 'remote', it doesn't belong in 'merged'.
-
-            // Final guardrail: restore images from dedicated per-course localStorage keys
-            merged.forEach(c => {
-                const hasImages = (c.featured_image_url && c.featured_image_url.startsWith('data:')) ||
-                                  (c.gallery && c.gallery.some(g => g && g.startsWith('data:')));
-                if (!hasImages) {
-                    try {
-                        const saved = JSON.parse(localStorage.getItem('epic_imgs_' + c.id));
-                        if (saved && (saved.featured_image_url || (saved.gallery && saved.gallery.length))) {
-                            c.featured_image_url = saved.featured_image_url;
-                            c.gallery = saved.gallery;
-                        }
-                    } catch(e) {}
-                }
-            });
+            // Offline Base64 caches are strictly ignored to ensure parity with the Vercel app.
 
             try { localStorage.setItem('epic_courses', JSON.stringify(merged)); } catch(e) { console.warn('localStorage quota exceeded for epic_courses'); }
             return merged;
@@ -328,10 +308,10 @@ const EPICDB = (() => {
     // ── Init: load from server into localStorage on page load ───
     async function init() {
         if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
-            if (!localStorage.getItem('epic_synced_to_prod_final_v3')) {
+            if (!localStorage.getItem('epic_synced_to_prod_final_v4')) {
                 console.log('Running one-time sync of local data to Vercel production...');
                 await syncToServer();
-                localStorage.setItem('epic_synced_to_prod_final_v3', 'true');
+                localStorage.setItem('epic_synced_to_prod_final_v4', 'true');
             }
         }
         await getUsers();

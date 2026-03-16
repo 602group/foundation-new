@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EPIC Foundation - Once-in-a-Lifetime Golf Experiences for Charity</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ── Homepage auction card carousel ─────────────────────── */
+        .card-image-carousel { cursor: pointer; }
+        .caro-slide { position: absolute; inset: 0; transition: opacity 0.35s; opacity: 0; }
+        .caro-slide:first-child { opacity: 1; }
+        .caro-slide[style*="display:block"] { opacity: 1; }
+        .card-image { position: relative; overflow: hidden; }
+        .caro-prev, .caro-next {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(0,0,0,0.55); color: #fff; border: none;
+            width: 32px; height: 32px; border-radius: 50%;
+            font-size: 1.2rem; line-height: 1; cursor: pointer;
+            z-index: 10; display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.2s;
+        }
+        .card-image-carousel:hover .caro-prev,
+        .card-image-carousel:hover .caro-next { opacity: 1; }
+        .caro-prev { left: 8px; }
+        .caro-next { right: 8px; }
+        .caro-dots {
+            position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 5px; z-index: 10;
+        }
+        .caro-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: rgba(255,255,255,0.45); transition: background 0.2s;
+        }
+        .caro-dot.active { background: #fff; }
+    </style>
+</head>
+
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <!-- Navigation Header -->
+        <header class="hero-header">
+            <span class="logo">EPIC Foundation</span>
+            <nav class="nav-menu">
+                <a href="auctions.html" class="nav-link member-only-link" style="display:none;">Auction</a>
+                <a href="travel-events.html" class="nav-link member-only-link" style="display:none;">Travel &amp; Events</a>
+                <a href="about.html" class="nav-link">About Us</a>
+                <a href="contact.html" class="nav-link">Contact Us</a>
+                <a href="donate.html" class="nav-link" style="color:#fff;font-weight:700;">Donate &#9829;</a>
+                <button class="login-btn">Login</button>
+            </nav>
+        </header>
+
+        <!-- Hero Content -->
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    SWING FOR CHARITY.
+                    <span class="hero-subtitle">PLAY LIKE A PRO.</span>
+                </h1>
+                <a href="auctions.html" style="text-decoration: none;"><button class="cta-button">View all
+                        Auctions</button></a>
+            </div>
+        </div>
+
+        <!-- Explore More Button -->
+        <a href="#auctions" class="explore-more">
+            <span class="explore-text">Explore More</span>
+            <svg class="arrow-down" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 5V19M12 19L19 12M12 19L5 12" stroke="white" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+        </a>
+
+    </section>
+
+    <!-- Auction Cards Section (member-only) -->
+    <div class="member-only-section" style="display:none;">
+        <section class="auction-section" id="auctions">
+            <h2 class="section-title">The Best Of The Best</h2>
+            <div class="cards-grid" id="featured-auctions-grid">
+                <!-- Dynamically populated from shared-auctions.js -->
+            </div>
+        </section>
+
+        <section class="auction-section auction-section-secondary">
+            <h2 class="section-title">Other Auctions</h2>
+            <div class="cards-grid" id="other-auctions-grid">
+                <!-- Dynamically populated from shared-auctions.js -->
+            </div>
+            <div class="view-all-container">
+                <a href="auctions.html" style="text-decoration: none;"><button class="view-all-btn">View All
+                        Auctions</button></a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Public teaser section (logged-out only) -->
+    <div class="public-only-section" style="display:none;">
+        <section class="auction-section" id="auctions" style="text-align:center; padding: 5rem 2rem;">
+            <h2 class="section-title">Member-Exclusive Auctions</h2>
+            <p style="color:#666; font-size:1.1rem; max-width:540px; margin: 1rem auto 2rem;">EPIC Foundation members
+                get exclusive access to once-in-a-lifetime charity golf auctions at the world's most prestigious
+                courses.</p>
+            <a href="login.html" style="text-decoration:none;"><button class="cta-button"
+                    style="background:#000; color:#fff; padding: 0.9rem 2.5rem; border-radius:8px; font-size:1rem; font-weight:700; border:none; cursor:pointer;">Login
+                    to View Auctions</button></a>
+        </section>
+    </div>
+
+    <!-- About Us Section -->
+    <section class="about-section">
+        <div class="about-container">
+            <h2 class="about-title">About EPIC Foundation</h2>
+            <p class="about-description">
+                We create once-in-a-lifetime golf experiences at the world's most exclusive courses while raising funds
+                for charitable causes.
+                Every auction supports our mission to make a meaningful impact through the game we love.
+            </p>
+            <div class="about-features">
+                <div class="feature-item">
+                    <h3 class="feature-title">Exclusive Access</h3>
+                    <p class="feature-text">Gain entry to the most iconic and private courses in the world — from Augusta National and Pebble Beach to Pine Valley and beyond. These are courses that can't simply be booked online. Through EPIC Foundation, our members unlock doors that money alone can't open.</p>
+                </div>
+                <div class="feature-item">
+                    <h3 class="feature-title">Charitable Impact</h3>
+                    <p class="feature-text">Every dollar raised through EPIC Foundation goes directly toward the causes we believe in. We support Folds of Honor, Hope Kids, and Youth on Course — organizations changing lives one round at a time. When you participate, you're not just playing golf; you're investing in something that truly matters.</p>
+                </div>
+                <div class="feature-item">
+                    <h3 class="feature-title">Unforgettable Experiences</h3>
+                    <p class="feature-text">These aren't ordinary rounds of golf. Each EPIC experience is curated, member-hosted, and designed to be the round of a lifetime. Whether you're walking the same fairways as the legends or playing alongside a club member at one of the world's great courses, these are memories you'll carry forever.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Donate CTA Banner -->
+    <section class="email-signup-section" style="min-height:380px;">
+        <div class="email-signup-overlay" style="background:linear-gradient(rgba(0,0,0,0.72),rgba(0,0,0,0.72)),url('https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?w=1600&q=85') center/cover no-repeat;min-height:380px;">
+            <div class="email-signup-content" style="padding:4rem 2rem;">
+                <p style="font-size:0.75rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:0.75rem;">Make a Difference</p>
+                <h2 class="email-signup-title" style="font-size:clamp(1.8rem,4vw,2.6rem);margin-bottom:1rem;">Support the Mission</h2>
+                <p class="email-signup-description" style="max-width:540px;margin:0 auto 1.8rem;">Your contribution funds once-in-a-lifetime golf experiences for deserving youth, veterans, and communities that need it most. We partner with Folds of Honor, Hope Kids, and Youth on Course to make every dollar count. Every gift — no matter the size — creates real change.</p>
+                <a href="donate.html" class="subscribe-btn"
+                    style="display:inline-block;text-decoration:none;padding:0.9rem 2.4rem;font-size:1rem;font-weight:700;letter-spacing:0.03em;">Donate Today</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Email Signup Section -->
+    <section class="email-signup-section">
+        <div class="email-signup-overlay">
+            <div class="email-signup-content">
+                <h2 class="email-signup-title">Sign up for our email list!</h2>
+                <p class="email-signup-description">Email subscribers get early access to all of our amazing charity
+                    golf auctions</p>
+                <form class="email-signup-form">
+                    <input type="email" class="email-input" placeholder="Your email address" required>
+                    <button type="submit" class="subscribe-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3 class="footer-heading">EPIC Foundation</h3>
+                <p class="footer-description">Creating once-in-a-lifetime golf experiences while supporting charitable
+                    causes.</p>
+            </div>
+
+            <div class="footer-column">
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="auctions.html" class="member-only-link" style="display:none;">Auctions</a></li>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4 class="footer-title">Explore</h4>
+                <ul class="footer-links">
+                    <li><a href="travel-events.html" class="member-only-link" style="display:none;">Travel & Events</a>
+                    </li>
+                    <li><a href="#content">Content</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                    <li><a href="#login">Login</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4 class="footer-title">Legal</h4>
+                <ul class="footer-links">
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                    <li><a href="#terms">Terms of Service</a></li>
+                    <li><a href="#cookies">Cookie Policy</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 EPIC Foundation. All rights reserved.</p>
+        </div>
+
+        <div class="footer-admin-bar" style="display:none;">
+            <a href="admin/dashboard.html" class="admin-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                Admin
+            </a>
+        </div>
+    </footer>
+
+    <script src="auction-data.js"></script>
+    <script src="db.js"></script>
+    <script src="auth.js"></script>
+    <script src="shared-courses.js"></script>
+    <script src="shared-auctions.js"></script>
+    <script>
+        AUTH.applyGatedNav('');
+
+        // ── Render Dynamic Auctions ─────────────────────────────
+        async function renderPublicAuctions() {
+            // Fetch fresh from DB so bidCount and currentBid are live
+            let auctions = [];
+            let bidCountMap = {};
+            let allCourses = [];
+            if (typeof EPICDB !== 'undefined') {
+                const [freshAuctions, freshUsers, freshCourses] = await Promise.all([EPICDB.getAuctions(), EPICDB.getUsers(), EPICDB.getCourses()]);
+                allCourses = freshCourses || [];
+                auctions = (freshAuctions || []).filter(a => ['live', 'active'].includes(a.status));
+                // Build real bid count per auction from user bid arrays (source of truth)
+                (freshUsers || []).forEach(u => {
+                    (u.bids || []).forEach(b => {
+                        if (b && b.auctionId) bidCountMap[b.auctionId] = (bidCountMap[b.auctionId] || 0) + 1;
+                    });
+                });
+            } else {
+                allCourses = typeof loadSharedCourses === 'function' ? loadSharedCourses() : [];
+                auctions = loadSharedAuctions().filter(a => ['live', 'active'].includes(a.status));
+            }
+            const featured = auctions.slice(0, 4);
+
+            function buildCardHtml(a) {
+                let images = [];
+                if (a.course_id && allCourses && allCourses.length) {
+                    const linkedCourse = allCourses.find(c => c.id === a.course_id);
+                    if (linkedCourse) {
+                        if (linkedCourse.featured_image_url) images.push(linkedCourse.featured_image_url);
+                        if (linkedCourse.gallery && linkedCourse.gallery.length) images.push(...linkedCourse.gallery);
+                    }
+                }
+                if (images.length === 0 && a.images && a.images.length) {
+                    images = a.images;
+                }
+                const thumb0 = images[0] || '';
+                const price = a.startBid || 0;
+                const state = (a.location || '').split(',').pop().trim().toLowerCase();
+                const archClass = a.attributes ? a.attributes.replace(/[^a-zA-Z0-9]/g, '').toLowerCase() : 'other';
+                const rankClass = a.title.toLowerCase().includes('top 100') ? 'top100' : 'other';
+                const endTime = new Date(a.endDate).getTime() || 9999999999;
+                const linkUrl = 'auction-rounds/pebble-beach-round-2?id=' + a.id;
+                const statusLabel = { active: 'Active', live: 'Live', scheduled: 'Scheduled', pending: 'Pending', draft: 'Draft', ended: 'Ended', closed: 'Closed' }[a.status] || a.status || 'Active';
+                const fmtDate = d => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'TBD';
+                const hasMultiple = images.length > 1;
+                const imgData = JSON.stringify(images).replace(/"/g, '&quot;');
+
+                const dotsHtml = images.map(function(_,i){
+                    return '<span class="cdot' + (i===0?' cdot-active':'') + '" style="width:6px;height:6px;border-radius:50%;background:' + (i===0?'#fff':'rgba(255,255,255,0.45)') + ';transition:background 0.2s;"></span>';
+                }).join('');
+                const carouselHtml = hasMultiple ? (
+                    '<button class="carousel-arrow carousel-prev" onclick="carouselPrev(event,this)" style="position:absolute;left:8px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.55);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:1.1rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:10;">&#8249;</button>' +
+                    '<button class="carousel-arrow carousel-next" onclick="carouselNext(event,this)" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.55);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:1.1rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:10;">&#8250;</button>' +
+                    '<div class="carousel-dots" style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:4px;z-index:10;">' + dotsHtml + '</div>'
+                ) : '';
+                return `
+                <div class="auction-card" data-auction-id="${a.id}" data-price="${price}" data-state="${state}" data-architect="${archClass}" data-rank="${rankClass}" data-end-time="${endTime}">
+                    <!-- Carousel image area -->
+                    <div class="card-image-carousel" data-images="${imgData}" data-idx="0" onclick="window.location.href='${linkUrl}'"
+                        style="position:relative;overflow:hidden;height:220px;background:#1a1a1a;cursor:pointer;">
+                        <img class="carousel-slide active-slide" src="${thumb0}" alt="${a.title}"
+                            style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity 0.3s;">
+                        <span class="card-status-badge ${(a.status||'active').toLowerCase()}">${statusLabel}</span>
+                        ${carouselHtml}
+                    </div>
+                    <a href="${linkUrl}" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;flex:1;">
+                        <div class="card-content">
+                            <h3 class="card-title">${a.title}</h3>
+                            <p class="card-location">${a.location}</p>
+                            <div class="card-dates">
+                                <span class="card-date-tag">Opens: ${fmtDate(a.startDate)}</span>
+                                <span class="card-date-tag">Closes: ${fmtDate(a.endDate)}</span>
+                            </div>
+                            <div class="card-footer">
+                                <div id="countdown-${a.id}" class="card-countdown" style="font-size:0.75rem;color:#888;font-weight:600;"></div>
+                                <span class="card-bid-cta">View Item &rarr;</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>`;
+            }
+
+            const featGrid = document.getElementById('featured-auctions-grid');
+            if (featGrid) {
+                if (featured.length) featGrid.innerHTML = featured.map(buildCardHtml).join('');
+                else featGrid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#888;">No active auctions right now. Check back soon!</p>';
+            }
+
+            const otherGrid = document.getElementById('other-auctions-grid');
+            const otherSec = document.querySelector('.auction-section-secondary');
+            if (otherGrid && otherSec) {
+                otherGrid.innerHTML = auctions.length
+                    ? auctions.map(buildCardHtml).join('')
+                    : '<p style="grid-column:1/-1;text-align:center;color:#888;">More auctions coming soon.</p>';
+                otherSec.style.display = '';
+            }
+
+            // Carousel hover behaviour
+            document.querySelectorAll('.card-image-carousel').forEach(el => {
+                if (el.dataset.images === '[""]' || !el.dataset.images) return;
+                const imgs = JSON.parse(el.dataset.images.replace(/&quot;/g,'"'));
+                if (imgs.length <= 1) return;
+                el.addEventListener('mouseenter', () => {
+                    el.querySelectorAll('.carousel-arrow').forEach(a => a.style.display = 'flex');
+                });
+                el.addEventListener('mouseleave', () => {
+                    el.querySelectorAll('.carousel-arrow').forEach(a => a.style.display = 'none');
+                });
+            });
+
+            // Carousel navigation functions
+            if (!window.carouselPrev) {
+                window.carouselPrev = function(e, btn) {
+                    e.stopPropagation();
+                    const wrap = btn.closest('.card-image-carousel');
+                    moveCarousel(wrap, -1);
+                };
+                window.carouselNext = function(e, btn) {
+                    e.stopPropagation();
+                    const wrap = btn.closest('.card-image-carousel');
+                    moveCarousel(wrap, 1);
+                };
+                function moveCarousel(wrap, dir) {
+                    const imgs = JSON.parse(wrap.dataset.images.replace(/&quot;/g,'"'));
+                    let idx = parseInt(wrap.dataset.idx) || 0;
+                    idx = (idx + dir + imgs.length) % imgs.length;
+                    wrap.dataset.idx = idx;
+                    const slide = wrap.querySelector('.carousel-slide');
+                    if (slide) { slide.style.opacity = '0'; setTimeout(() => { slide.src = imgs[idx]; slide.style.opacity = '1'; }, 150); }
+                    wrap.querySelectorAll('.cdot').forEach((d, i) => {
+                        d.style.background = i === idx ? '#fff' : 'rgba(255,255,255,0.45)';
+                        d.classList.toggle('cdot-active', i === idx);
+                    });
+                }
+            }
+
+        }
+        renderPublicAuctions().then(() => initCountdowns());
+        function initCountdowns() {
+            document.querySelectorAll('[id^="cd-"]').forEach(el => {
+                const card = el.closest('[data-end-time]') || el.closest('.auction-card');
+                // Find end date from data or from parent auction card data
+                const endAttr = el.id.replace('cd-', '');
+                // We need the endDate from the auction — stored in parent card's data-end-time
+                // For home page cards we use a data attribute approach
+                const parent = el.closest('a');
+                if (!parent) return;
+                // endDate embedded in card — we'll compute from rendered date tags
+                const closesTag = parent.querySelector('.card-date-tag:last-child');
+                if (!closesTag) return;
+                const closesText = closesTag.textContent.replace('Closes: ', '');
+                const endDate = new Date(closesText);
+                if (isNaN(endDate)) return;
+                function tick() {
+                    const diff = endDate - new Date();
+                    if (diff <= 0) { el.textContent = 'Closed'; return; }
+                    const d = Math.floor(diff / 86400000);
+                    const h = Math.floor((diff % 86400000) / 3600000);
+                    const m = Math.floor((diff % 3600000) / 60000);
+                    el.textContent = d > 0 ? d + 'd ' + h + 'h remaining' : h + 'h ' + m + 'm remaining';
+                }
+                tick();
+                setInterval(tick, 60000);
+            });
+        }
+
+        // Transparent → solid header on scroll
+        const heroHeader = document.querySelector('.hero-header');
+        if (heroHeader) {
+            window.addEventListener('scroll', () => {
+                heroHeader.classList.toggle('scrolled', window.scrollY > 80);
+            });
+        }
+    </script>
+
+    <script>
+        document.querySelector('.email-signup-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const emailInput = this.querySelector('input[type="email"]');
+            const email = emailInput.value.trim().toLowerCase();
+            if (!email) return;
+
+            // Check if this email belongs to a known member
+            let firstName = '', lastName = '', memberType = 'public';
+            try {
+                const users = JSON.parse(localStorage.getItem('epic_users') || '[]');
+                const match = users.find(u => u.email.toLowerCase() === email);
+                if (match) {
+                    firstName = match.firstName || '';
+                    lastName = match.lastName || '';
+                    memberType = match.memberType || 'public';
+                }
+            } catch { }
+
+            // Save to epic_newsletter (deduplicate by email)
+            let list = [];
+            try { list = JSON.parse(localStorage.getItem('epic_newsletter') || '[]'); } catch { }
+            if (!list.find(s => s.email === email)) {
+                list.push({ email, firstName, lastName, memberType, subscribedAt: new Date().toISOString() });
+                localStorage.setItem('epic_newsletter', JSON.stringify(list));
+            }
+
+            emailInput.value = '';
+            const btn = this.querySelector('button[type="submit"]');
+            const orig = btn.textContent;
+            btn.textContent = '✅ Subscribed!';
+            setTimeout(() => btn.textContent = orig, 3000);
+        });
+    </script>
+
+    <script>
+        // ── Carousel step function for homepage auction cards ─────
+        function caroStep(btn, dir) {
+            const container = btn.closest('.card-image-carousel');
+            if (!container) return;
+            const slides = container.querySelectorAll('.caro-slide');
+            const dots   = container.querySelectorAll('.caro-dot');
+            if (!slides.length) return;
+            let cur = 0;
+            slides.forEach((s, i) => { if (s.style.display !== 'none') cur = i; });
+            const next = (cur + dir + slides.length) % slides.length;
+            slides[cur].style.display = 'none';
+            slides[next].style.display = 'block';
+            if (dots.length) {
+                dots[cur].classList.remove('active');
+                dots[next].classList.add('active');
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,320 @@
+/* ========================================
+   PAGE HEADER
+   ======================================== */
+.page-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 4rem;
+    background: #000000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.page-header .logo {
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.page-header .logo:hover {
+    opacity: 0.8;
+}
+
+body {
+    padding-top: 100px;
+    background: #ffffff;
+}
+
+/* ========================================
+   ABOUT HERO SECTION
+   ======================================== */
+.about-hero {
+    background: #000000;
+    padding: 6rem 4rem;
+    text-align: center;
+}
+
+.about-hero-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.about-hero-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.about-hero-subtitle {
+    font-size: 1.3rem;
+    color: #cccccc;
+    font-weight: 400;
+}
+
+/* ========================================
+   MISSION SECTION
+   ======================================== */
+.mission-section {
+    background: #ffffff;
+    padding: 6rem 4rem;
+}
+
+.mission-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.section-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+
+.mission-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333333;
+    margin-bottom: 1.5rem;
+}
+
+/* ========================================
+   THREE PILLARS SECTION
+   ======================================== */
+.pillars-section {
+    background: #f8f8f8;
+    padding: 6rem 4rem;
+}
+
+.pillars-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+    margin-top: 3rem;
+}
+
+.pillar-card {
+    background: #ffffff;
+    padding: 3rem 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.pillar-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.pillar-icon {
+    width: 80px;
+    height: 80px;
+    background: #000000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 2rem auto;
+}
+
+.pillar-icon svg {
+    stroke: #ffffff;
+}
+
+.pillar-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 1.25rem;
+    text-align: center;
+}
+
+.pillar-description {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #555555;
+    text-align: center;
+}
+
+/* ========================================
+   WHO WE ARE SECTION
+   ======================================== */
+.who-we-are-section {
+    background: #ffffff;
+    padding: 6rem 4rem;
+}
+
+.who-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.who-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333333;
+    margin-bottom: 1.5rem;
+}
+
+/* ========================================
+   VISION SECTION
+   ======================================== */
+.vision-section {
+    background: #f8f8f8;
+    padding: 6rem 4rem;
+}
+
+.vision-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.vision-content {
+    margin-top: 2rem;
+}
+
+.vision-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333333;
+    margin-bottom: 1.5rem;
+}
+
+/* ========================================
+   IMPACT STATS SECTION
+   ======================================== */
+.impact-section {
+    background: #000000;
+    padding: 6rem 4rem;
+}
+
+.impact-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.impact-section .section-title {
+    color: #ffffff;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3rem;
+    margin-top: 3rem;
+}
+
+.stat-card {
+    text-align: center;
+    padding: 2rem;
+}
+
+.stat-number {
+    font-family: 'Poppins', sans-serif;
+    font-size: 3rem;
+    font-weight: 900;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 1rem;
+    color: #cccccc;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+@media (max-width: 1024px) {
+    .pillars-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+    }
+
+    .about-hero-title {
+        font-size: 2.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-header {
+        padding: 1.5rem 2rem;
+    }
+
+    .about-hero {
+        padding: 4rem 2rem;
+    }
+
+    .about-hero-title {
+        font-size: 2.2rem;
+    }
+
+    .about-hero-subtitle {
+        font-size: 1.1rem;
+    }
+
+    .mission-section,
+    .pillars-section,
+    .who-we-are-section,
+    .vision-section,
+    .impact-section {
+        padding: 4rem 2rem;
+    }
+
+    .section-title {
+        font-size: 2rem;
+    }
+
+    .mission-text,
+    .who-text,
+    .vision-text {
+        font-size: 1rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .about-hero-title {
+        font-size: 1.8rem;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+    }
+}

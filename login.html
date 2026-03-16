@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - EPIC Foundation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background texture */
+        body::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #000 0%, #1a1a1a 50%, #000 100%);
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('hero.png') center/cover no-repeat;
+            opacity: 0.12;
+        }
+
+        .card {
+            position: relative;
+            z-index: 10;
+            background: #fff;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 440px;
+            padding: 2.5rem 2.5rem 2rem;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        .card-logo {
+            text-align: center;
+            margin-bottom: 1.8rem;
+        }
+
+        .card-logo a {
+            font-weight: 900;
+            font-size: 1.3rem;
+            color: #000;
+            text-decoration: none;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .card-logo p {
+            font-size: 0.82rem;
+            color: #888;
+            margin-top: 0.2rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 0.3rem;
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 1.6rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 0.35rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            color: #222;
+            background: #fafafa;
+            outline: none;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus {
+            border-color: #000;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+            background: #fff;
+        }
+
+        .forgot-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: -0.4rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .forgot-row a {
+            font-size: 0.78rem;
+            color: #666;
+            text-decoration: none;
+        }
+
+        .forgot-row a:hover {
+            color: #000;
+            text-decoration: underline;
+        }
+
+        .error-msg {
+            background: #fff0f0;
+            color: #c0392b;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 0.6rem 0.9rem;
+            font-size: 0.82rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .error-msg.show {
+            display: block;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 0.85rem;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: opacity 0.2s, transform 0.15s;
+            text-transform: uppercase;
+            margin-bottom: 1.2rem;
+        }
+
+        .submit-btn:hover {
+            opacity: 0.85;
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            color: #ccc;
+            font-size: 0.8rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e8e8e8;
+        }
+
+        .create-account {
+            text-align: center;
+            font-size: 0.82rem;
+            color: #666;
+        }
+
+        .create-account a {
+            color: #000;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .create-account a:hover {
+            text-decoration: underline;
+        }
+
+        .back-home {
+            position: absolute;
+            top: 1.5rem;
+            left: 1.5rem;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .back-home:hover {
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="index.html" class="back-home">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M19 12H5M5 12l7-7M5 12l7 7" />
+        </svg>
+        Back to Home
+    </a>
+
+    <div class="card">
+        <div class="card-logo">
+            <a href="index.html">EPIC Foundation</a>
+            <p>Sign in to your account</p>
+        </div>
+
+        <h2>Welcome back</h2>
+        <p class="subtitle">Enter your credentials to access your account.</p>
+
+        <div class="error-msg" id="errorMsg"></div>
+
+        <form id="loginForm" novalidate>
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" id="email" placeholder="you@example.com" autocomplete="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" required>
+            </div>
+            <div class="forgot-row">
+                <a href="#">Forgot password?</a>
+            </div>
+            <button type="submit" class="submit-btn" id="submitBtn">Sign In</button>
+        </form>
+
+        <div class="divider">or</div>
+        <div class="create-account">
+            Don't have an account? <a href="signup.html">Create one →</a>
+        </div>
+    </div>
+
+    <script src="db.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        // If already logged in, send to portal
+        if (AUTH.currentUser()) {
+            window.location.href = 'portal/index.html';
+        }
+
+        const form = document.getElementById('loginForm');
+        const errMsg = document.getElementById('errorMsg');
+        const btn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                showError('Please fill in all fields.');
+                return;
+            }
+
+            btn.textContent = 'Signing in…';
+            btn.disabled = true;
+
+            const result = AUTH.login(email, password);
+            if (result.ok) {
+                // Redirect to intended page or portal
+                const redirect = sessionStorage.getItem('epic_auth_redirect') || 'portal/index.html';
+                sessionStorage.removeItem('epic_auth_redirect');
+                window.location.href = redirect;
+            } else {
+                showError(result.error);
+                btn.textContent = 'Sign In';
+                btn.disabled = false;
+            }
+        });
+
+        function showError(msg) {
+            errMsg.textContent = msg;
+            errMsg.classList.add('show');
+        }
+    </script>
+</body>
+
+</html>

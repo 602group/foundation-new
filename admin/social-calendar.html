@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Calendar – EPIC Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .content-wrapper {
+            padding: 0 2rem 4rem;
+        }
+
+        /* ── Stats ───────────────────────────────────────────── */
+        .stat-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .mini-stat {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.1rem 1.2rem;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, .05);
+        }
+
+        .mini-stat .lbl {
+            font-size: .73rem;
+            color: #aaa;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        .mini-stat .val {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #111;
+            margin-top: .15rem;
+        }
+
+        /* ── Toolbar ─────────────────────────────────────────── */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: .7rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: .4rem;
+            flex-wrap: wrap;
+        }
+
+        .ftab {
+            padding: .38rem .95rem;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 20px;
+            font-size: .78rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: #fff;
+            color: #666;
+            transition: all .14s;
+        }
+
+        .ftab:hover {
+            border-color: #000;
+            color: #000;
+        }
+
+        .ftab.active {
+            background: #000;
+            color: #fff;
+            border-color: #000;
+        }
+
+        .search-wrap {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            padding: .4rem .8rem;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-wrap input {
+            border: none;
+            outline: none;
+            flex: 1;
+            font-size: .85rem;
+            font-family: inherit;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: .3rem;
+        }
+
+        .vtbtn {
+            padding: .4rem .7rem;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fff;
+            font-size: .8rem;
+            cursor: pointer;
+            transition: all .12s;
+        }
+
+        .vtbtn.active,
+        .vtbtn:hover {
+            background: #000;
+            color: #fff;
+            border-color: #000;
+        }
+
+        .regen-btn {
+            padding: .44rem 1rem;
+            background: #fff;
+            color: #444;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: .8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .14s;
+            white-space: nowrap;
+        }
+
+        .regen-btn:hover {
+            border-color: #000;
+            color: #000;
+        }
+
+        /* ── Week Group Header ───────────────────────────────── */
+        .week-group {
+            margin-bottom: 2rem;
+        }
+
+        .week-header {
+            font-size: .72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: #aaa;
+            padding: .5rem 0 .7rem;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 1rem;
+        }
+
+        .week-header span {
+            background: #f5f5f5;
+            border-radius: 20px;
+            padding: 3px 10px;
+            color: #888;
+        }
+
+        /* ── Post Card ───────────────────────────────────────── */
+        .post-card {
+            background: #fff;
+            border-radius: 14px;
+            border: 1px solid #eee;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, .04);
+            margin-bottom: .8rem;
+            display: grid;
+            grid-template-columns: 80px 1fr auto;
+            gap: 0;
+            overflow: hidden;
+            cursor: pointer;
+            transition: box-shadow .14s, border-color .14s;
+        }
+
+        .post-card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, .08);
+            border-color: #ddd;
+        }
+
+        .post-card.is-posted {
+            opacity: .6;
+        }
+
+        .post-card.is-skipped {
+            opacity: .4;
+        }
+
+        /* Date column */
+        .card-date {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: .8rem .5rem;
+            background: #fafafa;
+            border-right: 1px solid #f0f0f0;
+            min-width: 72px;
+        }
+
+        .card-date .month {
+            font-size: .65rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #aaa;
+            letter-spacing: .06em;
+        }
+
+        .card-date .day {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #111;
+            line-height: 1;
+        }
+
+        .card-date .dow {
+            font-size: .62rem;
+            color: #bbb;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        /* Type accent bar */
+        .card-accent {
+            width: 4px;
+            flex-shrink: 0;
+        }
+
+        /* Body */
+        .card-body {
+            padding: .85rem 1rem;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-top {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            flex-wrap: wrap;
+            margin-bottom: .35rem;
+        }
+
+        .type-chip {
+            font-size: .65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            padding: 2px 8px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        .platform-badges {
+            display: flex;
+            gap: .3rem;
+            flex-wrap: wrap;
+        }
+
+        .plat {
+            font-size: .63rem;
+            font-weight: 600;
+            padding: 2px 7px;
+            border-radius: 4px;
+            background: #f0f0f0;
+            color: #555;
+        }
+
+        .card-title {
+            font-size: .88rem;
+            font-weight: 700;
+            color: #111;
+            margin-bottom: .2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-caption {
+            font-size: .78rem;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: .35rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-meta {
+            font-size: .7rem;
+            color: #bbb;
+        }
+
+        .card-notes-preview {
+            font-size: .72rem;
+            color: #888;
+            font-style: italic;
+            margin-top: .2rem;
+            background: #fafafa;
+            border-radius: 6px;
+            padding: 3px 7px;
+            display: inline-block;
+        }
+
+        /* Status column */
+        .card-status-col {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
+            padding: .8rem 1rem;
+            gap: .5rem;
+            min-width: 120px;
+            flex-shrink: 0;
+        }
+
+        .status-badge {
+            font-size: .66rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            white-space: nowrap;
+        }
+
+        .s-draft {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .s-scheduled {
+            background: #fef9c3;
+            color: #a16207;
+        }
+
+        .s-posted {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .s-skipped {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* ── Calendar Grid View ──────────────────────────────── */
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+
+        .cal-day-header {
+            font-size: .7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #bbb;
+            text-align: center;
+            padding: .4rem 0;
+        }
+
+        .cal-cell {
+            background: #fff;
+            border: 1px solid #f0f0f0;
+            border-radius: 8px;
+            padding: .4rem;
+            min-height: 80px;
+        }
+
+        .cal-cell.today {
+            border-color: #000;
+        }
+
+        .cal-cell.faded {
+            background: #fafafa;
+        }
+
+        .cal-num {
+            font-size: .73rem;
+            font-weight: 700;
+            color: #aaa;
+            margin-bottom: .2rem;
+        }
+
+        .cal-num.today {
+            color: #000;
+        }
+
+        .cal-dot {
+            font-size: .63rem;
+            padding: 2px 5px;
+            border-radius: 4px;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+        }
+
+        /* ── Drawer ──────────────────────────────────────────── */
+        .drawer-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .3);
+            z-index: 199;
+        }
+
+        .drawer-overlay.open {
+            display: block;
+        }
+
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 520px;
+            max-width: 96vw;
+            background: #fff;
+            z-index: 200;
+            transform: translateX(100%);
+            transition: transform .25s cubic-bezier(.4, 0, .2, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: -4px 0 30px rgba(0, 0, 0, .1);
+        }
+
+        .drawer.open {
+            transform: translateX(0);
+        }
+
+        .dh {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 1.2rem 1.4rem;
+            border-bottom: 1px solid #f0f0f0;
+            gap: 1rem;
+            flex-shrink: 0;
+        }
+
+        .dh-left h3 {
+            font-size: .95rem;
+            font-weight: 700;
+            margin: 0 0 .15rem;
+        }
+
+        .dh-left p {
+            font-size: .76rem;
+            color: #aaa;
+            margin: 0;
+        }
+
+        .dclose {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            color: #aaa;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dclose:hover {
+            background: #f5f5f5;
+            color: #000;
+        }
+
+        .dbody {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.4rem;
+        }
+
+        .dfooter {
+            padding: 1rem 1.4rem;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            gap: .6rem;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+        }
+
+        .d-section {
+            margin-bottom: 1.3rem;
+        }
+
+        .d-label {
+            font-size: .68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            color: #bbb;
+            margin-bottom: .4rem;
+            display: block;
+        }
+
+        .d-caption-box {
+            background: #f8f8f8;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 1rem;
+            font-size: .85rem;
+            line-height: 1.7;
+            color: #333;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .d-caption-box:focus {
+            outline: 2px solid #000;
+            background: #fff;
+        }
+
+        textarea.d-caption-box {
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .d-status-row {
+            display: flex;
+            align-items: center;
+            gap: .8rem;
+            flex-wrap: wrap;
+        }
+
+        .d-select {
+            padding: .42rem .8rem;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: .83rem;
+            font-family: inherit;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .d-select:focus {
+            border-color: #000;
+        }
+
+        .d-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .8rem;
+        }
+
+        .d-info-item label {
+            display: block;
+            font-size: .68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: #ccc;
+            margin-bottom: .2rem;
+        }
+
+        .d-info-item span {
+            font-size: .84rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .notes-ta {
+            width: 100%;
+            padding: .65rem .8rem;
+            border: 1.5px solid #e8e8e8;
+            border-radius: 8px;
+            font-size: .84rem;
+            font-family: inherit;
+            outline: none;
+            resize: vertical;
+            min-height: 90px;
+            transition: border .15s;
+            box-sizing: border-box;
+        }
+
+        .notes-ta:focus {
+            border-color: #000;
+        }
+
+        .btn-save {
+            padding: .55rem 1.3rem;
+            border-radius: 8px;
+            font-size: .84rem;
+            font-weight: 700;
+            background: #000;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-save:hover {
+            opacity: .85;
+        }
+
+        .btn-cancel {
+            padding: .55rem 1rem;
+            border-radius: 8px;
+            font-size: .84rem;
+            font-weight: 600;
+            background: #f5f5f5;
+            color: #444;
+            border: 1.5px solid #e8e8e8;
+            cursor: pointer;
+        }
+
+        .btn-cancel:hover {
+            border-color: #bbb;
+        }
+
+        /* Type colours */
+        .t-auction-launch {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .t-auction-open {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .t-auction-closing {
+            background: #fef9c3;
+            color: #a16207;
+        }
+
+        .t-auction-final {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .t-event-announce {
+            background: #f3e8ff;
+            color: #7c3aed;
+        }
+
+        .t-event-open {
+            background: #fce7f3;
+            color: #be185d;
+        }
+
+        .t-event-week {
+            background: #ffedd5;
+            color: #c2410c;
+        }
+
+        .t-event-last {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .t-reminder {
+            background: #f0fdf4;
+            color: #15803d;
+        }
+
+        .accent-auction-launch {
+            background: #3b82f6;
+        }
+
+        .accent-auction-open {
+            background: #16a34a;
+        }
+
+        .accent-auction-closing {
+            background: #eab308;
+        }
+
+        .accent-auction-final {
+            background: #ef4444;
+        }
+
+        .accent-event-announce {
+            background: #8b5cf6;
+        }
+
+        .accent-event-open {
+            background: #ec4899;
+        }
+
+        .accent-event-week {
+            background: #f97316;
+        }
+
+        .accent-event-last {
+            background: #ef4444;
+        }
+
+        .accent-reminder {
+            background: #22c55e;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 5rem 2rem;
+        }
+
+        .empty-state h3 {
+            font-size: 1rem;
+            color: #aaa;
+        }
+
+        .empty-state p {
+            font-size: .85rem;
+            color: #ccc;
+            margin-top: .3rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ══ Sidebar ═══════════════════════════════════════════════════ -->
+                    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="../index.html" class="logo">EPIC ADMIN</a>
+        </div>
+        <nav class="nav-links">
+            <a href="dashboard.html" class="nav-item" data-section="dashboard"><span class="nav-icon">📊</span> Dashboard</a>
+            <a href="auctions.html?v=2" class="nav-item" data-section="auctions"><span class="nav-icon">⛳</span> Auctions</a>
+            <a href="courses.html?v=2" class="nav-item" data-section="courses"><span class="nav-icon">&#127948;&#65039;</span> Courses</a>
+            <a href="users.html?v=2" class="nav-item" data-section="users"><span class="nav-icon">👥</span> Users</a>
+            <a href="events.html?v=2" class="nav-item" data-section="events"><span class="nav-icon">✈️</span> Events &amp; Trips</a>
+            <a href="messages.html" class="nav-item" data-section="messages"><span class="nav-icon">&#128172;</span> Messages <span class="nav-msg-badge" style="display:none;background:#e74c3c;color:#fff;border-radius:10px;padding:1px 6px;font-size:0.7rem;font-weight:700;margin-left:4px;"></span></a>
+            <a href="tasks.html" class="nav-item" data-section="tasks"><span class="nav-icon">✅</span> Tasks</a>
+            <a href="financials.html" class="nav-item" data-section="financials"><span class="nav-icon">📈</span> Financials</a>
+            <a href="newsletter.html?v=2" class="nav-item" data-section="newsletter"><span class="nav-icon">📧</span> Newsletter</a>
+            <a href="bids.html?v=2" class="nav-item" data-section="bids"><span class="nav-icon">💰</span> Bids</a>
+            <a href="settings.html?v=2" class="nav-item" data-section="settings"><span class="nav-icon">⚙️</span> Settings</a>
+        </nav>
+        <div class="user-profile">
+            <div class="avatar"></div>
+            <div class="user-info">
+                <h4>Admin User</h4>
+                <p>admin@epic.org</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ══ Main ══════════════════════════════════════════════════════ -->
+    <div class="main-content">
+        <header class="top-header">
+            <h2 class="page-title">Social Calendar</h2>
+            <div class="header-actions">
+                <button class="regen-btn" onclick="regenerate()">↻ Refresh from Data</button>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+
+            <!-- Stats -->
+            <div class="stat-row">
+                <div class="mini-stat">
+                    <div class="lbl">Total Posts</div>
+                    <div class="val" id="sTotal">0</div>
+                </div>
+                <div class="mini-stat">
+                    <div class="lbl">This Week</div>
+                    <div class="val" id="sWeek">0</div>
+                </div>
+                <div class="mini-stat">
+                    <div class="lbl">Scheduled</div>
+                    <div class="val" id="sScheduled">0</div>
+                </div>
+                <div class="mini-stat">
+                    <div class="lbl">Posted</div>
+                    <div class="val" id="sPosted">0</div>
+                </div>
+                <div class="mini-stat">
+                    <div class="lbl">Draft</div>
+                    <div class="val" id="sDraft">0</div>
+                </div>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <div class="filter-tabs">
+                    <button class="ftab active" onclick="setFilter('all',this)">All</button>
+                    <button class="ftab" onclick="setFilter('upcoming',this)">Upcoming</button>
+                    <button class="ftab" onclick="setFilter('this-week',this)">This Week</button>
+                    <button class="ftab" onclick="setFilter('draft',this)">Draft</button>
+                    <button class="ftab" onclick="setFilter('scheduled',this)">Scheduled</button>
+                    <button class="ftab" onclick="setFilter('posted',this)">Posted</button>
+                    <button class="ftab" onclick="setFilter('skipped',this)">Skipped</button>
+                </div>
+                <div class="search-wrap">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.35-4.35" />
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Search posts…" oninput="render()">
+                </div>
+                <div class="view-toggle">
+                    <button class="vtbtn active" id="listViewBtn" onclick="setView('list',this)">☰ List</button>
+                    <button class="vtbtn" id="calViewBtn" onclick="setView('cal',this)">⊞ Cal</button>
+                </div>
+            </div>
+
+            <!-- Views -->
+            <div id="listView"></div>
+            <div id="calView" style="display:none;"></div>
+        </div>
+    </div>
+
+    <!-- Drawer Overlay -->
+    <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+
+    <!-- Post Drawer -->
+    <div class="drawer" id="postDrawer">
+        <div class="dh">
+            <div class="dh-left">
+                <h3 id="dTitle">Post Details</h3>
+                <p id="dMeta">—</p>
+            </div>
+            <button class="dclose" onclick="closeDrawer()">✕</button>
+        </div>
+        <div class="dbody">
+            <div class="d-section">
+                <span class="d-label">Post Date</span>
+                <div class="d-info-grid">
+                    <div class="d-info-item"><label>Date</label><span id="dDate">—</span></div>
+                    <div class="d-info-item"><label>Type</label><span id="dType">—</span></div>
+                    <div class="d-info-item"><label>Source</label><span id="dSource">—</span></div>
+                    <div class="d-info-item"><label>Platforms</label><span id="dPlatforms">—</span></div>
+                </div>
+            </div>
+
+            <div class="d-section">
+                <span class="d-label">Suggested Caption</span>
+                <div class="d-caption-box" id="dCaption">—</div>
+            </div>
+
+            <div class="d-section">
+                <span class="d-label">Hashtags</span>
+                <div style="font-size:.8rem; color:#888; line-height:1.7;" id="dHashtags">—</div>
+            </div>
+
+            <div class="d-section">
+                <span class="d-label">Status</span>
+                <div class="d-status-row">
+                    <select class="d-select" id="dStatus">
+                        <option value="draft">Draft</option>
+                        <option value="scheduled">Scheduled</option>
+                        <option value="posted">Posted</option>
+                        <option value="skipped">Skipped</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="d-section">
+                <span class="d-label">Your Notes</span>
+                <textarea class="notes-ta" id="dNotes"
+                    placeholder="Add notes — what you want to post, creative direction, link to assets, etc."></textarea>
+            </div>
+        </div>
+        <div class="dfooter">
+            <button class="btn-cancel" onclick="closeDrawer()">Cancel</button>
+            <button class="btn-save" onclick="savePost()">Save</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../shared-auctions.js"></script>
+    <script src="../shared-events.js"></script>
+    <script>
+        const SOCIAL_KEY = 'epic_social_posts';
+        let allPosts = [];
+        let currentFilter = 'all';
+        let currentView = 'list';
+        let currentPostId = null;
+
+        // ── Type config ────────────────────────────────────────────────
+        const TYPE_META = {
+            'auction-launch': { label: 'Auction Launch', chip: 't-auction-launch', accent: 'accent-auction-launch', platforms: ['Instagram', 'Facebook', 'X'] },
+            'auction-open': { label: 'Auction Live', chip: 't-auction-open', accent: 'accent-auction-open', platforms: ['Instagram', 'Facebook', 'X', 'Stories'] },
+            'auction-closing': { label: 'Closing Soon', chip: 't-auction-closing', accent: 'accent-auction-closing', platforms: ['Instagram', 'Facebook', 'X', 'Stories'] },
+            'auction-final': { label: 'Final Hours', chip: 't-auction-final', accent: 'accent-auction-final', platforms: ['Instagram', 'Stories', 'X'] },
+            'event-announce': { label: 'Event Announce', chip: 't-event-announce', accent: 'accent-event-announce', platforms: ['Instagram', 'Facebook'] },
+            'event-open': { label: 'Registration Open', chip: 't-event-open', accent: 'accent-event-open', platforms: ['Instagram', 'Facebook', 'X'] },
+            'event-week': { label: '1 Week Away', chip: 't-event-week', accent: 'accent-event-week', platforms: ['Instagram', 'Stories'] },
+            'event-last': { label: 'Last Chance', chip: 't-event-last', accent: 'accent-event-last', platforms: ['Instagram', 'Stories', 'X'] },
+            'reminder': { label: 'Reminder', chip: 't-reminder', accent: 'accent-reminder', platforms: ['Instagram', 'Facebook'] },
+        };
+
+        const HASHTAGS = {
+            auction: '#EPICFoundation #CharityGolf #GolfAuction #ExclusiveAccess #GolfForGood #BidNow #PebbleBeach #GolfLife',
+            event: '#EPICFoundation #CharityEvent #GolfExperience #ExclusiveEvent #GolfLife #EPICEvents #LimitedSpots',
+        };
+
+        // ── Caption templates ──────────────────────────────────────────
+        function buildCaption(type, item) {
+            const title = item.title || 'Upcoming';
+            const loc = item.location || '';
+            const price = item.startBid ? `Starting at $${item.startBid.toLocaleString()}` : '';
+            const fmtD = d => d ? new Date(d).toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) : '';
+
+            const caps = {
+                'auction-launch': `🚀 Mark your calendars — the ${title} auction drops on ${fmtD(item.startDate)}!\n\n${loc ? `📍 ${loc}\n\n` : ''}This is your chance to bid on a once-in-a-lifetime golf experience. ${price ? price + '.' : ''} Stay tuned for everything you need to know before bidding opens.`,
+                'auction-open': `🟢 THE BIDDING IS LIVE!\n\nThe ${title} auction is officially open. ${loc ? `Experience ${loc} like never before.` : ''} ${price ? `\n\n${price} — get your bid in now before it's gone.` : ''}\n\n🔗 Link in bio to place your bid.`,
+                'auction-closing': `⏳ CLOSING SOON — ${title}\n\nYou have just 3 days left to bid on this exclusive experience. ${loc ? `${loc} awaits.` : ''}\n\nDon't let someone else take your spot. Head to the link in bio and place your bid today.`,
+                'auction-final': `🚨 FINAL HOURS — ${title}\n\nBidding closes ${fmtD(item.endDate)}. This is your last chance to secure a round at ${loc || 'one of the world\'s greatest courses'}.\n\n⏰ Clock is ticking. Link in bio.`,
+                'event-announce': `🎉 Announcing: ${title}!\n\n${loc ? `📍 ${loc}\n\n` : ''}We're thrilled to share details on our upcoming event. Limited spots are available — stay tuned for registration details coming soon.`,
+                'event-open': `🎟️ REGISTRATION IS NOW OPEN — ${title}\n\n${loc ? `📍 ${loc}\n` : ''}Spots are extremely limited. Don't miss your chance to be part of this exclusive EPIC Foundation experience.\n\n🔗 Link in bio to register now.`,
+                'event-week': `📅 ONE WEEK AWAY — ${title}!\n\n${loc ? `We're heading to ${loc} for an unforgettable experience.\n\n` : ''}A few spots may still be available. Reach out if you'd like to join us!`,
+                'event-last': `⚡ LAST CHANCE to join ${title}\n\nRegistration closes soon. Don't miss this exclusive event — spots are nearly gone.\n\n🔗 Link in bio or DM us directly.`,
+                'reminder': `📣 Reminder: The ${title} auction is live and bidding is open!\n\nIf you've been on the fence, now is the time. ${loc ? `${loc} is calling.` : ''}\n\n🔗 Place your bid via the link in bio.`,
+            };
+            return caps[type] || `Check out ${title} on our website!`;
+        }
+
+        // ── Generate posts from auctions + events ──────────────────────
+        function generatePostSchedule() {
+            const saved = loadSaved();
+            const posts = [];
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+
+            // Helper to create a post object
+            function makePost(id, date, type, item, source) {
+                const existing = saved[id] || {};
+                return {
+                    id, date, type, source,
+                    title: item.title,
+                    location: item.location || '',
+                    caption: buildCaption(type, item),
+                    hashtags: source === 'auction' ? HASHTAGS.auction : HASHTAGS.event,
+                    status: existing.status || 'draft',
+                    notes: existing.notes || '',
+                    userCaption: existing.userCaption || null,
+                };
+            }
+
+            // ── Auctions ────────────────────────────────────────────────
+            let auctions = [];
+            try { auctions = (typeof loadSharedAuctions === 'function' ? loadSharedAuctions() : []); } catch (e) { }
+            auctions.filter(a => a.status !== 'ended' && a.status !== 'closed').forEach(a => {
+                const sd = a.startDate ? new Date(a.startDate) : null;
+                const ed = a.endDate ? new Date(a.endDate) : null;
+
+                if (sd) {
+                    // 7 days before open = Launch teaser
+                    const launch = new Date(sd); launch.setDate(launch.getDate() - 7);
+                    posts.push(makePost(`${a.id}_launch`, launch, 'auction-launch', a, 'auction'));
+                    // Day of open
+                    posts.push(makePost(`${a.id}_open`, sd, 'auction-open', a, 'auction'));
+                }
+                if (ed) {
+                    // 3 days before close
+                    const closing = new Date(ed); closing.setDate(closing.getDate() - 3);
+                    posts.push(makePost(`${a.id}_closing`, closing, 'auction-closing', a, 'auction'));
+                    // Day of close
+                    posts.push(makePost(`${a.id}_final`, ed, 'auction-final', a, 'auction'));
+                }
+                if (sd && ed) {
+                    // Midpoint reminder
+                    const span = ed - sd;
+                    const mid = new Date(sd.getTime() + span / 2);
+                    posts.push(makePost(`${a.id}_reminder`, mid, 'reminder', a, 'auction'));
+                }
+            });
+
+            // ── Events ─────────────────────────────────────────────────
+            let events = [];
+            try { events = (typeof loadSharedEvents === 'function' ? loadSharedEvents() : []); } catch (e) { }
+            events.filter(ev => ev.status !== 'cancelled' && ev.status !== 'ended').forEach(ev => {
+                const sd = ev.startDate ? new Date(ev.startDate) : null;
+                if (!sd) return;
+
+                // Announcement: 30 days before
+                const announce = new Date(sd); announce.setDate(announce.getDate() - 30);
+                posts.push(makePost(`${ev.id}_eannounce`, announce, 'event-announce', ev, 'event'));
+
+                // Reg open: 21 days before
+                const regOpen = new Date(sd); regOpen.setDate(regOpen.getDate() - 21);
+                posts.push(makePost(`${ev.id}_eopen`, regOpen, 'event-open', ev, 'event'));
+
+                // 1 week before
+                const week = new Date(sd); week.setDate(week.getDate() - 7);
+                posts.push(makePost(`${ev.id}_eweek`, week, 'event-week', ev, 'event'));
+
+                // Last chance: 2 days before
+                const last = new Date(sd); last.setDate(last.getDate() - 2);
+                posts.push(makePost(`${ev.id}_elast`, last, 'event-last', ev, 'event'));
+            });
+
+            // Sort by date ascending
+            posts.sort((a, b) => new Date(a.date) - new Date(b.date));
+            return posts;
+        }
+
+        function loadSaved() {
+            try { return JSON.parse(localStorage.getItem(SOCIAL_KEY)) || {}; } catch { return {}; }
+        }
+        function saveSaved(data) { localStorage.setItem(SOCIAL_KEY, JSON.stringify(data)); }
+
+        function regenerate() {
+            allPosts = generatePostSchedule();
+            render();
+        }
+
+        // ── Filter ─────────────────────────────────────────────────────
+        function setFilter(f, btn) {
+            currentFilter = f;
+            document.querySelectorAll('.ftab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            render();
+        }
+        function setView(v, btn) {
+            currentView = v;
+            document.querySelectorAll('.vtbtn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('listView').style.display = v === 'list' ? '' : 'none';
+            document.getElementById('calView').style.display = v === 'cal' ? '' : 'none';
+            render();
+        }
+
+        // ── Stats ──────────────────────────────────────────────────────
+        function renderStats(posts) {
+            const now = new Date(); now.setHours(0, 0, 0, 0);
+            const weekEnd = new Date(now); weekEnd.setDate(weekEnd.getDate() + 7);
+            document.getElementById('sTotal').textContent = posts.length;
+            document.getElementById('sWeek').textContent = posts.filter(p => { const d = new Date(p.date); return d >= now && d <= weekEnd; }).length;
+            document.getElementById('sScheduled').textContent = posts.filter(p => p.status === 'scheduled').length;
+            document.getElementById('sPosted').textContent = posts.filter(p => p.status === 'posted').length;
+            document.getElementById('sDraft').textContent = posts.filter(p => p.status === 'draft').length;
+        }
+
+        // ── Render ─────────────────────────────────────────────────────
+        function render() {
+            const now = new Date(); now.setHours(0, 0, 0, 0);
+            const weekEnd = new Date(now); weekEnd.setDate(weekEnd.getDate() + 7);
+            const q = (document.getElementById('searchInput')?.value || '').toLowerCase();
+
+            let list = allPosts.slice();
+
+            if (currentFilter === 'upcoming') list = list.filter(p => new Date(p.date) >= now);
+            if (currentFilter === 'this-week') list = list.filter(p => { const d = new Date(p.date); return d >= now && d <= weekEnd; });
+            if (currentFilter === 'draft') list = list.filter(p => p.status === 'draft');
+            if (currentFilter === 'scheduled') list = list.filter(p => p.status === 'scheduled');
+            if (currentFilter === 'posted') list = list.filter(p => p.status === 'posted');
+            if (currentFilter === 'skipped') list = list.filter(p => p.status === 'skipped');
+            if (q) list = list.filter(p => (p.title + p.caption + p.notes).toLowerCase().includes(q));
+
+            renderStats(allPosts);
+
+            if (currentView === 'list') renderList(list, now);
+            else renderCal(list, now);
+        }
+
+        function renderList(list, now) {
+            const el = document.getElementById('listView');
+            if (!list.length) {
+                el.innerHTML = `<div class="empty-state"><h3>No posts found</h3><p>Add auctions or events with dates and they'll appear here automatically.</p></div>`;
+                return;
+            }
+
+            // Group by week
+            const groups = {};
+            list.forEach(p => {
+                const d = new Date(p.date); d.setHours(0, 0, 0, 0);
+                // Find start of week (Sunday)
+                const ws = new Date(d); ws.setDate(ws.getDate() - ws.getDay());
+                const we = new Date(ws); we.setDate(we.getDate() + 6);
+                const key = ws.toISOString();
+                const label = `${ws.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${we.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+                if (!groups[key]) groups[key] = { label, posts: [] };
+                groups[key].posts.push(p);
+            });
+
+            el.innerHTML = Object.values(groups).map(g => `
+        <div class="week-group">
+            <div class="week-header"><span>Week of ${g.label}</span></div>
+            ${g.posts.map(p => buildPostCard(p, now)).join('')}
+        </div>`).join('');
+        }
+
+        function buildPostCard(p, now) {
+            const tm = TYPE_META[p.type] || TYPE_META['reminder'];
+            const d = new Date(p.date);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const isPast = d < now;
+            const sClass = `s-${p.status || 'draft'}`;
+            const sLabel = { draft: 'Draft', scheduled: 'Scheduled', posted: 'Posted', skipped: 'Skipped' }[p.status || 'draft'];
+            const platBadges = tm.platforms.map(pl => `<span class="plat">${pl}</span>`).join('');
+            const notePrev = p.notes ? `<div class="card-notes-preview">📝 ${p.notes.slice(0, 60)}${p.notes.length > 60 ? '…' : ''}</div>` : '';
+            const captionPreview = (p.userCaption || p.caption).slice(0, 120).replace(/\n/g, ' ') + '…';
+
+            return `<div class="post-card ${p.status === 'posted' ? 'is-posted' : ''} ${p.status === 'skipped' ? 'is-skipped' : ''}" onclick="openDrawer('${p.id}')">
+        <div class="card-date">
+            <div class="month">${months[d.getMonth()]}</div>
+            <div class="day">${d.getDate()}</div>
+            <div class="dow">${days[d.getDay()]}</div>
+        </div>
+        <div style="width:4px;flex-shrink:0;" class="${tm.accent}"></div>
+        <div class="card-body">
+            <div class="card-top">
+                <span class="type-chip ${tm.chip}">${tm.label}</span>
+                <div class="platform-badges">${platBadges}</div>
+                ${isPast && p.status !== 'posted' && p.status !== 'skipped' ? '<span style="font-size:.65rem;color:#ef4444;font-weight:700;">PAST DUE</span>' : ''}
+            </div>
+            <div class="card-title">${p.title}</div>
+            <div class="card-caption">${captionPreview}</div>
+            ${notePrev}
+        </div>
+        <div class="card-status-col">
+            <span class="status-badge ${sClass}">${sLabel}</span>
+        </div>
+    </div>`;
+        }
+
+        // ── Calendar view ──────────────────────────────────────────────
+        function renderCal(list, now) {
+            const el = document.getElementById('calView');
+            // Show current + next month
+            const start = new Date(now.getFullYear(), now.getMonth(), 1);
+            const end = new Date(now.getFullYear(), now.getMonth() + 2, 0);
+
+            // Build date → posts map
+            const byDate = {};
+            list.forEach(p => {
+                const key = new Date(p.date).toDateString();
+                if (!byDate[key]) byDate[key] = [];
+                byDate[key].push(p);
+            });
+
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            let html = '';
+
+            for (let m = start.getMonth(); m <= start.getMonth() + 1; m++) {
+                const yr = start.getFullYear() + (m > 11 ? 1 : 0);
+                const mo = m % 12;
+                const firstDay = new Date(yr, mo, 1).getDay();
+                const daysInMonth = new Date(yr, mo + 1, 0).getDate();
+
+                html += `<h3 style="font-size:.95rem;font-weight:700;margin:1.5rem 0 .8rem;">${months[mo]} ${yr}</h3>`;
+                html += `<div class="cal-grid" style="margin-bottom:1.5rem;">`;
+                ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(d => { html += `<div class="cal-day-header">${d}</div>`; });
+
+                for (let i = 0; i < firstDay; i++) html += `<div class="cal-cell faded"></div>`;
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const cell = new Date(yr, mo, day);
+                    const isToday = cell.toDateString() === now.toDateString();
+                    const dayPosts = byDate[cell.toDateString()] || [];
+                    html += `<div class="cal-cell ${isToday ? 'today' : ''}">
+                <div class="cal-num ${isToday ? 'today' : ''}">${day}</div>
+                ${dayPosts.map(p => {
+                        const tm = TYPE_META[p.type] || {};
+                        return `<div class="cal-dot ${tm.chip || ''}" onclick="event.stopPropagation();openDrawer('${p.id}')" title="${p.title}">${p.title.slice(0, 14)}</div>`;
+                    }).join('')}
+            </div>`;
+                }
+                html += `</div>`;
+            }
+            el.innerHTML = html;
+        }
+
+        // ── Drawer ─────────────────────────────────────────────────────
+        function openDrawer(id) {
+            const p = allPosts.find(x => x.id === id);
+            if (!p) return;
+            currentPostId = id;
+            const tm = TYPE_META[p.type] || {};
+            const d = new Date(p.date);
+
+            document.getElementById('dTitle').textContent = p.title;
+            document.getElementById('dMeta').textContent = `${tm.label || p.type} · ${d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}`;
+            document.getElementById('dDate').textContent = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            document.getElementById('dType').textContent = tm.label || p.type;
+            document.getElementById('dSource').textContent = p.source === 'auction' ? '⛳ Auction' : '✈️ Event';
+            document.getElementById('dPlatforms').textContent = tm.platforms ? tm.platforms.join(', ') : '—';
+            document.getElementById('dCaption').textContent = p.userCaption || p.caption;
+            document.getElementById('dHashtags').textContent = p.hashtags;
+            document.getElementById('dStatus').value = p.status || 'draft';
+            document.getElementById('dNotes').value = p.notes || '';
+
+            document.getElementById('drawerOverlay').classList.add('open');
+            document.getElementById('postDrawer').classList.add('open');
+        }
+
+        function closeDrawer() {
+            currentPostId = null;
+            document.getElementById('drawerOverlay').classList.remove('open');
+            document.getElementById('postDrawer').classList.remove('open');
+        }
+
+        function savePost() {
+            if (!currentPostId) return;
+            const saved = loadSaved();
+            const newNotes = document.getElementById('dNotes').value;
+            const newStat = document.getElementById('dStatus').value;
+            const capText = document.getElementById('dCaption').textContent;
+
+            saved[currentPostId] = {
+                status: newStat,
+                notes: newNotes,
+                userCaption: capText,
+            };
+            saveSaved(saved);
+
+            // Apply back to in-memory post
+            const p = allPosts.find(x => x.id === currentPostId);
+            if (p) { p.status = newStat; p.notes = newNotes; p.userCaption = capText; }
+
+            closeDrawer();
+            render();
+        }
+
+        // ── Init ───────────────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', () => {
+            allPosts = generatePostSchedule();
+            render();
+        });
+    
+        // Live unread-message badge
+        (function() {
+            try {
+                var msgs = JSON.parse(localStorage.getItem('epic_messages') || '[]');
+                var unread = msgs.filter(function(m){ return m.unread !== false && m.status !== 'closed'; }).length;
+                document.querySelectorAll('.nav-msg-badge').forEach(function(b){
+                    b.textContent = unread; b.style.display = unread > 0 ? 'inline-block' : 'none';
+                });
+            } catch(e) {}
+        })();
+    </script>
+</body>
+
+</html>

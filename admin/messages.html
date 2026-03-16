@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages - EPIC Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <style>
+        .split-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .panel-box {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+        }
+
+        .panel-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        tbody tr {
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        tbody tr:hover {
+            background: #f0f4ff !important;
+        }
+
+        tbody tr.selected {
+            background: #e8eeff !important;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .ftab {
+            padding: 0.4rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            background: #fff;
+            color: #555;
+            transition: all 0.2s;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+        }
+
+        .ftab:hover {
+            border-color: #000;
+            color: #000;
+        }
+
+        .ftab.active {
+            background: #000;
+            color: #fff;
+            border-color: #000;
+        }
+
+        .toolbar-right {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-box {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+        }
+
+        .drawer-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            z-index: 500;
+        }
+
+        .drawer-overlay.open {
+            display: block;
+        }
+
+        .event-drawer {
+            position: fixed;
+            top: 0;
+            right: -700px;
+            width: 540px;
+            height: 100vh;
+            background: white;
+            box-shadow: -4px 0 30px rgba(0, 0, 0, 0.15);
+            z-index: 600;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .event-drawer.open {
+            right: 0;
+        }
+
+        .drawer-head {
+            padding: 1.5rem 2rem 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .drawer-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .drawer-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .close-drawer {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .drawer-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.65rem 0.8rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .drawer-footer {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            background: #fafafa;
+        }
+
+        .btn-cancel {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: white;
+            color: #555;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-save {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-delete {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: #fdecea;
+            color: #e53935;
+            border: none;
+            cursor: pointer;
+            margin-right: auto;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #aaa;
+        }
+
+        .is-unread td:first-child {
+            border-left: 3px solid #000;
+        }
+
+        .is-unread .sender-name {
+            font-weight: 700;
+            color: #000;
+        }
+
+        .sender-name {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .sender-email {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 0.1rem;
+        }
+
+        .subject-chip-auction { background:#fff8e6; color:#b45309; border:1px solid #fde68a; }
+        .subject-chip-events  { background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; }
+        .subject-chip-general { background:#f0fdf4; color:#166534; border:1px solid #bbf7d0; }
+        .subject-chip-support { background:#fdf2f8; color:#86198f; border:1px solid #f5d0fe; }
+        .subject-chip {
+            font-size: 0.75rem;
+            color: #555;
+            background: #f0f0f0;
+            border-radius: 6px;
+            padding: 2px 8px;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+
+        .drawer-detail-box {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .drawer-detail-box h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .drawer-detail-box p {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .msg-bubble {
+            background: #f9f9f9;
+            border: 1px solid #eee;
+            padding: 1.2rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #333;
+            white-space: pre-wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-divider {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #bbb;
+            margin: 1.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .btn-sm-row {
+            padding: 0.35rem 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            background: white;
+            color: #333;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .btn-sm-row:hover {
+            border-color: #000;
+            color: #000;
+        }
+
+        .btn-sm-row.danger {
+            border-color: #fca5a5;
+            color: #dc2626;
+        }
+
+        .btn-sm-row.danger:hover {
+            background: #fee2e2;
+        }
+    </style>
+</head>
+
+<body>
+                    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="../index.html" class="logo">EPIC ADMIN</a>
+        </div>
+        <nav class="nav-links">
+            <a href="dashboard.html" class="nav-item" data-section="dashboard"><span class="nav-icon">📊</span> Dashboard</a>
+            <a href="auctions.html?v=2" class="nav-item" data-section="auctions"><span class="nav-icon">⛳</span> Auctions</a>
+            <a href="courses.html?v=2" class="nav-item" data-section="courses"><span class="nav-icon">&#127948;&#65039;</span> Courses</a>
+            <a href="users.html?v=2" class="nav-item" data-section="users"><span class="nav-icon">👥</span> Users</a>
+            <a href="events.html?v=2" class="nav-item" data-section="events"><span class="nav-icon">✈️</span> Events &amp; Trips</a>
+            <a href="messages.html" class="nav-item active" data-section="messages"><span class="nav-icon">&#128172;</span> Messages <span id="msgUnreadBadge" style="display:none;background:#e74c3c;color:#fff;border-radius:10px;padding:1px 6px;font-size:0.7rem;font-weight:700;margin-left:4px;"></span></a>
+            <a href="tasks.html" class="nav-item" data-section="tasks"><span class="nav-icon">✅</span> Tasks</a>
+            <a href="financials.html" class="nav-item" data-section="financials"><span class="nav-icon">📈</span> Financials</a>
+            <a href="newsletter.html?v=2" class="nav-item" data-section="newsletter"><span class="nav-icon">📧</span> Newsletter</a>
+            <a href="bids.html?v=2" class="nav-item" data-section="bids"><span class="nav-icon">💰</span> Bids</a>
+            <a href="settings.html?v=2" class="nav-item" data-section="settings"><span class="nav-icon">⚙️</span> Settings</a>
+        </nav>
+        <div class="user-profile">
+            <div class="avatar"></div>
+            <div class="user-info">
+                <h4>Admin User</h4>
+                <p>admin@epic.org</p>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <header class="top-header">
+            <h2 class="page-title">Messages</h2>
+            <div class="header-actions">
+                <button onclick="markAllRead()"
+                    style="padding: 0.5rem 1rem; border-radius: 6px; font-family: 'Poppins', sans-serif; font-size: 0.85rem; background: var(--primary-color); color: white; border: none; cursor: pointer;">Mark
+                    All Read</button>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-label">Total Messages</span>
+                    <span class="stat-value" id="statTotal">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Unread</span>
+                    <span class="stat-value" id="statUnread" style="color:#e74c3c">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Open</span>
+                    <span class="stat-value" id="statOpen" style="color:#f39c12">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Closed</span>
+                    <span class="stat-value" id="statClosed" style="color:#2ecc71">0</span>
+                </div>
+            </div>
+
+            <div class="panel-box">
+                <div class="toolbar">
+                    <div class="filter-tabs">
+                        <button class="ftab active" onclick="setFilter('all',this)">All</button>
+                        <button class="ftab" onclick="setFilter('new',this)">🟡 New</button>
+                        <button class="ftab" onclick="setFilter('open',this)">🟢 Open</button>
+                        <button class="ftab" onclick="setFilter('pending',this)">🔵 Pending</button>
+                        <button class="ftab" onclick="setFilter('closed',this)">⚫ Closed</button>
+                    </div>
+                    <div class="toolbar-right">
+                        <div class="search-box">
+                            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8" />
+                                <path d="m21 21-4.35-4.35" />
+                            </svg>
+                            <input type="text" id="searchInput" placeholder="Search name, email, subject…"
+                                oninput="renderTable()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive" style="overflow-x:auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width:4px;padding:0;"></th>
+                                <th>Sender</th>
+                                <th>Subject</th>
+                                <th>Preview</th>
+                                <th>Status</th>
+                                <th>Received</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="msgsTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Drawer -->
+    <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+    <div class="event-drawer" id="msgDrawer">
+        <div class="drawer-head">
+            <div class="drawer-top-row">
+                <h3 class="drawer-title" id="drawerSubject">Subject</h3>
+                <button class="close-drawer" onclick="closeDrawer()">✕</button>
+            </div>
+            <p style="color:#888;font-size:0.9rem;margin:0.2rem 0 0;" id="drawerMeta">From User</p>
+        </div>
+        <div class="drawer-body">
+            <div class="drawer-detail-box">
+                <h3 id="drawerName">Name</h3>
+                <p id="drawerEmail">Email</p>
+                <p id="drawerPhone">Phone</p>
+                <p style="margin-top:0.5rem;font-size:0.8rem;" id="drawerDate">Date</p>
+            </div>
+            <div class="msg-bubble" id="drawerMessage">Message content goes here.</div>
+
+            <div class="section-divider">Message Management</div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="drawerStatusSelect" class="form-control" onchange="saveDrawerStatus()">
+                        <option value="new">🟡 New</option>
+                        <option value="open">🟢 Open</option>
+                        <option value="pending">🔵 Pending</option>
+                        <option value="closed">⚫ Closed</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Internal Notes</label>
+                <textarea id="drawerNotes" class="form-control" placeholder="Add private notes here..."
+                    onblur="saveDrawerNotes()"></textarea>
+            </div>
+        </div>
+        <div class="drawer-footer">
+            <button class="btn-delete" onclick="deleteCurrentMsg()">Delete</button>
+            <button class="btn-cancel" onclick="closeDrawer()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const MSGS_KEY = 'epic_messages';
+        const SUBJECT_LABELS = { auction: 'Auction Inquiry', events: 'Events/Trips', general: 'General Question', support: 'Technical Support' };
+        const BADGE = {
+            new: '<span class="status-badge status-pending" style="background:#fef9c3;color:#a16207;">NEW</span>',
+            open: '<span class="status-badge status-active" style="background:#dcfce7;color:#16a34a;">OPEN</span>',
+            pending: '<span class="status-badge status-pending" style="background:#e0f2fe;color:#0369a1;">PENDING</span>',
+            closed: '<span class="status-badge" style="background:#f3f4f6;color:#6b7280;">CLOSED</span>'
+        };
+
+        let currentFilter = 'all';
+        let currentMsgId = null;
+
+        function timeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            let interval = seconds / 31536000; if (interval > 1) return Math.floor(interval) + "y ago";
+            interval = seconds / 2592000; if (interval > 1) return Math.floor(interval) + "mo ago";
+            interval = seconds / 86400; if (interval > 1) return Math.floor(interval) + "d ago";
+            interval = seconds / 3600; if (interval > 1) return Math.floor(interval) + "h ago";
+            interval = seconds / 60; if (interval > 1) return Math.floor(interval) + "m ago";
+            return "Just now";
+        }
+
+        function loadMsgs() { try { return JSON.parse(localStorage.getItem(MSGS_KEY)) || []; } catch { return []; } }
+        function saveMsgs(data) { localStorage.setItem(MSGS_KEY, JSON.stringify(data)); }
+
+        function setFilter(f, btn) {
+            currentFilter = f;
+            document.querySelectorAll('.ftab').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            renderTable();
+        }
+
+        function renderStats(all) {
+            document.getElementById('statTotal').textContent = all.length;
+            document.getElementById('statUnread').textContent = all.filter(m => m.unread !== false).length;
+            document.getElementById('statOpen').textContent = all.filter(m => m.status === 'open').length;
+            document.getElementById('statClosed').textContent = all.filter(m => m.status === 'closed').length;
+        }
+
+        function updateMsgBadge() {
+            const unreadCount = loadMsgs().filter(m => m.unread !== false && m.status !== 'closed').length;
+            const badge = document.getElementById('msgUnreadBadge');
+            if (badge) { badge.textContent = unreadCount; badge.style.display = unreadCount > 0 ? 'inline-block' : 'none'; }
+        }
+
+        function renderTable() {
+            const all = loadMsgs();
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            renderStats(all);
+            updateMsgBadge();
+
+            let list = all.slice().sort((a, b) => new Date(b.receivedAt) - new Date(a.receivedAt));
+            if (currentFilter !== 'all') list = list.filter(m => m.status === currentFilter);
+            if (q) list = list.filter(m => (m.firstName + ' ' + m.lastName).toLowerCase().includes(q) || (m.email || '').toLowerCase().includes(q) || (SUBJECT_LABELS[m.subject] || m.subject || '').toLowerCase().includes(q));
+
+            const tbody = document.getElementById('msgsTbody');
+            if (!list.length) {
+                tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><h3>No messages</h3><p>Inquiries from the Contact page will appear here.</p></div></td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = list.map(m => {
+                const isUnread = m.unread !== false;
+                const preview = (m.message || '').replace(/\s+/g, ' ').slice(0, 50) + (m.message?.length > 50 ? '...' : '');
+                const subLabel = SUBJECT_LABELS[m.subject] || m.subject || '—';
+                const badge = BADGE[m.status || 'new'] || BADGE.new;
+                const ago = m.receivedAt ? timeAgo(new Date(m.receivedAt)) : '—';
+                return `<tr class="${currentMsgId === m.id ? 'selected' : ''} ${isUnread ? 'is-unread' : ''}" onclick="openDrawer('${m.id}')">
+                    <td style="width:4px;padding:0;"></td>
+                    <td>
+                        <div class="sender-name">${m.firstName} ${m.lastName}</div>
+                        <div class="sender-email">${m.email}</div>
+                    </td>
+                    <td><span class="subject-chip subject-chip-${m.subject || 'general'}">${subLabel}</span></td>
+                    <td style="color:#888;font-size:0.85rem">${preview}</td>
+                    <td>${badge}</td>
+                    <td style="color:#888;font-size:0.85rem;white-space:nowrap">${ago}</td>
+                    <td onclick="event.stopPropagation()" style="white-space:nowrap;">
+                        <button class="btn-sm-row" onclick="quickStatus('${m.id}','closed')">Close</button>
+                        <button class="btn-sm-row danger" onclick="deleteMsg('${m.id}')">Delete</button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function openDrawer(id) {
+            currentMsgId = id;
+            const msgs = loadMsgs();
+            const m = msgs.find(x => x.id === id);
+            if (!m) return;
+            const idx = msgs.findIndex(x => x.id === id);
+            if (msgs[idx].unread !== false) { msgs[idx].unread = false; saveMsgs(msgs); }
+
+            const srcTag = m.source === 'auction_request_form' ? ' · Auction Request Form'
+                    : m.source === 'travel_preference_form' ? ' · Travel Preference Form'
+                    : m.source === 'contact_form' ? ' · Contact Form' : '';
+            document.getElementById('drawerSubject').textContent = (SUBJECT_LABELS[m.subject] || m.subject || 'No Subject') + srcTag;
+            document.getElementById('drawerMeta').textContent = `From ${m.firstName} ${m.lastName} · ${m.email}`;
+            document.getElementById('drawerName').textContent = `${m.firstName} ${m.lastName}`;
+            document.getElementById('drawerEmail').textContent = m.email;
+            document.getElementById('drawerPhone').textContent = m.phone || '—';
+            document.getElementById('drawerDate').textContent = m.receivedAt ? new Date(m.receivedAt).toLocaleString() : '—';
+            document.getElementById('drawerMessage').textContent = m.message || '—';
+            document.getElementById('drawerStatusSelect').value = m.status || 'new';
+            document.getElementById('drawerNotes').value = m.notes || '';
+
+            document.getElementById('drawerOverlay').classList.add('open');
+            document.getElementById('msgDrawer').classList.add('open');
+            renderTable();
+        }
+
+        function closeDrawer() {
+            currentMsgId = null;
+            document.getElementById('drawerOverlay').classList.remove('open');
+            document.getElementById('msgDrawer').classList.remove('open');
+            renderTable();
+        }
+
+        function saveDrawerStatus() {
+            if (!currentMsgId) return;
+            const msgs = loadMsgs();
+            const idx = msgs.findIndex(m => m.id === currentMsgId);
+            if (idx === -1) return;
+            msgs[idx].status = document.getElementById('drawerStatusSelect').value;
+            msgs[idx].notes = document.getElementById('drawerNotes').value;
+            saveMsgs(msgs);
+            renderTable();
+        }
+
+        function saveDrawerNotes() {
+            if (!currentMsgId) return;
+            const msgs = loadMsgs();
+            const idx = msgs.findIndex(m => m.id === currentMsgId);
+            if (idx === -1) return;
+            msgs[idx].notes = document.getElementById('drawerNotes').value;
+            saveMsgs(msgs);
+        }
+
+        function deleteCurrentMsg() {
+            if (!currentMsgId) return;
+            deleteMsg(currentMsgId);
+            closeDrawer();
+        }
+
+        function deleteMsg(id) {
+            const msgs = loadMsgs().filter(m => m.id !== id);
+            saveMsgs(msgs);
+            if (currentMsgId === id) closeDrawer();
+            else renderTable();
+        }
+
+        function quickStatus(id, status) {
+            const msgs = loadMsgs();
+            const idx = msgs.findIndex(m => m.id === id);
+            if (idx === -1) return;
+            msgs[idx].status = status;
+            saveMsgs(msgs);
+            renderTable();
+        }
+
+        function markAllRead() {
+            const msgs = loadMsgs().map(m => ({ ...m, unread: false }));
+            saveMsgs(msgs);
+            renderTable();
+        }
+
+        // One-time seed: runs once on load only
+        (function seedOnce() {
+            var msgs = loadMsgs();
+            if (msgs.length === 0) {
+                msgs.push({ id: 'msg_demo_001', firstName: 'Michael', lastName: 'Torres',
+                    email: 'm.torres@example.com', phone: '(555) 382-9910', subject: 'auction',
+                    message: 'Hi, I am interested in bidding on the Pebble Beach round. Can you tell me more about how the auction works?',
+                    status: 'new', unread: true, receivedAt: new Date(Date.now() - 2 * 3600000).toISOString(), notes: '', source: 'contact_form' });
+            }
+            var hasTestAuc  = msgs.some(function(m){ return m.source === 'auction_request_form'  && m.email === 'test@example.com'; });
+            var hasTestTrav = msgs.some(function(m){ return m.source === 'travel_preference_form' && m.email === 'test@example.com'; });
+            if (!hasTestAuc) {
+                msgs.unshift({ id: 'msg_test_auc_001', firstName: 'Test', lastName: 'Member',
+                    email: 'test@example.com', phone: '555-1234', subject: 'auction',
+                    message: 'Course: Augusta National. Timeframe: 3 months. Budget: $10k+. Notes: Client foursome.',
+                    receivedAt: new Date(Date.now() - 3600000).toISOString(), status: 'new', unread: true, source: 'auction_request_form', notes: '' });
+            }
+            if (!hasTestTrav) {
+                msgs.unshift({ id: 'msg_test_trav_001', firstName: 'Travel', lastName: 'Tester',
+                    email: 'test@example.com', phone: '', subject: 'events',
+                    message: 'Destination: Scotland. Season: Summer. Budget: $5k-$10k. Group: 8. Notes: St Andrews.',
+                    receivedAt: new Date(Date.now() - 7200000).toISOString(), status: 'new', unread: true, source: 'travel_preference_form', notes: '' });
+            }
+            saveMsgs(msgs);
+        })();
+
+        document.addEventListener('DOMContentLoaded', renderTable);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter - EPIC Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <style>
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 220px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .search-box input:focus {
+            border-color: #4A90E2;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+        }
+
+        .export-btn {
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.55rem 1.2rem;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .export-btn:hover {
+            opacity: 0.85;
+        }
+
+        .table-wrap {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            background: #f8f9fa;
+            padding: 0.9rem 1rem;
+            text-align: left;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tbody td {
+            padding: 0.9rem 1rem;
+            font-size: 0.88rem;
+            color: #333;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: #fafafa;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-member {
+            background: #e8f0ff;
+            color: #3b6fd4;
+        }
+
+        .badge-admin {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .badge-public {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #aaa;
+        }
+
+        .stat-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .mini-stat {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .mini-stat .label {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .mini-stat .value {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #000;
+        }
+
+        .delete-btn {
+            background: #fff0f0;
+            color: #e74c3c;
+            border: 1.5px solid #fecaca;
+            border-radius: 6px;
+            padding: 0.25rem 0.6rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background: #fee2e2;
+        }
+    </style>
+</head>
+
+<body>
+                    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="../index.html" class="logo">EPIC ADMIN</a>
+        </div>
+        <nav class="nav-links">
+            <a href="dashboard.html" class="nav-item" data-section="dashboard"><span class="nav-icon">📊</span> Dashboard</a>
+            <a href="auctions.html?v=2" class="nav-item" data-section="auctions"><span class="nav-icon">⛳</span> Auctions</a>
+            <a href="courses.html?v=2" class="nav-item" data-section="courses"><span class="nav-icon">&#127948;&#65039;</span> Courses</a>
+            <a href="users.html?v=2" class="nav-item" data-section="users"><span class="nav-icon">👥</span> Users</a>
+            <a href="events.html?v=2" class="nav-item" data-section="events"><span class="nav-icon">✈️</span> Events &amp; Trips</a>
+            <a href="messages.html" class="nav-item" data-section="messages"><span class="nav-icon">&#128172;</span> Messages <span class="nav-msg-badge" style="display:none;background:#e74c3c;color:#fff;border-radius:10px;padding:1px 6px;font-size:0.7rem;font-weight:700;margin-left:4px;"></span></a>
+            <a href="tasks.html" class="nav-item" data-section="tasks"><span class="nav-icon">✅</span> Tasks</a>
+            <a href="financials.html" class="nav-item" data-section="financials"><span class="nav-icon">📈</span> Financials</a>
+            <a href="newsletter.html?v=2" class="nav-item active" data-section="newsletter"><span class="nav-icon">📧</span> Newsletter</a>
+            <a href="bids.html?v=2" class="nav-item" data-section="bids"><span class="nav-icon">💰</span> Bids</a>
+            <a href="settings.html?v=2" class="nav-item" data-section="settings"><span class="nav-icon">⚙️</span> Settings</a>
+        </nav>
+        <div class="user-profile">
+            <div class="avatar"></div>
+            <div class="user-info">
+                <h4>Admin User</h4>
+                <p>admin@epic.org</p>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <header class="top-header">
+            <h2 class="page-title">Newsletter Subscribers</h2>
+        </header>
+
+        <div class="content-wrapper">
+            <div class="stat-row">
+                <div class="mini-stat">
+                    <div class="label">Total Subscribers</div>
+                    <div class="value" id="statTotal">0</div>
+                </div>
+                <div class="mini-stat">
+                    <div class="label">Members</div>
+                    <div class="value" id="statMembers">0</div>
+                </div>
+                <div class="mini-stat">
+                    <div class="label">Public / Guest</div>
+                    <div class="value" id="statPublic">0</div>
+                </div>
+            </div>
+
+            <div class="toolbar">
+                <div class="search-box">
+                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.35-4.35" />
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Search by email or name…" oninput="render()">
+                </div>
+                <button class="export-btn" onclick="exportCSV()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Export CSV
+                </button>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Subscribed</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subsTbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const KEY = 'epic_newsletter';
+
+        function load() {
+            try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch { return []; }
+        }
+        function save(data) { localStorage.setItem(KEY, JSON.stringify(data)); }
+
+        function render() {
+            const all = load();
+            const q = document.getElementById('searchInput').value.toLowerCase().trim();
+
+            // Stats
+            document.getElementById('statTotal').textContent = all.length;
+            document.getElementById('statMembers').textContent = all.filter(s => s.memberType && s.memberType !== 'public').length;
+            document.getElementById('statPublic').textContent = all.filter(s => !s.memberType || s.memberType === 'public').length;
+
+            const list = q
+                ? all.filter(s => s.email.includes(q) || (s.firstName + ' ' + s.lastName).toLowerCase().includes(q))
+                : all.slice().sort((a, b) => new Date(b.subscribedAt) - new Date(a.subscribedAt));
+
+            const tbody = document.getElementById('subsTbody');
+            if (!list.length) {
+                tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">No subscribers yet. Email sign-ups from the public site will appear here.</div></td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = list.map((s, i) => {
+                const isMember = s.memberType && s.memberType !== 'public';
+                const isAdmin = s.memberType === 'admin';
+                const name = isMember ? `${s.firstName || ''} ${s.lastName || ''}`.trim() : '—';
+                const typeLabel = isAdmin ? 'Admin' : isMember ? 'Epic Member' : 'Public';
+                const badgeClass = isAdmin ? 'badge-admin' : isMember ? 'badge-member' : 'badge-public';
+                const date = s.subscribedAt ? new Date(s.subscribedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+                const realIdx = all.findIndex(x => x.email === s.email);
+                return `<tr>
+                    <td><strong>${s.email}</strong></td>
+                    <td>${name}</td>
+                    <td><span class="badge ${badgeClass}">${typeLabel}</span></td>
+                    <td style="color:#888;font-size:0.82rem;">${date}</td>
+                    <td><button class="delete-btn" onclick="removeSubscriber('${s.email}')">✕ Remove</button></td>
+                </tr>`;
+            }).join('');
+        }
+
+        function removeSubscriber(email) {
+            let list = load();
+            list = list.filter(s => s.email !== email);
+            save(list);
+            render();
+        }
+
+        function exportCSV() {
+            const all = load();
+            if (!all.length) { alert('No subscribers to export.'); return; }
+
+            const header = ['Email', 'First Name', 'Last Name', 'Member Type', 'Subscribed At'];
+            const rows = all.map(s => [
+                s.email,
+                s.firstName || '',
+                s.lastName || '',
+                s.memberType || 'public',
+                s.subscribedAt ? new Date(s.subscribedAt).toLocaleString() : ''
+            ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
+
+            const csv = [header.join(','), ...rows].join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `epic_newsletter_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        render();
+    
+        // Live unread-message badge
+        (function() {
+            try {
+                var msgs = JSON.parse(localStorage.getItem('epic_messages') || '[]');
+                var unread = msgs.filter(function(m){ return m.unread !== false && m.status !== 'closed'; }).length;
+                document.querySelectorAll('.nav-msg-badge').forEach(function(b){
+                    b.textContent = unread; b.style.display = unread > 0 ? 'inline-block' : 'none';
+                });
+            } catch(e) {}
+        })();
+    </script>
+</body>
+
+</html>

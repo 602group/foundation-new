@@ -1,0 +1,568 @@
+/* ========================================
+   PAGE HEADER
+   ======================================== */
+.page-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 4rem;
+    background: #000000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.logo {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+}
+
+.nav-link {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #cccccc;
+}
+
+.login-btn {
+    background: #ffffff;
+    color: #000000;
+    border: 3px solid #ffffff;
+    padding: 0.7rem 1.8rem;
+    border-radius: 25px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    margin-left: 0.5rem;
+}
+
+.login-btn:hover {
+    background: transparent;
+    color: #ffffff;
+}
+
+body {
+    padding-top: 100px;
+    background: #ffffff;
+}
+
+/* ========================================
+   EVENT PAGE HERO SECTION
+   ======================================== */
+.event-hero {
+    background: url('https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?w=1600&q=80') center/cover;
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 8rem 2rem 4rem 2rem;
+}
+
+.event-hero-overlay {
+    position: relative;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 4rem;
+}
+
+.event-hero-content {
+    background: #000000;
+    padding: 3rem 2.5rem;
+    border-radius: 16px;
+    max-width: 500px;
+    text-align: center;
+}
+
+.event-icon {
+    background: #ffffff;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin: 0 auto 1.5rem auto;
+}
+
+.event-hero-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2rem;
+    font-weight: 400;
+    color: #ffffff;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.event-hero-date {
+    font-size: 1rem;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+.event-hero-description {
+    font-size: 0.9rem;
+    color: #cccccc;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+}
+
+.event-register-btn {
+    background: #16a085;
+    color: #ffffff;
+    border: none;
+    padding: 0.75rem 2rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: capitalize;
+    letter-spacing: 0.3px;
+}
+
+.event-register-btn:hover {
+    background: #138d75;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(22, 160, 133, 0.3);
+}
+
+/* ========================================
+   EVENT DETAILS SECTION
+   ======================================== */
+.event-details-section {
+    background: #ffffff;
+    padding: 5rem 4rem;
+}
+
+.event-details-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.details-grid-new {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+}
+
+.detail-column {
+    background: transparent;
+}
+
+.detail-image {
+    width: 100%;
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.detail-content {
+    padding: 0;
+}
+
+.detail-column-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 1rem;
+}
+
+.detail-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.detail-list li {
+    font-size: 0.95rem;
+    color: #333333;
+    line-height: 1.8;
+    margin-bottom: 0.5rem;
+    padding-left: 1.25rem;
+    position: relative;
+}
+
+.detail-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #000000;
+    font-weight: bold;
+}
+
+.detail-list li strong {
+    color: #000000;
+    font-weight: 400;
+}
+
+/* ========================================
+   PRICING SECTION
+   ======================================== */
+.pricing-section {
+    background: #ffffff;
+    padding: 4rem 4rem;
+}
+
+.pricing-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.pricing-card {
+    background: #000000;
+    padding: 3rem 4rem;
+    border-radius: 20px;
+    text-align: center;
+}
+
+.pricing-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.pricing-amount {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 400;
+    color: #ffffff;
+    margin-bottom: 2rem;
+}
+
+.pricing-register-btn {
+    background: #16a085;
+    color: #ffffff;
+    border: none;
+    padding: 1rem 3rem;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: capitalize;
+    letter-spacing: 0.5px;
+}
+
+.pricing-register-btn:hover {
+    background: #138d75;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(22, 160, 133, 0.3);
+}
+
+/* ========================================
+   LOCATION SECTION
+   ======================================== */
+.location-section {
+    background: #ffffff;
+    padding: 5rem 4rem;
+}
+
+.location-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.location-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 1rem;
+}
+
+.location-address {
+    font-size: 1.1rem;
+    color: #666666;
+    margin-bottom: 2rem;
+}
+
+.map-container {
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.map-container iframe {
+    display: block;
+}
+
+/* ========================================
+   WHAT'S INCLUDED SECTION
+   ======================================== */
+.included-section {
+    background: #f8f8f8;
+    padding: 6rem 4rem;
+}
+
+.included-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.included-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+    margin-top: 3rem;
+}
+
+.included-item {
+    text-align: center;
+}
+
+.included-icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+}
+
+.included-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 1rem;
+}
+
+.included-text {
+    font-size: 1rem;
+    color: #666666;
+    line-height: 1.6;
+}
+
+/* ========================================
+   GALLERY SECTION
+   ======================================== */
+.gallery-section {
+    background: #ffffff;
+    padding: 6rem 4rem;
+}
+
+.gallery-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.gallery-item {
+    width: 100%;
+    height: 250px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.gallery-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* ========================================
+   REGISTRATION CTA SECTION
+   ======================================== */
+.registration-cta {
+    background: #000000;
+    padding: 6rem 4rem;
+    text-align: center;
+}
+
+.registration-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.registration-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+}
+
+.registration-text {
+    font-size: 1.2rem;
+    color: #cccccc;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+.registration-btn {
+    background: #ffffff;
+    color: #000000;
+    border: 3px solid #ffffff;
+    padding: 1.2rem 3.5rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.registration-btn:hover {
+    background: transparent;
+    color: #ffffff;
+    transform: translateY(-3px);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+@media (max-width: 1024px) {
+    .details-grid-new {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .detail-image {
+        height: 200px;
+    }
+
+    .included-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .page-header {
+        padding: 1.5rem 2rem;
+    }
+
+    .logo {
+        font-size: 1.2rem;
+    }
+
+    .nav-menu {
+        gap: 1.5rem;
+    }
+
+    .nav-link {
+        font-size: 0.9rem;
+    }
+
+    .login-btn {
+        padding: 0.6rem 1.5rem;
+        font-size: 0.85rem;
+    }
+
+    .event-hero {
+        min-height: auto;
+        padding: 6rem 2rem 3rem 2rem;
+    }
+
+    .event-hero-overlay {
+        padding: 0 2rem;
+        justify-content: center;
+    }
+
+    .event-hero-content {
+        padding: 2.5rem 2rem;
+        max-width: 95%;
+    }
+
+    .event-hero-title {
+        font-size: 1.6rem;
+    }
+
+    .event-hero-date {
+        font-size: 0.9rem;
+    }
+
+    .event-hero-description {
+        font-size: 0.85rem;
+    }
+
+    .event-details-section,
+    .pricing-section,
+    .included-section,
+    .gallery-section,
+    .registration-cta {
+        padding: 4rem 2rem;
+    }
+
+    .pricing-card {
+        padding: 2.5rem 2rem;
+    }
+
+    .pricing-amount {
+        font-size: 2rem;
+    }
+
+    .details-grid-new {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .included-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+
+    .gallery-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .registration-title {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .event-hero-title {
+        font-size: 1.8rem;
+    }
+
+    .event-icon {
+        font-size: 2.5rem;
+    }
+
+    .registration-title {
+        font-size: 1.8rem;
+    }
+}

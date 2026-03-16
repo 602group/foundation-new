@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Auctions - EPIC Foundation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="auctions.css">
+    <style>
+        .epic-request-section {
+            background: #000000;
+            padding: 5rem 4rem;
+        }
+
+        .epic-request-inner {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .epic-request-eyebrow {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #888;
+            text-align: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .epic-request-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.1rem;
+            font-weight: 900;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 0.65rem;
+            line-height: 1.2;
+        }
+
+        .epic-request-subtitle {
+            font-size: 0.95rem;
+            color: #aaa;
+            text-align: center;
+            max-width: 500px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.75;
+        }
+
+        .epic-request-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 2rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .epic-request-success {
+            display: none;
+            background: #e8f8f0;
+            color: #1a9e5c;
+            border: 1.5px solid #1a9e5c;
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
+
+        .epic-field label {
+            display: block;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #000;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 0.45rem;
+        }
+
+        .epic-field input[type="text"],
+        .epic-field textarea {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            color: #000;
+            box-sizing: border-box;
+            outline: none;
+            background: #fafafa;
+            transition: border-color 0.2s;
+        }
+
+        .epic-field input[type="text"]:focus,
+        .epic-field textarea:focus {
+            border-color: #000;
+            background: #fff;
+        }
+
+        .epic-field textarea {
+            resize: vertical;
+        }
+
+        .epic-select-wrap {
+            position: relative;
+        }
+
+        .epic-select-wrap::after {
+            content: '';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 6px solid #000;
+            pointer-events: none;
+        }
+
+        .epic-select-wrap select {
+            width: 100%;
+            padding: 0.7rem 2.5rem 0.7rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            color: #000;
+            background: #fafafa;
+            box-sizing: border-box;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .epic-select-wrap select:focus {
+            border-color: #000;
+            background: #fff;
+        }
+
+        .epic-row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .epic-radio-group {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .epic-radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #333;
+            cursor: pointer;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        .epic-radio-group input[type="radio"] {
+            width: 17px;
+            height: 17px;
+            accent-color: #000;
+            cursor: pointer;
+        }
+
+        .epic-submit-btn {
+            background: #000;
+            color: #fff;
+            border: 3px solid #000;
+            padding: 1rem 2.5rem;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            align-self: flex-start;
+        }
+
+        .epic-submit-btn:hover {
+            background: #fff;
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 640px) {
+            .epic-request-section {
+                padding: 4rem 1.5rem;
+            }
+
+            .epic-request-card {
+                padding: 1.5rem;
+            }
+
+            .epic-row-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .epic-request-title {
+                font-size: 1.6rem;
+            }
+
+            .epic-submit-btn {
+                align-self: stretch;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="page-header">
+        <a href="/" class="logo">EPIC Foundation</a>
+        <nav class="nav-menu">
+            <a href="auctions.html" class="nav-link member-only-link" style="display:none;">Auction</a>
+            <a href="travel-events.html" class="nav-link member-only-link" style="display:none;">Travel &amp; Events</a>
+            <a href="about.html" class="nav-link">About Us</a>
+            <a href="contact.html" class="nav-link">Contact Us</a>
+            <a href="donate.html" class="nav-link" style="color:#fff;font-weight:700;">Donate ♥</a>
+            <button class="login-btn">Login</button>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="auctions-container">
+        <!-- Sidebar Filters -->
+        <aside class="filters-sidebar">
+            <div class="filters-header">
+                <h3>FILTERS</h3>
+                <button class="reset-btn">Reset</button>
+            </div>
+
+
+            <!-- Rankings Filter -->
+            <div class="filter-section">
+                <h4>Rankings</h4>
+                <select class="filter-select" id="rankings-select">
+                    <option value="">All</option>
+                    <option value="top100">Top 100</option>
+                    <option value="top50">Top 50</option>
+                    <option value="top25">Top 25</option>
+                </select>
+            </div>
+
+            <!-- Location Filter -->
+            <div class="filter-section">
+                <h4>Location by State</h4>
+                <select class="filter-select" id="location-select">
+                    <option value="">All</option>
+                    <option value="ca">California</option>
+                    <option value="ny">New York</option>
+                    <option value="fl">Florida</option>
+                    <option value="ga">Georgia</option>
+                    <option value="pa">Pennsylvania</option>
+                    <option value="nj">New Jersey</option>
+                </select>
+            </div>
+
+            <!-- Architect Filter -->
+            <div class="filter-section">
+                <h4>Architect</h4>
+                <select class="filter-select" id="architect-select">
+                    <option value="">All</option>
+                    <option value="jones">Robert Trent Jones</option>
+                    <option value="dye">Pete Dye</option>
+                    <option value="nicklaus">Jack Nicklaus</option>
+                    <option value="mackenzie">Alister MacKenzie</option>
+                    <option value="crump">George Crump</option>
+                    <option value="flynn">William Flynn</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <!-- Price Filter -->
+            <div class="filter-section">
+                <h4>Price Range</h4>
+                <div class="price-dropdowns">
+                    <select class="filter-select" id="min-price-select">
+                        <option value="0">Min Price</option>
+                        <option value="1000">$1,000</option>
+                        <option value="2500">$2,500</option>
+                        <option value="5000">$5,000</option>
+                        <option value="10000">$10,000</option>
+                    </select>
+                    <div class="separator-text">to</div>
+                    <select class="filter-select" id="max-price-select">
+                        <option value="100000">Max Price</option>
+                        <option value="2500">$2,500</option>
+                        <option value="5000">$5,000</option>
+                        <option value="10000">$10,000</option>
+                        <option value="15000">$15,000</option>
+                        <option value="25000">$25,000</option>
+                        <option value="50000">$50,000+</option>
+                    </select>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Auctions Grid -->
+        <main class="auctions-main">
+            <!-- Search and Sort Bar -->
+            <div class="search-bar">
+                <div class="results-count" id="results-count">Showing 10 Listings</div>
+                <div class="search-input-container">
+                    <input type="text" id="search-input" placeholder="Search Course Name or Auction Title"
+                        class="search-input">
+                    <button class="search-btn">🔍</button>
+                </div>
+                <div class="sort-container">
+                    <label>Sort By:</label>
+                    <select class="sort-select" id="sort-select">
+                        <option value="ending">Ending Soonest</option>
+                        <option value="price-asc">Price: Low to High</option>
+                        <option value="price-desc">Price: High to Low</option>
+                        <option value="newest">Newest First</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Auction Cards Grid -->
+            <div class="auction-cards-grid" id="auction-grid">
+                <!-- Dynamically populated from shared-auctions.js -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Custom Auction Request Section -->
+    <section class="epic-request-section">
+        <div class="epic-request-inner">
+            <p class="epic-request-eyebrow">Custom Experiences</p>
+            <h2 class="epic-request-title">Don't See What You're Looking For?</h2>
+            <p class="epic-request-subtitle">
+                Our team is constantly working to set up extraordinary golf experiences. Tell us what you have in mind
+                and we'll find a round that's a perfect fit.
+            </p>
+
+            <div id="auctionReqSuccess" class="epic-request-success">
+                ✅ Request received! Our team will be in touch soon.
+            </div>
+
+            <form id="auctionReqForm" onsubmit="submitAuctionRequest(event)" class="epic-request-card">
+
+                <div class="epic-field">
+                    <label>What course or destination are you interested in?</label>
+                    <input type="text" id="arCourse" placeholder="e.g. Augusta National, St. Andrews, Bandon Dunes…"
+                        required>
+                </div>
+
+                <div class="epic-row-2">
+                    <div class="epic-field">
+                        <label>Preferred Timeframe</label>
+                        <div class="epic-select-wrap">
+                            <select id="arTimeframe">
+                                <option value="">Select timeframe</option>
+                                <option>Within 3 months</option>
+                                <option>3 – 6 months</option>
+                                <option>6 – 12 months</option>
+                                <option>12+ months out</option>
+                                <option>Flexible</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="epic-field">
+                        <label>Budget Range</label>
+                        <div class="epic-select-wrap">
+                            <select id="arBudget">
+                                <option value="">Select budget</option>
+                                <option>Under $2,500</option>
+                                <option>$2,500 – $5,000</option>
+                                <option>$5,000 – $10,000</option>
+                                <option>$10,000 – $25,000</option>
+                                <option>$25,000+</option>
+                                <option>Flexible</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="epic-field">
+                    <label>Anything else you'd like us to know?</label>
+                    <textarea id="arNotes" rows="3"
+                        placeholder="Group size, skill level, special occasions, specific dates…"></textarea>
+                </div>
+
+                <button type="submit" class="epic-submit-btn">Send My Request →</button>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        function submitAuctionRequest(e) {
+            e.preventDefault();
+            let user = null;
+            try { user = JSON.parse(localStorage.getItem('epic_session')); } catch { }
+
+            const course = document.getElementById('arCourse').value.trim();
+            const timeframe = document.getElementById('arTimeframe').value;
+            const budget = document.getElementById('arBudget').value;
+            const notes = document.getElementById('arNotes').value.trim();
+
+            const body = [
+                '⛳ Course / Destination: ' + (course || '—'),
+                '🗓 Timeframe: ' + (timeframe || '—'),
+                '💰 Budget: ' + (budget || '—'),
+                notes ? '📝 Notes: ' + notes : null
+            ].filter(Boolean).join('\n');
+
+            let msgs = [];
+            try { msgs = JSON.parse(localStorage.getItem('epic_messages') || '[]'); } catch { }
+            msgs.push({
+                id: 'msg_' + Date.now(),
+                firstName: user ? user.firstName : 'Member',
+                lastName: user ? user.lastName : '',
+                email: user ? user.email : '',
+                phone: user ? (user.phone || '') : '',
+                subject: 'auction',
+                message: body,
+                receivedAt: new Date().toISOString(),
+                status: 'new',
+                unread: true,
+                source: 'auction_request_form',
+                memberId: user ? user.id : null
+            });
+            localStorage.setItem('epic_messages', JSON.stringify(msgs));
+            document.getElementById('auctionReqForm').style.display = 'none';
+            document.getElementById('auctionReqSuccess').style.display = 'block';
+        }
+    </script>
+
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3 class="footer-heading">EPIC Foundation</h3>
+                <p class="footer-description">Creating once-in-a-lifetime golf experiences while supporting charitable
+                    causes.</p>
+            </div>
+
+            <div class="footer-column">
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="auctions.html">Auctions</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4 class="footer-title">Explore</h4>
+                <ul class="footer-links">
+                    <li><a href="travel-events.html">Travel & Events</a></li>
+                    <li><a href="#">Content</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Login</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4 class="footer-title">Legal</h4>
+                <ul class="footer-links">
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                    <li><a href="#terms">Terms of Service</a></li>
+                    <li><a href="#cookies">Cookie Policy</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 EPIC Foundation. All rights reserved.</p>
+        </div>
+
+        <div class="footer-admin-bar" style="display:none;">
+            <a href="admin/dashboard.html" class="admin-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                Admin
+            </a>
+        </div>
+    </footer>
+
+    <script src="auction-data.js"></script>
+    <script src="db.js"></script>
+    <script src="auth.js"></script>
+    <script src="shared-auctions.js"></script>
+    <script src="filters.js"></script>
+    <script>
+        // Scripts are at bottom of body so DOM is already parsed — no need for DOMContentLoaded
+        AUTH.applyGatedNav('');
+
+        (async function renderAuctions() {
+            let allAuctions, allUsers, allCourses = [];
+            if (typeof EPICDB !== 'undefined') {
+                [allAuctions, allUsers, allCourses] = await Promise.all([EPICDB.getAuctions(), EPICDB.getUsers(), EPICDB.getCourses()]);
+            } else {
+                allAuctions = loadSharedAuctions();
+                allUsers = [];
+                allCourses = typeof loadSharedCourses === 'function' ? loadSharedCourses() : JSON.parse(localStorage.getItem('epic_courses') || '[]');
+            }
+
+            const auctionBidCounts = {};
+            try {
+                allUsers.forEach(u => (u.bids || []).forEach(b => {
+                    if (b && b.auctionId) auctionBidCounts[b.auctionId] = (auctionBidCounts[b.auctionId] || 0) + 1;
+                }));
+            } catch (e) { }
+
+            const rawAuctions = allAuctions.filter(a => ['live', 'active'].includes(a.status));
+
+            rawAuctions.forEach(a => {
+                let realHighest = a.startBid || 0;
+                let realHighestBidder = '';
+                allUsers.forEach(u => {
+                    (u.bids || []).forEach(b => {
+                        if (typeof b === 'object' && b.auctionId === a.id && Number(b.amount) > realHighest) {
+                            realHighest = Number(b.amount);
+                            realHighestBidder = u.email;
+                        }
+                    });
+                });
+                if (realHighest > (a.currentBid || 0)) {
+                    a.currentBid = realHighest;
+                    if (realHighestBidder) a.highestBidder = realHighestBidder;
+                }
+            });
+
+            const list = rawAuctions;
+            const grid = document.getElementById('auction-grid');
+            if (grid) {
+                grid.innerHTML = list.map(a => {
+                    let images = [''];
+                    if (a.course_id && allCourses && allCourses.length) {
+                        const linkedCourse = allCourses.find(c => c.id === a.course_id);
+                        if (linkedCourse) {
+                            images = [];
+                            if (linkedCourse.featured_image_url) images.push(linkedCourse.featured_image_url);
+                            if (linkedCourse.gallery && linkedCourse.gallery.length) images.push(...linkedCourse.gallery);
+                        }
+                    }
+                    if (images.length === 0) images = [''];
+                    const thumb0 = images[0] || '';
+                    const price = a.currentBid || a.startBid || 0;
+                    const stateMatch = a.location.match(/, *([A-Za-z]{2})/);
+                    const state = stateMatch ? stateMatch[1].toLowerCase() : '';
+
+                    let rankClass = 'none';
+                    const rankNumMatch = (a.ranking || '').match(/\d+/);
+                    if (rankNumMatch) {
+                        const num = parseInt(rankNumMatch[0]);
+                        if (num <= 25) rankClass = 'top25';
+                        else if (num <= 50) rankClass = 'top50';
+                        else if (num <= 100) rankClass = 'top100';
+                    }
+
+                    let archClass = 'other';
+                    const archLower = (a.architect || '').toLowerCase();
+                    if (archLower.includes('mackenzie')) archClass = 'mackenzie';
+                    else if (archLower.includes('jones') && !archLower.includes('rees')) archClass = 'jones';
+                    else if (archLower.includes('fazio')) archClass = 'fazio';
+                    else if (archLower.includes('tillinghast')) archClass = 'tillinghast';
+                    else if (archLower.includes('ross')) archClass = 'ross';
+                    else if (archLower.includes('nicklaus')) archClass = 'nicklaus';
+
+                    const endTime = new Date(a.endDate).getTime() || 9999999999;
+                    const linkUrl = 'auction-rounds/pebble-beach-round-2?id=' + a.id;
+                    const statusLabel = { active: 'Active', live: 'Live', scheduled: 'Scheduled', pending: 'Pending', draft: 'Draft', ended: 'Ended', closed: 'Closed' }[a.status] || a.status || 'Active';
+                    const fmtDate = d => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'TBD';
+                    const hasMultiple = images.length > 1;
+                    const imgData = JSON.stringify(images).replace(/"/g, '&quot;');
+
+                    const dotsHtml = images.map(function(_,i){
+                    return '<span class="cdot' + (i===0?' cdot-active':'') + '" style="width:6px;height:6px;border-radius:50%;background:' + (i===0?'#fff':'rgba(255,255,255,0.45)') + ';transition:background 0.2s;"></span>';
+                }).join('');
+                const carouselHtml = hasMultiple ? (
+                    '<button class="carousel-arrow carousel-prev" onclick="carouselPrev(event,this)" style="position:absolute;left:8px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.55);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:1.1rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:10;">&#8249;</button>' +
+                    '<button class="carousel-arrow carousel-next" onclick="carouselNext(event,this)" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.55);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:1.1rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:10;">&#8250;</button>' +
+                    '<div class="carousel-dots" style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:4px;z-index:10;">' + dotsHtml + '</div>'
+                ) : '';
+                return `
+                <div class="auction-card" data-auction-id="${a.id}" data-price="${price}" data-state="${state}" data-architect="${archClass}" data-rank="${rankClass}" data-end-time="${endTime}">
+                    <!-- Carousel image area (not wrapped in link so arrows can intercept clicks) -->
+                    <div class="card-image-carousel" data-images="${imgData}" data-idx="0" onclick="window.location.href='${linkUrl}'"
+                        style="position:relative;overflow:hidden;height:220px;background:#1a1a1a;cursor:pointer;">
+                        <img class="carousel-slide active-slide" src="${thumb0}" alt="${a.title}"
+                            style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity 0.3s;">
+                        <span class="card-status-badge ${(a.status||'active').toLowerCase()}">${statusLabel}</span>
+                        ${carouselHtml}
+                    </div>
+                    <a href="${linkUrl}" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;flex:1;">
+                        <div class="card-content">
+                            <h3 class="card-title">${a.title}</h3>
+                            <p class="card-location">${a.location}</p>
+                            <div class="card-dates">
+                                <span class="card-date-tag">Opens: ${fmtDate(a.startDate)}</span>
+                                <span class="card-date-tag">Closes: ${fmtDate(a.endDate)}</span>
+                            </div>
+                            <div class="card-footer">
+                                <div id="countdown-${a.id}" class="card-countdown" style="font-size:0.75rem;color:#888;font-weight:600;"></div>
+                                <span class="card-bid-cta">View Item &rarr;</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>`;
+                }).join('');
+
+                // Carousel hover behaviour
+                document.querySelectorAll('.card-image-carousel').forEach(el => {
+                    if (el.dataset.images === '[""]' || !el.dataset.images) return;
+                    const imgs = JSON.parse(el.dataset.images.replace(/&quot;/g,'"'));
+                    if (imgs.length <= 1) return;
+                    el.addEventListener('mouseenter', () => {
+                        el.querySelectorAll('.carousel-arrow').forEach(a => a.style.display = 'flex');
+                    });
+                    el.addEventListener('mouseleave', () => {
+                        el.querySelectorAll('.carousel-arrow').forEach(a => a.style.display = 'none');
+                    });
+                });
+
+                // Carousel navigation functions
+                window.carouselPrev = function(e, btn) {
+                    e.stopPropagation();
+                    const wrap = btn.closest('.card-image-carousel');
+                    moveCarousel(wrap, -1);
+                };
+                window.carouselNext = function(e, btn) {
+                    e.stopPropagation();
+                    const wrap = btn.closest('.card-image-carousel');
+                    moveCarousel(wrap, 1);
+                };
+                function moveCarousel(wrap, dir) {
+                    const imgs = JSON.parse(wrap.dataset.images.replace(/&quot;/g,'"'));
+                    let idx = parseInt(wrap.dataset.idx) || 0;
+                    idx = (idx + dir + imgs.length) % imgs.length;
+                    wrap.dataset.idx = idx;
+                    const slide = wrap.querySelector('.carousel-slide');
+                    if (slide) { slide.style.opacity = '0'; setTimeout(() => { slide.src = imgs[idx]; slide.style.opacity = '1'; }, 150); }
+                    wrap.querySelectorAll('.cdot').forEach((d, i) => {
+                        d.style.background = i === idx ? '#fff' : 'rgba(255,255,255,0.45)';
+                        d.classList.toggle('cdot-active', i === idx);
+                    });
+                }
+
+                if (typeof initFilters === 'function') initFilters();
+
+                // Countdown timers
+                list.forEach(a => {
+                    const el = document.getElementById('countdown-' + a.id);
+                    if (!el || !a.endDate) return;
+                    const endDate = new Date(a.endDate);
+                    function tick() {
+                        const diff = endDate - new Date();
+                        if (diff <= 0) { el.textContent = 'Closed'; return; }
+                        const d = Math.floor(diff / 86400000);
+                        const h = Math.floor((diff % 86400000) / 3600000);
+                        const m = Math.floor((diff % 3600000) / 60000);
+                        el.textContent = d > 0 ? d + 'd ' + h + 'h remaining' : h + 'h ' + m + 'm remaining';
+                    }
+                    tick();
+                    setInterval(tick, 60000);
+                });
+            }
+        })(); // end async renderAuctions
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings – EPIC Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <style>
+        /* ── Settings Layout ─────────────────────────────────── */
+        .settings-wrap {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 2rem;
+            max-width: 1100px;
+        }
+
+        .settings-nav {
+            background: #fff;
+            border-radius: 14px;
+            padding: 1rem 0;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            height: fit-content;
+            position: sticky;
+            top: 1.5rem;
+        }
+
+        .s-nav-item {
+            display: block;
+            padding: 0.7rem 1.4rem;
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: #555;
+            text-decoration: none;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: color 0.15s, border-color 0.15s, background 0.15s;
+        }
+
+        .s-nav-item:hover {
+            color: #111;
+            background: #f8f8f8;
+        }
+
+        .s-nav-item.active {
+            color: #111;
+            border-left-color: #111;
+            background: #f4f4f4;
+        }
+
+        .s-nav-divider {
+            height: 1px;
+            background: #f0f0f0;
+            margin: 0.5rem 1rem;
+        }
+
+        .settings-panel {
+            display: none;
+        }
+
+        .settings-panel.active {
+            display: block;
+        }
+
+        .settings-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 2rem;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-card h3 {
+            font-size: 1rem;
+            font-weight: 800;
+            margin-bottom: 0.3rem;
+        }
+
+        .settings-card .sc-sub {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 1.5rem;
+        }
+
+        /* ── Admin User Table ────────────────────────────────── */
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.84rem;
+        }
+
+        .admin-table th {
+            text-align: left;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            padding: 0 0.8rem 0.7rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .admin-table td {
+            padding: 0.9rem 0.8rem;
+            border-bottom: 1px solid #f5f5f5;
+            vertical-align: middle;
+        }
+
+        .admin-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .admin-table tr:hover td {
+            background: #fafafa;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .role-super {
+            background: #000;
+            color: #fff;
+        }
+
+        .role-admin {
+            background: #e8f0ff;
+            color: #3b3bf5;
+        }
+
+        .role-limited {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .perm-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .perm-pill {
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 5px;
+            background: #f0f0f0;
+            color: #555;
+        }
+
+        .perm-pill.on {
+            background: #e8f8f0;
+            color: #1a9e5c;
+        }
+
+        /* ── Modal ───────────────────────────────────────────── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #fff;
+            border-radius: 18px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 560px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-box h3 {
+            font-size: 1.05rem;
+            font-weight: 800;
+            margin-bottom: 0.3rem;
+        }
+
+        .modal-box .m-sub {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-close {
+            float: right;
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: #888;
+            margin-top: -0.3rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #444;
+            margin-bottom: 0.4rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.65rem 0.9rem;
+            border: 1.5px solid #e5e5e5;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.87rem;
+            color: #222;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #000;
+        }
+
+        .perm-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-top: 0.4rem;
+        }
+
+        .perm-check {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #333;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 0.5rem 0.7rem;
+            cursor: pointer;
+            user-select: none;
+            border: 1.5px solid transparent;
+            transition: border-color 0.15s, background 0.15s;
+        }
+
+        .perm-check:has(input:checked) {
+            border-color: #1a9e5c;
+            background: #e8f8f0;
+            color: #1a9e5c;
+        }
+
+        .perm-check input {
+            accent-color: #1a9e5c;
+            width: 14px;
+            height: 14px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
+        .btn-save {
+            padding: 0.7rem 1.6rem;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-save:hover {
+            opacity: 0.85;
+        }
+
+        .btn-cancel {
+            padding: 0.7rem 1.2rem;
+            background: #f0f0f0;
+            color: #444;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+        }
+
+        .btn-edit {
+            color: #3b3bf5;
+            background: #e8f0ff;
+        }
+
+        .btn-delete {
+            color: #c0392b;
+            background: #fdecea;
+        }
+
+        .btn-edit:hover {
+            background: #d0dcff;
+        }
+
+        .btn-delete:hover {
+            background: #fcc;
+        }
+
+        /* ── Site Settings ───────────────────────────────────── */
+        .setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.9rem 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .setting-row:last-child {
+            border-bottom: none;
+        }
+
+        .setting-row-left h4 {
+            font-size: 0.86rem;
+            font-weight: 700;
+            margin-bottom: 0.15rem;
+        }
+
+        .setting-row-left p {
+            font-size: 0.77rem;
+            color: #888;
+        }
+
+        .toggle {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: #ddd;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+
+        .toggle.on {
+            background: #1a9e5c;
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fff;
+            transition: left 0.2s;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle.on::after {
+            left: 23px;
+        }
+
+        /* ── Toast ───────────────────────────────────────────── */
+        .s-toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #111;
+            color: #fff;
+            padding: 0.8rem 1.4rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.25s, transform 0.25s;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .s-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-layout">
+            <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="../index.html" class="logo">EPIC ADMIN</a>
+        </div>
+        <nav class="nav-links">
+            <a href="dashboard.html" class="nav-item" data-section="dashboard"><span class="nav-icon">📊</span> Dashboard</a>
+            <a href="auctions.html?v=2" class="nav-item" data-section="auctions"><span class="nav-icon">⛳</span> Auctions</a>
+            <a href="courses.html?v=2" class="nav-item" data-section="courses"><span class="nav-icon">&#127948;&#65039;</span> Courses</a>
+            <a href="users.html?v=2" class="nav-item" data-section="users"><span class="nav-icon">👥</span> Users</a>
+            <a href="events.html?v=2" class="nav-item" data-section="events"><span class="nav-icon">✈️</span> Events &amp; Trips</a>
+            <a href="messages.html" class="nav-item" data-section="messages"><span class="nav-icon">&#128172;</span> Messages <span class="nav-msg-badge" style="display:none;background:#e74c3c;color:#fff;border-radius:10px;padding:1px 6px;font-size:0.7rem;font-weight:700;margin-left:4px;"></span></a>
+            <a href="tasks.html" class="nav-item" data-section="tasks"><span class="nav-icon">✅</span> Tasks</a>
+            <a href="financials.html" class="nav-item" data-section="financials"><span class="nav-icon">📈</span> Financials</a>
+            <a href="newsletter.html?v=2" class="nav-item" data-section="newsletter"><span class="nav-icon">📧</span> Newsletter</a>
+            <a href="bids.html?v=2" class="nav-item" data-section="bids"><span class="nav-icon">💰</span> Bids</a>
+            <a href="settings.html?v=2" class="nav-item active" data-section="settings"><span class="nav-icon">⚙️</span> Settings</a>
+        </nav>
+        <div class="user-profile">
+            <div class="avatar"></div>
+            <div class="user-info">
+                <h4>Admin User</h4>
+                <p>admin@epic.org</p>
+            </div>
+        </div>
+    </aside>
+
+        <div class="main-content">
+            <header class="top-header">
+                <h2 class="page-title">Settings</h2>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="settings-wrap">
+
+                    <!-- Left nav -->
+                    <div class="settings-nav">
+                        <div class="s-nav-item active" onclick="showSettingsPanel('users')">User Management</div>
+                        <div class="s-nav-item" onclick="showSettingsPanel('site')">Site Settings</div>
+                        <div class="s-nav-item" onclick="showSettingsPanel('security')">Security</div>
+                        <div class="s-nav-divider"></div>
+                        <div class="s-nav-item" onclick="showSettingsPanel('about')">About</div>
+                    </div>
+
+                    <!-- Panels -->
+                    <div style="min-width:0;">
+
+                        <!-- ── USER MANAGEMENT ──────────────────────────── -->
+                        <div class="settings-panel active" id="panel-users">
+                            <div class="settings-card">
+                                <div
+                                    style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+                                    <div>
+                                        <h3>Admin Users</h3>
+                                        <p class="sc-sub">Create and manage admin accounts. Control what each admin can
+                                            access inside the panel.</p>
+                                    </div>
+                                    <button class="btn-save" onclick="openAdminModal(null)"
+                                        style="white-space:nowrap;">+ New Admin</button>
+                                </div>
+                                <table class="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Role</th>
+                                            <th>Permissions</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="admin-users-tbody">
+                                        <tr>
+                                            <td colspan="5" style="color:#bbb;text-align:center;padding:2rem;">Loading…
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- ── SITE SETTINGS ────────────────────────────── -->
+                        <div class="settings-panel" id="panel-site">
+                            <div class="settings-card">
+                                <h3>Site Settings</h3>
+                                <p class="sc-sub">Control public-facing features and behavior.</p>
+
+                                <div class="setting-row">
+                                    <div class="setting-row-left">
+                                        <h4>Auctions Visible to Public</h4>
+                                        <p>Show auction listings on the public website</p>
+                                    </div>
+                                    <div class="toggle on" id="toggle-auctions-public"
+                                        onclick="toggleSetting(this, 'auctions_public')"></div>
+                                </div>
+                                <div class="setting-row">
+                                    <div class="setting-row-left">
+                                        <h4>Require Login to View Auctions</h4>
+                                        <p>Gate auction details behind member login</p>
+                                    </div>
+                                    <div class="toggle" id="toggle-auction-login"
+                                        onclick="toggleSetting(this, 'auction_require_login')"></div>
+                                </div>
+                                <div class="setting-row">
+                                    <div class="setting-row-left">
+                                        <h4>Newsletter Sign-Up Visible</h4>
+                                        <p>Show the newsletter signup on the homepage</p>
+                                    </div>
+                                    <div class="toggle on" id="toggle-newsletter"
+                                        onclick="toggleSetting(this, 'newsletter_visible')"></div>
+                                </div>
+                                <div class="setting-row">
+                                    <div class="setting-row-left">
+                                        <h4>Maintenance Mode</h4>
+                                        <p>Show a maintenance page to non-admin visitors</p>
+                                    </div>
+                                    <div class="toggle" id="toggle-maintenance"
+                                        onclick="toggleSetting(this, 'maintenance_mode')"></div>
+                                </div>
+                                <div style="margin-top:1.5rem;">
+                                    <button class="btn-save" onclick="saveSiteSettings()">Save Site Settings</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ── SECURITY ─────────────────────────────────── -->
+                        <div class="settings-panel" id="panel-security">
+                            <div class="settings-card">
+                                <h3>Security</h3>
+                                <p class="sc-sub">Update your super-admin password and session settings.</p>
+
+                                <div class="form-group">
+                                    <label>Current Password</label>
+                                    <input type="password" id="sec-current-pw" placeholder="Enter current password">
+                                </div>
+                                <div class="form-group">
+                                    <label>New Password</label>
+                                    <input type="password" id="sec-new-pw" placeholder="Minimum 8 characters">
+                                </div>
+                                <div class="form-group">
+                                    <label>Confirm New Password</label>
+                                    <input type="password" id="sec-confirm-pw" placeholder="Repeat new password">
+                                </div>
+                                <button class="btn-save" onclick="changePassword()">Update Password</button>
+                            </div>
+
+                            <div class="settings-card">
+                                <h3>Session Settings</h3>
+                                <p class="sc-sub">Control admin session behavior.</p>
+                                <div class="setting-row">
+                                    <div class="setting-row-left">
+                                        <h4>Auto-logout after inactivity</h4>
+                                        <p>Log out admin users after 60 minutes of inactivity</p>
+                                    </div>
+                                    <div class="toggle on" id="toggle-autologout"
+                                        onclick="toggleSetting(this, 'admin_autologout')"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ── ABOUT ────────────────────────────────────── -->
+                        <div class="settings-panel" id="panel-about">
+                            <div class="settings-card">
+                                <h3>About EPIC Admin Panel</h3>
+                                <p class="sc-sub">System information and version details.</p>
+                                <table style="font-size:0.85rem;width:100%;border-collapse:collapse;">
+                                    <tr>
+                                        <td style="padding:0.6rem 0;color:#888;width:160px;">Version</td>
+                                        <td style="font-weight:600;">1.4.0</td>
+                                    </tr>
+                                    <tr style="border-top:1px solid #f5f5f5;">
+                                        <td style="padding:0.6rem 0;color:#888;">Organization</td>
+                                        <td style="font-weight:600;">EPIC Foundation</td>
+                                    </tr>
+                                    <tr style="border-top:1px solid #f5f5f5;">
+                                        <td style="padding:0.6rem 0;color:#888;">Last Updated</td>
+                                        <td style="font-weight:600;" id="aboutDate">—</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div><!-- end panels -->
+                </div><!-- end settings-wrap -->
+            </div><!-- end content-wrapper -->
+        </div><!-- end main-content -->
+    </div><!-- end admin-layout -->
+
+    <!-- ── CREATE / EDIT ADMIN MODAL ─────────────────────────────── -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeAdminModal()">×</button>
+            <h3 id="modal-title">New Admin User</h3>
+            <p class="m-sub" id="modal-sub">Fill in the details for the new admin account.</p>
+
+            <input type="hidden" id="modal-edit-id">
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                <div class="form-group">
+                    <label>First Name *</label>
+                    <input type="text" id="m-firstName" placeholder="Jane">
+                </div>
+                <div class="form-group">
+                    <label>Last Name *</label>
+                    <input type="text" id="m-lastName" placeholder="Smith">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Email Address *</label>
+                <input type="email" id="m-email" placeholder="jane@epic.org">
+            </div>
+
+            <div class="form-group" id="password-group">
+                <label>Password * <span style="color:#bbb;font-weight:400;">(min. 8 characters)</span></label>
+                <input type="password" id="m-password" placeholder="Set a strong password">
+            </div>
+
+            <div class="form-group">
+                <label>Role</label>
+                <select id="m-role" onchange="onRoleChange()">
+                    <option value="admin">Admin (full access)</option>
+                    <option value="limited">Limited Admin (custom permissions)</option>
+                </select>
+            </div>
+
+            <!-- Permission grid — only shown for limited role -->
+            <div id="perm-section" style="display:none;">
+                <div class="form-group">
+                    <label>Allowed Sections</label>
+                    <div class="perm-grid" id="perm-grid">
+                        <!-- filled by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeAdminModal()">Cancel</button>
+                <button class="btn-save" onclick="saveAdminUser()">Save Admin</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="s-toast" id="s-toast"></div>
+
+    <script src="../db.js"></script>
+    <script src="../auth.js"></script>
+    <script>
+        // ══════════════════════════════════════════════════════════════════
+        // CONSTANTS
+        // ══════════════════════════════════════════════════════════════════
+        const ADMIN_KEY = 'epic_admin_users';
+        const SETTINGS_KEY = 'epic_site_settings';
+
+        const ALL_SECTIONS = [
+            { key: 'dashboard', label: 'Dashboard' },
+            { key: 'auctions', label: 'Auctions' },
+            { key: 'users', label: 'Users' },
+            { key: 'bids', label: 'Bids' },
+            { key: 'events', label: 'Events & Trips' },
+            { key: 'messages', label: 'Messages' },
+            { key: 'tasks', label: 'Tasks' },
+            { key: 'financials', label: 'Financials' },
+            { key: 'newsletter', label: 'Newsletter' },
+            { key: 'settings', label: 'Settings' },
+        ];
+
+        // ══════════════════════════════════════════════════════════════════
+        // ADMIN USER STORE (localStorage)
+        // ══════════════════════════════════════════════════════════════════
+        function getAdmins() {
+            try { return JSON.parse(localStorage.getItem(ADMIN_KEY) || '[]'); }
+            catch { return []; }
+        }
+        function saveAdmins(admins) {
+            localStorage.setItem(ADMIN_KEY, JSON.stringify(admins));
+        }
+
+        // Ensure the super-admin record always exists
+        function ensureSuperAdmin() {
+            const admins = getAdmins();
+            if (!admins.find(a => a.role === 'super')) {
+                admins.unshift({
+                    id: 'super',
+                    firstName: 'EPIC',
+                    lastName: 'Admin',
+                    email: 'admin@epic.org',
+                    role: 'super',
+                    permissions: ALL_SECTIONS.map(s => s.key),
+                    createdAt: new Date().toISOString(),
+                });
+                saveAdmins(admins);
+            }
+            return getAdmins();
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        // RENDER USER TABLE
+        // ══════════════════════════════════════════════════════════════════
+        function renderAdminsTable() {
+            const admins = ensureSuperAdmin();
+            const tbody = document.getElementById('admin-users-tbody');
+            tbody.innerHTML = admins.map(a => {
+                const roleBadge = a.role === 'super'
+                    ? '<span class="role-badge role-super">Super Admin</span>'
+                    : a.role === 'admin'
+                        ? '<span class="role-badge role-admin">Admin</span>'
+                        : '<span class="role-badge role-limited">Limited</span>';
+
+                const perms = (a.role === 'super' || a.role === 'admin')
+                    ? '<span style="font-size:0.78rem;color:#888;">All sections</span>'
+                    : '<div class="perm-pills">' + ALL_SECTIONS.map(s =>
+                        `<span class="perm-pill ${(a.permissions || []).includes(s.key) ? 'on' : ''}">${s.label}</span>`
+                    ).join('') + '</div>';
+
+                const actions = a.role === 'super'
+                    ? '<span style="font-size:0.78rem;color:#bbb;">Protected</span>'
+                    : `<button class="btn-icon btn-edit" onclick="openAdminModal('${a.id}')">Edit</button>
+                   <button class="btn-icon btn-delete" onclick="deleteAdmin('${a.id}')">Delete</button>`;
+
+                return `<tr>
+                <td style="font-weight:600;">${a.firstName} ${a.lastName}</td>
+                <td style="color:#555;">${a.email}</td>
+                <td>${roleBadge}</td>
+                <td>${perms}</td>
+                <td><div style="display:flex;gap:0.4rem;">${actions}</div></td>
+            </tr>`;
+            }).join('');
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        // MODAL: OPEN / CLOSE / SAVE
+        // ══════════════════════════════════════════════════════════════════
+        function buildPermGrid(selectedPerms) {
+            const grid = document.getElementById('perm-grid');
+            grid.innerHTML = ALL_SECTIONS.map(s => `
+            <label class="perm-check">
+                <input type="checkbox" value="${s.key}" ${(selectedPerms || []).includes(s.key) ? 'checked' : ''}>
+                ${s.label}
+            </label>`).join('');
+        }
+
+        function openAdminModal(id) {
+            const admins = getAdmins();
+            const editing = id ? admins.find(a => a.id === id) : null;
+
+            document.getElementById('modal-edit-id').value = id || '';
+            document.getElementById('modal-title').textContent = editing ? 'Edit Admin User' : 'New Admin User';
+            document.getElementById('modal-sub').textContent = editing
+                ? 'Update this admin\'s details and permissions.'
+                : 'Fill in the details for the new admin account.';
+            document.getElementById('m-firstName').value = editing ? editing.firstName : '';
+            document.getElementById('m-lastName').value = editing ? editing.lastName : '';
+            document.getElementById('m-email').value = editing ? editing.email : '';
+            document.getElementById('m-password').value = '';
+            document.getElementById('m-role').value = editing ? editing.role : 'admin';
+            document.getElementById('password-group').querySelector('label').textContent =
+                editing ? 'New Password (leave blank to keep current)' : 'Password * (min. 8 characters)';
+
+            const perms = editing ? (editing.permissions || []) : ALL_SECTIONS.map(s => s.key);
+            buildPermGrid(perms);
+            onRoleChange();
+
+            document.getElementById('adminModal').classList.add('open');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.remove('open');
+        }
+
+        function onRoleChange() {
+            const role = document.getElementById('m-role').value;
+            document.getElementById('perm-section').style.display = role === 'limited' ? '' : 'none';
+        }
+
+        function saveAdminUser() {
+            const id = document.getElementById('modal-edit-id').value;
+            const firstName = document.getElementById('m-firstName').value.trim();
+            const lastName = document.getElementById('m-lastName').value.trim();
+            const email = document.getElementById('m-email').value.trim().toLowerCase();
+            const password = document.getElementById('m-password').value;
+            const role = document.getElementById('m-role').value;
+
+            if (!firstName || !email) { sToast('Name and email are required.'); return; }
+            if (!id && password.length < 8) { sToast('Password must be at least 8 characters.'); return; }
+            if (id && password && password.length < 8) { sToast('Password must be at least 8 characters.'); return; }
+
+            const permissions = role === 'limited'
+                ? [...document.querySelectorAll('#perm-grid input:checked')].map(i => i.value)
+                : ALL_SECTIONS.map(s => s.key);
+
+            const admins = getAdmins();
+            if (id) {
+                // Edit
+                const idx = admins.findIndex(a => a.id === id);
+                if (idx > -1) {
+                    admins[idx] = {
+                        ...admins[idx], firstName, lastName, email, role, permissions,
+                        ...(password ? { passwordHash: btoa(password) } : {})
+                    };
+                }
+            } else {
+                // Check duplicate email
+                if (admins.find(a => a.email === email)) { sToast('An admin with this email already exists.'); return; }
+                admins.push({
+                    id: 'adm-' + Date.now(),
+                    firstName, lastName, email, role, permissions,
+                    passwordHash: btoa(password),
+                    createdAt: new Date().toISOString(),
+                });
+            }
+
+            saveAdmins(admins);
+            closeAdminModal();
+            renderAdminsTable();
+            sToast(id ? 'Admin updated.' : 'New admin created.');
+        }
+
+        function deleteAdmin(id) {
+            if (!confirm('Delete this admin user? This cannot be undone.')) return;
+            const admins = getAdmins().filter(a => a.id !== id);
+            saveAdmins(admins);
+            renderAdminsTable();
+            sToast('Admin removed.');
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        // SITE SETTINGS
+        // ══════════════════════════════════════════════════════════════════
+        function getSiteSettings() {
+            try { return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}'); }
+            catch { return {}; }
+        }
+
+        function loadToggleStates() {
+            const s = getSiteSettings();
+            const map = {
+                'auctions_public': { id: 'toggle-auctions-public', default: true },
+                'auction_require_login': { id: 'toggle-auction-login', default: false },
+                'newsletter_visible': { id: 'toggle-newsletter', default: true },
+                'maintenance_mode': { id: 'toggle-maintenance', default: false },
+                'admin_autologout': { id: 'toggle-autologout', default: true },
+            };
+            for (const [key, cfg] of Object.entries(map)) {
+                const val = key in s ? s[key] : cfg.default;
+                const el = document.getElementById(cfg.id);
+                if (el) el.classList.toggle('on', val);
+            }
+        }
+
+        function toggleSetting(el, key) {
+            el.classList.toggle('on');
+            const s = getSiteSettings();
+            s[key] = el.classList.contains('on');
+            localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+        }
+
+        function saveSiteSettings() { sToast('Site settings saved.'); }
+
+        // ══════════════════════════════════════════════════════════════════
+        // SECURITY — password change
+        // ══════════════════════════════════════════════════════════════════
+        function changePassword() {
+            const cur = document.getElementById('sec-current-pw').value;
+            const nw = document.getElementById('sec-new-pw').value;
+            const cfm = document.getElementById('sec-confirm-pw').value;
+            if (!cur) { sToast('Enter your current password.'); return; }
+            if (nw.length < 8) { sToast('New password must be at least 8 characters.'); return; }
+            if (nw !== cfm) { sToast('Passwords do not match.'); return; }
+
+            const admins = getAdmins();
+            const super_ = admins.find(a => a.role === 'super');
+            if (super_ && super_.passwordHash && btoa(cur) !== super_.passwordHash) {
+                sToast('Current password is incorrect.'); return;
+            }
+            if (super_) {
+                super_.passwordHash = btoa(nw);
+                saveAdmins(admins);
+            }
+            document.getElementById('sec-current-pw').value = '';
+            document.getElementById('sec-new-pw').value = '';
+            document.getElementById('sec-confirm-pw').value = '';
+            sToast('Password updated successfully.');
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        // SETTINGS NAV
+        // ══════════════════════════════════════════════════════════════════
+        function showSettingsPanel(name) {
+            document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.s-nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('panel-' + name).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        // TOAST
+        // ══════════════════════════════════════════════════════════════════
+        function sToast(msg) {
+            const t = document.getElementById('s-toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        // PERMISSION ENFORCEMENT — applied to every admin page on load
+        // ══════════════════════════════════════════════════════════════════
+        function enforceAdminPermissions() {
+            const session = typeof AUTH !== 'undefined' ? AUTH.currentUser() : null;
+            if (!session) return;
+            const admins = getAdmins();
+            const adminUser = admins.find(a => a.email === session.email);
+            if (!adminUser) return; // not a tracked admin — allow (legacy)
+            if (adminUser.role === 'super' || adminUser.role === 'admin') return; // full access
+
+            // Limited: hide nav items they can't see
+            const perms = adminUser.permissions || [];
+            document.querySelectorAll('.nav-links a[data-section]').forEach(el => {
+                const section = el.getAttribute('data-section');
+                if (section && !perms.includes(section)) el.style.display = 'none';
+            });
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        // INIT
+        // ══════════════════════════════════════════════════════════════════
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAdminsTable();
+            loadToggleStates();
+            enforceAdminPermissions();
+            document.getElementById('aboutDate').textContent = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+            // Update sidebar admin name from session
+            if (typeof AUTH !== 'undefined') {
+                const s = AUTH.currentUser();
+                if (s) {
+                    document.getElementById('currentAdminName').textContent = (s.firstName || '') + ' ' + (s.lastName || '');
+                    document.getElementById('currentAdminEmail').textContent = s.email || '';
+                }
+            }
+        });
+    
+        // Live unread-message badge
+        (function() {
+            try {
+                var msgs = JSON.parse(localStorage.getItem('epic_messages') || '[]');
+                var unread = msgs.filter(function(m){ return m.unread !== false && m.status !== 'closed'; }).length;
+                document.querySelectorAll('.nav-msg-badge').forEach(function(b){
+                    b.textContent = unread; b.style.display = unread > 0 ? 'inline-block' : 'none';
+                });
+            } catch(e) {}
+        })();
+    </script>
+</body>
+
+</html>

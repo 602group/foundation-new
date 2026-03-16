@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financials - EPIC Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <style>
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            border-top: 4px solid #000;
+        }
+
+        .stat-card.accent-blue {
+            border-top-color: #4A90E2;
+        }
+
+        .stat-card.accent-green {
+            border-top-color: #1a9e5c;
+        }
+
+        .stat-card.accent-purple {
+            border-top-color: #9b59b6;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #888;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #000;
+        }
+
+        .stat-change {
+            font-size: 0.8rem;
+            color: #888;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-change.positive {
+            color: #1a9e5c;
+            font-weight: 600;
+        }
+
+        .stat-change.negative {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        .financials-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .financials-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .panel-header {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fafafa;
+        }
+
+        .panel-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #111;
+            margin: 0;
+        }
+
+        .panel-action {
+            background: none;
+            border: none;
+            color: #4A90E2;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .panel-action:hover {
+            text-decoration: underline;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            font-size: 0.8rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #eee;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 1rem 1.5rem;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #f5f5f5;
+            color: #333;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tbody tr:hover {
+            background: #fdfdfd;
+        }
+
+        .amount-positive {
+            color: #1a9e5c;
+            font-weight: 600;
+        }
+
+        .amount-negative {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        /* Progress Bars */
+        .progress-row {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .progress-row:last-child {
+            border-bottom: none;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .progress-track {
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="admin-layout">
+
+        <!-- Sidebar -->
+            <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="../index.html" class="logo">EPIC ADMIN</a>
+        </div>
+        <nav class="nav-links">
+            <a href="dashboard.html" class="nav-item" data-section="dashboard"><span class="nav-icon">📊</span> Dashboard</a>
+            <a href="auctions.html?v=2" class="nav-item" data-section="auctions"><span class="nav-icon">⛳</span> Auctions</a>
+            <a href="courses.html?v=2" class="nav-item" data-section="courses"><span class="nav-icon">&#127948;&#65039;</span> Courses</a>
+            <a href="users.html?v=2" class="nav-item" data-section="users"><span class="nav-icon">👥</span> Users</a>
+            <a href="events.html?v=2" class="nav-item" data-section="events"><span class="nav-icon">✈️</span> Events &amp; Trips</a>
+            <a href="messages.html" class="nav-item" data-section="messages"><span class="nav-icon">&#128172;</span> Messages <span class="nav-msg-badge" style="display:none;background:#e74c3c;color:#fff;border-radius:10px;padding:1px 6px;font-size:0.7rem;font-weight:700;margin-left:4px;"></span></a>
+            <a href="tasks.html" class="nav-item" data-section="tasks"><span class="nav-icon">✅</span> Tasks</a>
+            <a href="financials.html" class="nav-item active" data-section="financials"><span class="nav-icon">📈</span> Financials</a>
+            <a href="newsletter.html?v=2" class="nav-item" data-section="newsletter"><span class="nav-icon">📧</span> Newsletter</a>
+            <a href="bids.html?v=2" class="nav-item" data-section="bids"><span class="nav-icon">💰</span> Bids</a>
+            <a href="settings.html?v=2" class="nav-item" data-section="settings"><span class="nav-icon">⚙️</span> Settings</a>
+        </nav>
+        <div class="user-profile">
+            <div class="avatar"></div>
+            <div class="user-info">
+                <h4>Admin User</h4>
+                <p>admin@epic.org</p>
+            </div>
+        </div>
+    </aside>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <h2 class="page-title">Financials</h2>
+                <div class="header-actions">
+                    <button class="btn-primary"
+                        style="padding: 0.6rem 1.2rem; background: white; color: #000; border: 1px solid #ccc; border-radius: 8px; font-weight: 500; cursor: pointer;">Export
+                        Report</button>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-wrapper">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card accent-green">
+                        <span class="stat-label">Total Revenue (YTD)</span>
+                        <span class="stat-value">$1,245,600</span>
+                        <span class="stat-change positive">↑ 18.5% YoY</span>
+                    </div>
+                    <div class="stat-card accent-blue">
+                        <span class="stat-label">Monthly Profit</span>
+                        <span class="stat-value">$84,200</span>
+                        <span class="stat-change positive">↑ 4.2% from last month</span>
+                    </div>
+                    <div class="stat-card accent-purple">
+                        <span class="stat-label">Active Sales</span>
+                        <span class="stat-value">$142,500</span>
+                        <span class="stat-change">From 8 active auctions</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Operating Expenses</span>
+                        <span class="stat-value">$32,150</span>
+                        <span class="stat-change negative">↓ 2.1% from last month</span>
+                    </div>
+                </div>
+
+                <div class="financials-layout">
+                    <div class="left-column">
+                        <!-- Profit & Loss Statement Mock -->
+                        <div class="panel">
+                            <div class="panel-header">
+                                <h3 class="panel-title">Profit & Loss (Q1 2026)</h3>
+                                <button class="panel-action">Detailed View</button>
+                            </div>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Budget</th>
+                                        <th>Actual</th>
+                                        <th>Variance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Revenue - Auctions</strong></td>
+                                        <td>$800,000</td>
+                                        <td>$842,500</td>
+                                        <td class="amount-positive">+$42,500</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Revenue - Events</strong></td>
+                                        <td>$350,000</td>
+                                        <td>$315,000</td>
+                                        <td class="amount-negative">-$35,000</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Revenue - Direct Donations</strong></td>
+                                        <td>$100,000</td>
+                                        <td>$124,100</td>
+                                        <td class="amount-positive">+$24,100</td>
+                                    </tr>
+                                    <tr style="background: #fafafa; border-top: 2px solid #eee;">
+                                        <td><strong>Gross Revenue</strong></td>
+                                        <td><strong>$1,250,000</strong></td>
+                                        <td><strong>$1,281,600</strong></td>
+                                        <td class="amount-positive">+$31,600</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" style="height: 10px; padding: 0;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Event Operations</td>
+                                        <td>$150,000</td>
+                                        <td>$142,000</td>
+                                        <td class="amount-positive">-$8,000</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Marketing & Promo</td>
+                                        <td>$80,000</td>
+                                        <td>$85,500</td>
+                                        <td class="amount-negative">+$5,500</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Administrative</td>
+                                        <td>$120,000</td>
+                                        <td>$118,200</td>
+                                        <td class="amount-positive">-$1,800</td>
+                                    </tr>
+                                    <tr style="background: #fdfdfd; border-top: 2px solid #eee;">
+                                        <td><strong>Total Expenses</strong></td>
+                                        <td><strong>$350,000</strong></td>
+                                        <td><strong>$345,700</strong></td>
+                                        <td class="amount-positive">-$4,300</td>
+                                    </tr>
+                                    <tr style="background: #f0f7f4; border-top: 2px solid #1a9e5c;">
+                                        <td><strong>Net Income</strong></td>
+                                        <td><strong>$900,000</strong></td>
+                                        <td><strong style="color: #1a9e5c;">$935,900</strong></td>
+                                        <td class="amount-positive">+$35,900</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="right-column">
+                        <!-- Revenue by Category -->
+                        <div class="panel">
+                            <div class="panel-header">
+                                <h3 class="panel-title">Revenue by Source</h3>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-row">
+                                    <div class="progress-header">
+                                        <span>Golf Auctions</span>
+                                        <strong>65%</strong>
+                                    </div>
+                                    <div class="progress-track">
+                                        <div class="progress-fill" style="width: 65%; background: #4A90E2;"></div>
+                                    </div>
+                                </div>
+                                <div class="progress-row">
+                                    <div class="progress-header">
+                                        <span>Gala Events</span>
+                                        <strong>25%</strong>
+                                    </div>
+                                    <div class="progress-track">
+                                        <div class="progress-fill" style="width: 25%; background: #9b59b6;"></div>
+                                    </div>
+                                </div>
+                                <div class="progress-row">
+                                    <div class="progress-header">
+                                        <span>Direct Contributions</span>
+                                        <strong>10%</strong>
+                                    </div>
+                                    <div class="progress-track">
+                                        <div class="progress-fill" style="width: 10%; background: #1a9e5c;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Payouts -->
+                        <div class="panel">
+                            <div class="panel-header">
+                                <h3 class="panel-title">Recent Payouts</h3>
+                                <button class="panel-action">View All</button>
+                            </div>
+                            <table class="data-table">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div style="font-weight: 600; font-size: 0.85rem;">St. Jude Children's</div>
+                                            <div style="font-size: 0.75rem; color: #888;">Mar 5, 2026</div>
+                                        </td>
+                                        <td style="text-align: right; font-weight: 600;">$50,000</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div style="font-weight: 600; font-size: 0.85rem;">Pebble Beach Foundation
+                                            </div>
+                                            <div style="font-size: 0.75rem; color: #888;">Feb 28, 2026</div>
+                                        </td>
+                                        <td style="text-align: right; font-weight: 600;">$115,000</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div style="font-weight: 600; font-size: 0.85rem;">First Tee Program</div>
+                                            <div style="font-size: 0.75rem; color: #888;">Feb 15, 2026</div>
+                                        </td>
+                                        <td style="text-align: right; font-weight: 600;">$25,000</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- /.main-content -->
+    </div><!-- /.admin-layout -->
+</body>
+
+</html>

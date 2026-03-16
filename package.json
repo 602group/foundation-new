@@ -1,0 +1,8 @@
+{
+    "name": "epic-foundation",
+    "version": "1.0.0",
+    "description": "EPIC Foundation backend API",
+    "dependencies": {
+        "pg": "^8.11.0"
+    }
+}

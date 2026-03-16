@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - EPIC Foundation</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ── Contact Hero ───────────────────────────────────────── */
+        .contact-hero {
+            background: linear-gradient(rgba(0,0,0,0.62),rgba(0,0,0,0.72)),
+                url('https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=1600&q=85') center/cover no-repeat;
+            padding: 10rem 2rem 7rem;
+            text-align: center;
+        }
+        .contact-hero-eyebrow {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 0.75rem;
+        }
+        .contact-hero-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(2.4rem, 5vw, 4rem);
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 1.1rem;
+            line-height: 1.1;
+        }
+        .contact-hero-subtitle {
+            font-size: 1.05rem;
+            color: rgba(255,255,255,0.65);
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* ── 3-Button Section ───────────────────────────────────── */
+        .contact-options-section {
+            background: #fff;
+            padding: 5rem 2rem 7rem;
+        }
+        .contact-options-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .contact-options-eyebrow {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 0.75rem;
+        }
+        .contact-options-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+            font-weight: 900;
+            color: #000;
+            margin-bottom: 0.6rem;
+        }
+        .contact-options-sub {
+            font-size: 0.95rem;
+            color: #666;
+            max-width: 480px;
+            margin: 0 auto 3.5rem;
+            line-height: 1.7;
+        }
+        .contact-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .contact-cards { grid-template-columns: 1fr; }
+        }
+        .contact-card {
+            background: #000;
+            color: #fff;
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 2px solid transparent;
+            text-decoration: none;
+        }
+        .contact-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.18);
+        }
+        .contact-card.light {
+            background: #f8f9fa;
+            color: #000;
+            border-color: #e8e8e8;
+        }
+        .contact-card.light:hover {
+            border-color: #000;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.1);
+        }
+        .contact-card-icon {
+            font-size: 2rem;
+            width: 52px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.12);
+        }
+        .contact-card.light .contact-card-icon {
+            background: #e8e8e8;
+        }
+        .contact-card-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 0.25rem;
+        }
+        .contact-card-desc {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            line-height: 1.6;
+        }
+        .contact-card-arrow {
+            margin-top: auto;
+            font-size: 1.2rem;
+            font-weight: 700;
+            opacity: 0.6;
+        }
+
+        /* ── Modal ──────────────────────────────────────────────── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 9000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            backdrop-filter: blur(4px);
+        }
+        .modal-overlay.open {
+            display: flex;
+        }
+        .modal-box {
+            background: #fff;
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 520px;
+            position: relative;
+            animation: modalIn 0.25s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .modal-close {
+            position: absolute;
+            top: 1.2rem;
+            right: 1.4rem;
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: #888;
+            line-height: 1;
+            transition: color 0.15s;
+        }
+        .modal-close:hover { color: #000; }
+        .modal-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 0.3rem;
+        }
+        .modal-sub {
+            font-size: 0.83rem;
+            color: #888;
+            margin-bottom: 1.8rem;
+        }
+        .mfield {
+            margin-bottom: 1.1rem;
+        }
+        .mfield label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #444;
+            margin-bottom: 0.4rem;
+        }
+        .mfield input,
+        .mfield textarea,
+        .mfield select {
+            width: 100%;
+            padding: 0.72rem 1rem;
+            border: 1.5px solid #e5e5e5;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            color: #222;
+            background: #fafafa;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-sizing: border-box;
+        }
+        .mfield input:focus,
+        .mfield textarea:focus,
+        .mfield select:focus {
+            border-color: #000;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+        }
+        .mfield textarea { resize: vertical; min-height: 90px; }
+        .mrow-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        @media (max-width: 480px) { .mrow-2 { grid-template-columns: 1fr; } }
+        .modal-submit-btn {
+            width: 100%;
+            padding: 0.9rem;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: opacity 0.2s;
+        }
+        .modal-submit-btn:hover { opacity: 0.85; }
+        .modal-success {
+            display: none;
+            text-align: center;
+            padding: 2rem 0 1rem;
+        }
+        .modal-success .ms-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+        }
+        .modal-success p { font-size: 0.9rem; color: #555; line-height: 1.65; }
+
+        /* ── Info strip ─────────────────────────────────────────── */
+        .contact-info-strip {
+            background: #f8f9fa;
+            padding: 3.5rem 2rem;
+            border-top: 1px solid #efefef;
+        }
+        .contact-info-strip-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            flex-wrap: wrap;
+            text-align: center;
+        }
+        .cis-item h4 {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #888;
+            margin-bottom: 0.4rem;
+        }
+        .cis-item p {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="page-header">
+        <a href="/" class="logo">EPIC Foundation</a>
+        <nav class="nav-menu">
+            <a href="auctions.html" class="nav-link member-only-link" style="display:none;">Auction</a>
+            <a href="travel-events.html" class="nav-link member-only-link" style="display:none;">Travel &amp; Events</a>
+            <a href="about.html" class="nav-link">About Us</a>
+            <a href="contact.html" class="nav-link">Contact Us</a>
+            <a href="donate.html" class="nav-link" style="color:#fff;font-weight:700;">Donate &#9829;</a>
+            <button class="login-btn">Login</button>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="contact-hero">
+        <p class="contact-hero-eyebrow">We're Here to Help</p>
+        <h1 class="contact-hero-title">How Can We Help?</h1>
+        <p class="contact-hero-subtitle">Whether you have a question, want to partner with us, or are ready to donate a round — we'd love to hear from you.</p>
+    </section>
+
+    <!-- 3-Button Options -->
+    <section class="contact-options-section">
+        <div class="contact-options-inner">
+            <p class="contact-options-eyebrow">Choose Your Path</p>
+            <h2 class="contact-options-title">Let's Connect</h2>
+            <p class="contact-options-sub">Select the option that best describes what brings you to us today. Our team typically responds within one business day.</p>
+
+            <div class="contact-cards">
+                <!-- Contact Us -->
+                <div class="contact-card" onclick="openModal('contact')">
+                    <div class="contact-card-icon">✉️</div>
+                    <div>
+                        <div class="contact-card-title">Contact Us</div>
+                        <p class="contact-card-desc">Have a question about an auction, event, or membership? Send us a message and we'll get back to you shortly.</p>
+                    </div>
+                    <div class="contact-card-arrow">→</div>
+                </div>
+
+                <!-- Partner With Us -->
+                <div class="contact-card" onclick="openModal('partner')">
+                    <div class="contact-card-icon">🤝</div>
+                    <div>
+                        <div class="contact-card-title">Become a Partner</div>
+                        <p class="contact-card-desc">Interested in sponsoring an event, collaborating with EPIC Foundation, or listing your club? Let's talk about what's possible.</p>
+                    </div>
+                    <div class="contact-card-arrow">→</div>
+                </div>
+
+                <!-- Donate a Round -->
+                <a href="donate.html#auction-form-section" class="contact-card light">
+                    <div class="contact-card-icon">⛳</div>
+                    <div>
+                        <div class="contact-card-title">Donate a Round</div>
+                        <p class="contact-card-desc">Have access to a great course? Donate a round or outing to support our charity mission and get featured on our platform.</p>
+                    </div>
+                    <div class="contact-card-arrow">→</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Info Strip -->
+    <div class="contact-info-strip">
+        <div class="contact-info-strip-inner">
+            <div class="cis-item">
+                <h4>Email</h4>
+                <p>info@epicfoundation.org</p>
+            </div>
+            <div class="cis-item">
+                <h4>Phone</h4>
+                <p>(555) 123-4567</p>
+            </div>
+            <div class="cis-item">
+                <h4>Response Time</h4>
+                <p>Within 1 Business Day</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Email Signup Section -->
+    <section class="email-signup-section">
+        <div class="email-signup-overlay">
+            <div class="email-signup-content">
+                <h2 class="email-signup-title">Sign up for our email list!</h2>
+                <p class="email-signup-description">Email subscribers get early access to all of our amazing charity golf auctions</p>
+                <form class="email-signup-form">
+                    <input type="email" class="email-input" placeholder="Your email address" required>
+                    <button type="submit" class="subscribe-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3 class="footer-heading">EPIC Foundation</h3>
+                <p class="footer-description">Creating once-in-a-lifetime golf experiences while supporting charitable causes.</p>
+            </div>
+            <div class="footer-column">
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="auctions.html" class="member-only-link" style="display:none;">Auctions</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4 class="footer-title">Explore</h4>
+                <ul class="footer-links">
+                    <li><a href="travel-events.html" class="member-only-link" style="display:none;">Travel &amp; Events</a></li>
+                    <li><a href="#">Content</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Login</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4 class="footer-title">Legal</h4>
+                <ul class="footer-links">
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                    <li><a href="#terms">Terms of Service</a></li>
+                    <li><a href="#cookies">Cookie Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 EPIC Foundation. All rights reserved.</p>
+        </div>
+        <div class="footer-admin-bar" style="display:none;">
+            <a href="admin/dashboard.html" class="admin-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                Admin
+            </a>
+        </div>
+    </footer>
+
+    <!-- ── CONTACT US MODAL ────────────────────────────────────── -->
+    <div class="modal-overlay" id="modal-contact">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('contact')" aria-label="Close">&times;</button>
+            <div id="contact-form-wrap">
+                <h2 class="modal-title">Contact Us</h2>
+                <p class="modal-sub">Fill out the form below and our team will be in touch shortly.</p>
+                <form id="contact-form" onsubmit="submitContactForm(event)">
+                    <div class="mrow-2">
+                        <div class="mfield">
+                            <label>First Name *</label>
+                            <input type="text" id="cf-firstName" required placeholder="John">
+                        </div>
+                        <div class="mfield">
+                            <label>Last Name *</label>
+                            <input type="text" id="cf-lastName" required placeholder="Smith">
+                        </div>
+                    </div>
+                    <div class="mfield">
+                        <label>Email Address *</label>
+                        <input type="email" id="cf-email" required placeholder="john@example.com">
+                    </div>
+                    <div class="mfield">
+                        <label>Phone Number</label>
+                        <input type="tel" id="cf-phone" placeholder="(555) 000-0000">
+                    </div>
+                    <div class="mfield">
+                        <label>Subject *</label>
+                        <select id="cf-subject" required>
+                            <option value="">Select a subject</option>
+                            <option value="auction">Auction Inquiry</option>
+                            <option value="event">Event Information</option>
+                            <option value="membership">Membership</option>
+                            <option value="general">General Question</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mfield">
+                        <label>Message *</label>
+                        <textarea id="cf-message" required placeholder="How can we help you?"></textarea>
+                    </div>
+                    <button type="submit" class="modal-submit-btn">Send Message</button>
+                </form>
+            </div>
+            <div class="modal-success" id="contact-success">
+                <div class="ms-icon">✅</div>
+                <h3 style="font-size:1.2rem;font-weight:800;margin-bottom:0.5rem;">Message Sent!</h3>
+                <p>Thanks for reaching out. Our team will get back to you within one business day.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── PARTNER MODAL ───────────────────────────────────────── -->
+    <div class="modal-overlay" id="modal-partner">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('partner')" aria-label="Close">&times;</button>
+            <div id="partner-form-wrap">
+                <h2 class="modal-title">Become a Partner</h2>
+                <p class="modal-sub">Tell us about your organization and how you'd like to work with EPIC Foundation.</p>
+                <form id="partner-form" onsubmit="submitPartnerForm(event)">
+                    <div class="mrow-2">
+                        <div class="mfield">
+                            <label>First Name *</label>
+                            <input type="text" id="pf-firstName" required placeholder="Jane">
+                        </div>
+                        <div class="mfield">
+                            <label>Last Name *</label>
+                            <input type="text" id="pf-lastName" required placeholder="Doe">
+                        </div>
+                    </div>
+                    <div class="mfield">
+                        <label>Email Address *</label>
+                        <input type="email" id="pf-email" required placeholder="jane@company.com">
+                    </div>
+                    <div class="mfield">
+                        <label>Phone Number</label>
+                        <input type="tel" id="pf-phone" placeholder="(555) 000-0000">
+                    </div>
+                    <div class="mfield">
+                        <label>Organization / Club Name *</label>
+                        <input type="text" id="pf-org" required placeholder="e.g. Pebble Beach Golf Links">
+                    </div>
+                    <div class="mfield">
+                        <label>Partnership Type *</label>
+                        <select id="pf-type" required>
+                            <option value="">Select type</option>
+                            <option value="course_partner">Golf Course / Club Partner</option>
+                            <option value="sponsor">Event Sponsor</option>
+                            <option value="charity">Charity Organization</option>
+                            <option value="corporate">Corporate Partnership</option>
+                            <option value="media">Media / Content Partner</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mfield">
+                        <label>Tell us about the partnership *</label>
+                        <textarea id="pf-message" required placeholder="Describe what you have in mind and how we can work together…"></textarea>
+                    </div>
+                    <button type="submit" class="modal-submit-btn">Submit Partnership Inquiry</button>
+                </form>
+            </div>
+            <div class="modal-success" id="partner-success">
+                <div class="ms-icon">🤝</div>
+                <h3 style="font-size:1.2rem;font-weight:800;margin-bottom:0.5rem;">Inquiry Received!</h3>
+                <p>We've received your partnership inquiry. Our team will review it and be in touch within one to two business days.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="db.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            AUTH.applyGatedNav('');
+        });
+
+        function openModal(type) {
+            document.getElementById('modal-' + type).classList.add('open');
+            document.body.style.overflow = 'hidden';
+            // Pre-fill from session if available
+            try {
+                const user = JSON.parse(localStorage.getItem('epic_session') || 'null');
+                if (user) {
+                    const prefix = type === 'contact' ? 'cf' : 'pf';
+                    const fn = document.getElementById(prefix + '-firstName');
+                    const ln = document.getElementById(prefix + '-lastName');
+                    const em = document.getElementById(prefix + '-email');
+                    const ph = document.getElementById(prefix + '-phone');
+                    if (fn && user.firstName) fn.value = user.firstName;
+                    if (ln && user.lastName) ln.value = user.lastName;
+                    if (em && user.email) em.value = user.email;
+                    if (ph && user.phone) ph.value = user.phone;
+                }
+            } catch (e) {}
+        }
+
+        function closeModal(type) {
+            document.getElementById('modal-' + type).classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        // Close on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(o => {
+            o.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('open');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        function saveMessage(msg) {
+            try {
+                const existing = JSON.parse(localStorage.getItem('epic_messages') || '[]');
+                existing.unshift(msg);
+                localStorage.setItem('epic_messages', JSON.stringify(existing));
+            } catch (err) { console.error('Could not save message:', err); }
+        }
+
+        function submitContactForm(e) {
+            e.preventDefault();
+            const msg = {
+                id: 'msg_' + Date.now(),
+                firstName: document.getElementById('cf-firstName').value.trim(),
+                lastName: document.getElementById('cf-lastName').value.trim(),
+                email: document.getElementById('cf-email').value.trim(),
+                phone: document.getElementById('cf-phone').value.trim(),
+                subject: document.getElementById('cf-subject').value,
+                message: document.getElementById('cf-message').value.trim(),
+                status: 'new',
+                unread: true,
+                source: 'contact_form',
+                receivedAt: new Date().toISOString(),
+                notes: ''
+            };
+            saveMessage(msg);
+            document.getElementById('contact-form').style.display = 'none';
+            document.getElementById('contact-success').style.display = 'block';
+        }
+
+        function submitPartnerForm(e) {
+            e.preventDefault();
+            const partnerType = document.getElementById('pf-type').value;
+            const org = document.getElementById('pf-org').value.trim();
+            const msgText = document.getElementById('pf-message').value.trim();
+            const msg = {
+                id: 'msg_' + Date.now(),
+                firstName: document.getElementById('pf-firstName').value.trim(),
+                lastName: document.getElementById('pf-lastName').value.trim(),
+                email: document.getElementById('pf-email').value.trim(),
+                phone: document.getElementById('pf-phone').value.trim(),
+                subject: 'partnership',
+                message: `🤝 Partnership Type: ${partnerType}\n🏢 Organization: ${org}\n\n${msgText}`,
+                status: 'new',
+                unread: true,
+                source: 'partner_form',
+                receivedAt: new Date().toISOString(),
+                notes: ''
+            };
+            saveMessage(msg);
+            document.getElementById('partner-form').style.display = 'none';
+            document.getElementById('partner-success').style.display = 'block';
+        }
+
+        // Newsletter signup
+        const newsForm = document.querySelector('.email-signup-form');
+        if (newsForm) {
+            newsForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const emailInput = this.querySelector('input[type="email"]');
+                const email = emailInput.value.trim().toLowerCase();
+                if (!email) return;
+                let list = [];
+                try { list = JSON.parse(localStorage.getItem('epic_newsletter') || '[]'); } catch {}
+                if (!list.find(s => s.email === email)) {
+                    list.push({ email, subscribedAt: new Date().toISOString() });
+                    localStorage.setItem('epic_newsletter', JSON.stringify(list));
+                }
+                emailInput.value = '';
+                const btn = this.querySelector('button[type="submit"]');
+                const orig = btn.textContent;
+                btn.textContent = '✅ Subscribed!';
+                setTimeout(() => btn.textContent = orig, 3000);
+            });
+        }
+    </script>
+</body>
+
+</html>

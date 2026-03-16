@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - EPIC Foundation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            background: #000;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2rem 1rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #000 0%, #1a1a1a 50%, #000 100%);
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('hero.png') center/cover no-repeat;
+            opacity: 0.1;
+        }
+
+        .card {
+            position: relative;
+            z-index: 10;
+            background: #fff;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 520px;
+            padding: 2.5rem 2.5rem 2rem;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+            margin-top: 1rem;
+        }
+
+        .card-logo {
+            text-align: center;
+            margin-bottom: 1.8rem;
+        }
+
+        .card-logo a {
+            font-weight: 900;
+            font-size: 1.3rem;
+            color: #000;
+            text-decoration: none;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .card-logo p {
+            font-size: 0.82rem;
+            color: #888;
+            margin-top: 0.2rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 0.3rem;
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 1.6rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .form-group {
+            margin-bottom: 0.85rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 0.35rem;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 0.7rem 0.9rem;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.88rem;
+            color: #222;
+            background: #fafafa;
+            outline: none;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #000;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+            background: #fff;
+        }
+
+        input.invalid {
+            border-color: #e74c3c;
+        }
+
+        .section-heading {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: #aaa;
+            margin: 1.2rem 0 0.6rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .error-msg {
+            background: #fff0f0;
+            color: #c0392b;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 0.6rem 0.9rem;
+            font-size: 0.82rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .error-msg.show {
+            display: block;
+        }
+
+        .password-hint {
+            font-size: 0.73rem;
+            color: #999;
+            margin-top: 0.25rem;
+        }
+
+        .terms {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            margin: 1rem 0;
+        }
+
+        .terms input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            margin-top: 2px;
+            cursor: pointer;
+            padding: 0;
+            border-radius: 4px;
+        }
+
+        .terms label {
+            font-size: 0.78rem;
+            color: #555;
+            cursor: pointer;
+            font-weight: 400;
+        }
+
+        .terms label a {
+            color: #000;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .terms label a:hover {
+            text-decoration: underline;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 0.85rem;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: opacity 0.2s, transform 0.15s;
+            text-transform: uppercase;
+            margin-bottom: 1.2rem;
+        }
+
+        .submit-btn:hover {
+            opacity: 0.85;
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .already {
+            text-align: center;
+            font-size: 0.82rem;
+            color: #666;
+        }
+
+        .already a {
+            color: #000;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .already a:hover {
+            text-decoration: underline;
+        }
+
+        .back-home {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .back-home:hover {
+            color: #fff;
+        }
+
+        @media (max-width: 480px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <a href="index.html" class="back-home">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M19 12H5M5 12l7-7M5 12l7 7" />
+        </svg>
+        Back to Home
+    </a>
+
+    <div class="card">
+        <div class="card-logo">
+            <a href="index.html">EPIC Foundation</a>
+            <p>Create your account</p>
+        </div>
+
+        <h2>Join EPIC Foundation</h2>
+        <p class="subtitle">Bid on once-in-a-lifetime golf experiences and support charity.</p>
+
+        <div class="error-msg" id="errorMsg"></div>
+
+        <form id="signupForm" novalidate>
+            <!-- Personal Info -->
+            <div class="section-heading">Personal Information</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">First Name *</label>
+                    <input type="text" id="firstName" placeholder="John" autocomplete="given-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name *</label>
+                    <input type="text" id="lastName" placeholder="Smith" autocomplete="family-name" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" placeholder="john@example.com" autocomplete="email" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" placeholder="(555) 000-0000" autocomplete="tel">
+                </div>
+                <div class="form-group">
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" id="dob" autocomplete="bday">
+                </div>
+            </div>
+
+            <!-- Address -->
+            <div class="section-heading">Address (Optional)</div>
+            <div class="form-group">
+                <label for="address">Street Address</label>
+                <input type="text" id="address" placeholder="123 Fairway Lane" autocomplete="street-address">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" id="city" placeholder="Pebble Beach" autocomplete="address-level2">
+                </div>
+                <div class="form-group">
+                    <label for="state">State</label>
+                    <input type="text" id="state" placeholder="CA" autocomplete="address-level1" maxlength="2">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="zip">ZIP Code</label>
+                <input type="text" id="zip" placeholder="93953" autocomplete="postal-code" maxlength="10">
+            </div>
+
+            <!-- Account -->
+            <div class="section-heading">Account Security</div>
+            <div class="form-group">
+                <label for="password">Password *</label>
+                <input type="password" id="password" placeholder="Min. 8 characters" autocomplete="new-password"
+                    required>
+                <p class="password-hint">At least 8 characters. Use a mix of letters, numbers, and symbols.</p>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password *</label>
+                <input type="password" id="confirmPassword" placeholder="Re-enter your password"
+                    autocomplete="new-password" required>
+            </div>
+
+            <div class="terms">
+                <input type="checkbox" id="agreeTerms">
+                <label for="agreeTerms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy
+                        Policy</a></label>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">Create My Account</button>
+        </form>
+
+        <div class="already">
+            Already have an account? <a href="login.html">Sign in →</a>
+        </div>
+    </div>
+
+    <script src="db.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        // Redirect if already logged in
+        if (AUTH.currentUser()) {
+            window.location.href = 'portal/index.html';
+        }
+
+        const form = document.getElementById('signupForm');
+        const errMsg = document.getElementById('errorMsg');
+        const btn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            clearErrors();
+
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const dob = document.getElementById('dob').value;
+            const address = document.getElementById('address').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const state = document.getElementById('state').value.trim();
+            const zip = document.getElementById('zip').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const agreed = document.getElementById('agreeTerms').checked;
+
+            // Validate
+            if (!firstName || !lastName) return showError('Please enter your first and last name.');
+            if (!email || !email.includes('@')) return showError('Please enter a valid email address.');
+            if (!password || password.length < 8) return showError('Password must be at least 8 characters.');
+            if (password !== confirmPassword) return showError('Passwords do not match.');
+            if (!agreed) return showError('Please agree to the Terms of Service to continue.');
+
+            btn.textContent = 'Creating account…';
+            btn.disabled = true;
+
+            const result = AUTH.register({
+                firstName, lastName, email, phone, dob,
+                address, city, state, zip, password
+            });
+
+            if (result.ok) {
+                window.location.href = 'portal/index.html';
+            } else {
+                showError(result.error);
+                btn.textContent = 'Create My Account';
+                btn.disabled = false;
+            }
+        });
+
+        function showError(msg) {
+            errMsg.textContent = msg;
+            errMsg.classList.add('show');
+            errMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        function clearErrors() {
+            errMsg.classList.remove('show');
+        }
+    </script>
+</body>
+
+</html>

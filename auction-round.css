@@ -1,0 +1,950 @@
+/* ========================================
+   RESET & BASE STYLES
+   ======================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+    background: #ffffff;
+}
+
+/* ========================================
+   HEADER / NAVIGATION
+   ======================================== */
+.hero-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 4rem;
+    background: #000000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.logo {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+}
+
+.nav-link {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    position: relative;
+    transition: all 0.2s ease;
+    padding: 0.5rem 0;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background: #ffffff;
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+.login-btn {
+    background: #ffffff;
+    color: #000000;
+    border: 3px solid #ffffff;
+    padding: 0.7rem 1.8rem;
+    border-radius: 25px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+}
+
+.login-btn:hover {
+    background: #000000;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+/* ========================================
+   AUCTION HERO SECTION
+   ======================================== */
+.auction-hero {
+    margin-top: 100px;
+    height: 90vh;
+    background: #f5f5f5;
+    padding: 2rem 6rem;
+}
+
+.hero-container {
+    display: grid;
+    grid-template-columns: 1.5fr 0.8fr 1.3fr;
+    gap: 1.5rem;
+    height: 100%;
+}
+
+/* Back to Auctions Link */
+.back-to-auctions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #000000;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    padding: 0.5rem 0;
+    transition: color 0.2s ease;
+}
+
+.back-to-auctions:hover {
+    color: #666666;
+}
+
+.back-to-auctions svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Main Image */
+.main-image-container {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #000000;
+}
+
+.main-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Side Images */
+.side-images-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.side-image {
+    position: relative;
+    flex: 1;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #000000;
+}
+
+.side-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.view-more-btn {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffffff;
+    color: #000000;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 25px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.view-more-btn:hover {
+    background: #000000;
+    color: #ffffff;
+    transform: translateX(-50%) translateY(-2px);
+}
+
+/* Auction Details */
+.auction-details {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.time-left-section h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #666666;
+    margin-bottom: 0.5rem;
+}
+
+.countdown {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #000000;
+    margin-bottom: 0.5rem;
+}
+
+.auction-end {
+    font-size: 0.9rem;
+    color: #000000;
+    margin-bottom: 0.3rem;
+}
+
+.bid-extension {
+    font-size: 0.75rem;
+    color: #e74c3c;
+    font-weight: 600;
+}
+
+.pricing-section {
+    border-top: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 1.5rem 0;
+}
+
+.current-bid-display h2 {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #000000;
+    margin-bottom: 0.3rem;
+}
+
+.current-bid-display p {
+    font-size: 0.9rem;
+    color: #666666;
+}
+
+.bid-info {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+}
+
+.bid-increment,
+.buy-now-price {
+    display: flex;
+    flex-direction: column;
+}
+
+.bid-info .label {
+    font-size: 0.85rem;
+    color: #666666;
+    margin-bottom: 0.3rem;
+}
+
+.bid-info .value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #000000;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.bid-btn {
+    background: #16a085;
+    color: #ffffff;
+    border: none;
+    padding: 1.2rem;
+    border-radius: 25px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+}
+
+.bid-btn:hover {
+    background: #138f76;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(22, 160, 133, 0.3);
+}
+
+.secondary-buttons {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.buy-now-action-btn,
+.watchlist-btn {
+    flex: 1;
+    background: #ffffff;
+    color: #000000;
+    border: 2px solid #000000;
+    padding: 0.9rem;
+    border-radius: 25px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+}
+
+.buy-now-action-btn:hover,
+.watchlist-btn:hover {
+    background: #000000;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+/* ========================================
+   AUCTION INFORMATION SECTION
+   ======================================== */
+.auction-info {
+    padding: 4rem 4rem 6rem 4rem;
+    background: #ffffff;
+}
+
+.info-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 3rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.info-main h1 {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #000000;
+    margin-bottom: 1rem;
+}
+
+.auction-meta {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+    color: #666666;
+}
+
+.auction-meta .location,
+.auction-meta .date {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.meta-icon {
+    width: 20px;
+    height: 20px;
+    color: #666666;
+}
+
+/* Item Details & Course Details Sections */
+.item-details-section,
+.course-details-section {
+    margin-bottom: 3rem;
+}
+
+.item-details-section h2,
+.course-details-section h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 1rem;
+}
+
+.section-intro {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #666666;
+    margin-bottom: 2rem;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.detail-icon {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    color: #333333;
+}
+
+.detail-text {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #333333;
+}
+
+.detail-text strong {
+    color: #000000;
+    font-weight: 700;
+}
+
+.detail-link {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.detail-link:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+
+.tax-notice {
+    background: #fff5f5;
+    border: 2px solid #e74c3c;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    color: #e74c3c;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-top: 1.5rem;
+}
+
+/* Location Section */
+.location-section {
+    margin-bottom: 3rem;
+}
+
+.location-section h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 0.5rem;
+}
+
+.location-address {
+    font-size: 1rem;
+    color: #666666;
+    margin-bottom: 1.5rem;
+}
+
+.map-container {
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.map-container iframe {
+    display: block;
+}
+
+.terms {
+    background: #f5f5f5;
+    padding: 2rem;
+    border-radius: 16px;
+}
+
+.terms h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 1rem;
+}
+
+.terms ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.terms ul li {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: #333333;
+    padding-left: 1.5rem;
+    position: relative;
+    margin-bottom: 0.5rem;
+}
+
+.terms ul li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #000000;
+    font-weight: 700;
+}
+
+/* Charity Support Section */
+.charity-support-section {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 16px;
+    padding: 2.5rem;
+    margin-bottom: 3rem;
+}
+
+.charity-support-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 3rem;
+}
+
+.charity-text {
+    flex: 1;
+}
+
+.support-label {
+    font-size: 0.9rem;
+    color: #666666;
+    margin-bottom: 0.5rem;
+}
+
+.charity-name {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #000000;
+    margin-bottom: 1rem;
+}
+
+.charity-description {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #333333;
+}
+
+.charity-logo-box {
+    flex-shrink: 0;
+}
+
+.epic-logo {
+    width: 120px;
+    height: 120px;
+    background: #000000;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 900;
+    border-radius: 12px;
+    letter-spacing: 2px;
+}
+
+/* Sidebar */
+.info-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.charity-info,
+.share-section {
+    background: #f5f5f5;
+    padding: 2rem;
+    border-radius: 16px;
+}
+
+.charity-info h3,
+.share-section h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 1rem;
+}
+
+.charity-logo {
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 1rem;
+    border: 1px solid #e0e0e0;
+}
+
+.charity-logo p {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #000000;
+}
+
+.charity-description {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #666666;
+}
+
+.share-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.share-btn {
+    background: #ffffff;
+    color: #000000;
+    border: 2px solid #000000;
+    padding: 0.8rem;
+    border-radius: 25px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.share-btn:hover {
+    background: #000000;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+@media (max-width: 1400px) {
+    .hero-container {
+        grid-template-columns: 1.5fr 1fr 1fr;
+    }
+}
+
+@media (max-width: 1024px) {
+    .auction-hero {
+        padding: 1.5rem 2rem;
+    }
+
+    .hero-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+    }
+
+    .info-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .auction-hero {
+        height: auto;
+        padding: 1rem;
+    }
+
+    .side-images-container {
+        flex-direction: row;
+    }
+
+    .nav-menu {
+        display: none;
+    }
+
+    .auction-info {
+        padding: 2rem 1rem;
+    }
+}
+
+/* Photo Gallery Modal (White Grid View) */
+.gallery-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    z-index: 10000;
+    overflow-y: auto;
+}
+
+.gallery-modal-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+}
+
+.gallery-back-btn {
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    color: #000000;
+    cursor: pointer;
+    margin-bottom: 2rem;
+    padding: 0.5rem;
+    transition: color 0.2s ease;
+}
+
+.gallery-back-btn:hover {
+    color: #666666;
+}
+
+.gallery-back-btn svg {
+    width: 24px;
+    height: 24px;
+}
+
+.gallery-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.gallery-grid img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gallery-grid img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Lightbox Modal (Black Full Image View) */
+.lightbox-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000000;
+    z-index: 10001;
+    align-items: center;
+    justify-content: center;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.lightbox-close svg {
+    width: 20px;
+    height: 20px;
+}
+
+.lightbox-counter {
+    position: absolute;
+    top: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 600;
+    z-index: 10;
+}
+
+.lightbox-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6rem 8rem;
+}
+
+.lightbox-content img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.lightbox-prev,
+.lightbox-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    padding: 1rem;
+    transition: opacity 0.2s ease;
+    z-index: 10;
+}
+
+.lightbox-prev:hover,
+.lightbox-next:hover {
+    opacity: 0.7;
+}
+
+.lightbox-prev {
+    left: 2rem;
+}
+
+.lightbox-next {
+    right: 2rem;
+}
+
+.lightbox-prev svg,
+.lightbox-next svg {
+    width: 48px;
+    height: 48px;
+}
+
+/* View More Button */
+.view-more-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Custom Action Modals */
+.action-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 20000;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-modal-content {
+    background: #ffffff;
+    padding: 2.5rem;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 450px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.action-modal-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    color: #000000;
+}
+
+.action-modal-text {
+    font-size: 0.95rem;
+    color: #666666;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.action-modal-input {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    outline: none;
+    transition: border-color 0.2s;
+    color: #000000;
+}
+
+.action-modal-input:focus {
+    border-color: #000000;
+}
+
+.action-modal-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.action-modal-btn {
+    flex: 1;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.modal-cancel {
+    background: #f5f5f5;
+    color: #333333;
+}
+
+.modal-cancel:hover {
+    background: #e0e0e0;
+}
+
+.modal-confirm {
+    background: #16a085;
+    color: #ffffff;
+}
+
+.modal-confirm:hover {
+    background: #138f76;
+}

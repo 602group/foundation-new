@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donate – EPIC Foundation</title>
+    <meta name="description"
+        content="Support EPIC Foundation by donating an auction round, item, or making a direct monetary gift.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f4f6f8;
+            color: #1a1a1a;
+        }
+
+        /* ── Hero ─────────────────────────────────────────────── */
+        .donate-hero {
+            background: #000;
+            color: #fff;
+            padding: 9rem 2rem 5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .donate-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 60% 40%, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
+        }
+
+        .donate-hero .eyebrow {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 1rem;
+        }
+
+        .donate-hero h1 {
+            font-size: clamp(2.2rem, 5vw, 3.8rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.2rem;
+        }
+
+        .donate-hero p {
+            font-size: 1.05rem;
+            color: rgba(255, 255, 255, 0.65);
+            max-width: 520px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* ── Choose section ───────────────────────────────────── */
+        .choose-section {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 4rem 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .choose-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .choose-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07);
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            border: 2px solid transparent;
+            transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+        }
+
+        .choose-card:hover {
+            border-color: #000;
+            transform: translateY(-3px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .choose-card .card-icon {
+            font-size: 2.5rem;
+        }
+
+        .choose-card h2 {
+            font-size: 1.3rem;
+            font-weight: 800;
+        }
+
+        .choose-card p {
+            font-size: 0.88rem;
+            color: #666;
+            line-height: 1.65;
+        }
+
+        /* ── Multi-step form ──────────────────────────────────── */
+        .form-wrapper {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 0 1.5rem 5rem;
+        }
+
+        .form-anchor {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            padding-top: 0.5rem;
+        }
+
+        /* Step indicators */
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin-bottom: 2.5rem;
+            overflow: hidden;
+            border-radius: 10px;
+            border: 1px solid #eee;
+        }
+
+        .si-step {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-align: center;
+            background: #f8f9fa;
+            color: #bbb;
+            border-right: 1px solid #eee;
+            transition: background 0.2s, color 0.2s;
+            white-space: nowrap;
+        }
+
+        .si-step:last-child {
+            border-right: none;
+        }
+
+        .si-step.active {
+            background: #000;
+            color: #fff;
+        }
+
+        .si-step.done {
+            background: #e8f5ef;
+            color: #1a9e5c;
+        }
+
+        /* Form cards */
+        .form-card {
+            background: #fff;
+            border-radius: 18px;
+            padding: 2.5rem;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.06);
+        }
+
+        .form-card h3 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin-bottom: 0.3rem;
+        }
+
+        .form-card .fc-sub {
+            font-size: 0.83rem;
+            color: #888;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #444;
+            margin-bottom: 0.4rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1.5px solid #e5e5e5;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            color: #222;
+            background: #fafafa;
+            outline: none;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #000;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 520px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Donation type radio tiles */
+        .type-tiles {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 520px) {
+            .type-tiles {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .type-tile {
+            border: 2px solid #eee;
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .type-tile:hover {
+            border-color: #999;
+        }
+
+        .type-tile.selected {
+            border-color: #000;
+            background: #f8f8f8;
+        }
+
+        .type-tile input[type=radio] {
+            display: none;
+        }
+
+        .type-tile .tt-icon {
+            font-size: 1.6rem;
+        }
+
+        .type-tile .tt-label {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .type-tile .tt-desc {
+            font-size: 0.76rem;
+            color: #888;
+        }
+
+        /* Estimated value pills */
+        .value-pills {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .val-pill {
+            padding: 0.3rem 0.9rem;
+            border-radius: 20px;
+            border: 1.5px solid #ddd;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .val-pill:hover {
+            border-color: #000;
+        }
+
+        .val-pill.active {
+            background: #000;
+            color: #fff;
+            border-color: #000;
+        }
+
+        /* File upload */
+        .file-zone {
+            border: 2px dashed #ddd;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .file-zone:hover {
+            border-color: #000;
+            background: #fafafa;
+        }
+
+        .file-zone input {
+            display: none;
+        }
+
+        .file-zone p {
+            font-size: 0.82rem;
+            color: #888;
+            margin-top: 0.3rem;
+        }
+
+        .file-zone .fz-icon {
+            font-size: 1.8rem;
+        }
+
+        #fileLabel {
+            font-size: 0.88rem;
+            font-weight: 600;
+            margin-top: 0.25rem;
+            display: block;
+        }
+
+        /* Review rows */
+        .review-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 0.7rem 0;
+            border-bottom: 1px solid #f3f3f3;
+            font-size: 0.88rem;
+        }
+
+        .review-row:last-child {
+            border-bottom: none;
+        }
+
+        .review-row .rr-key {
+            color: #888;
+            font-weight: 500;
+            flex-shrink: 0;
+            margin-right: 1rem;
+        }
+
+        .review-row .rr-val {
+            font-weight: 600;
+            text-align: right;
+        }
+
+        /* Buttons */
+        .btn-next {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.85rem 2rem;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-next:hover {
+            opacity: 0.85;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.85rem 1.5rem;
+            background: #f0f0f0;
+            color: #444;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-back:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        /* Success state */
+        .success-card {
+            background: #fff;
+            border-radius: 18px;
+            padding: 3rem 2.5rem;
+            text-align: center;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.06);
+            display: none;
+        }
+
+        .success-card .sc-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .success-card h3 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 0.6rem;
+        }
+
+        .success-card p {
+            font-size: 0.9rem;
+            color: #666;
+            max-width: 400px;
+            margin: 0 auto 1.5rem;
+            line-height: 1.65;
+        }
+
+        /* ── Money Donation Section ────────────────────────────── */
+        .money-section {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #fff;
+            padding: 5rem 2rem;
+        }
+
+        .money-inner {
+            max-width: 860px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        @media (max-width: 640px) {
+            .money-inner {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
+
+        .money-inner .eyebrow {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 0.8rem;
+        }
+
+        .money-inner h2 {
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            font-weight: 900;
+            margin-bottom: 0.8rem;
+        }
+
+        .money-inner p {
+            font-size: 0.88rem;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.7;
+            max-width: 460px;
+        }
+
+        .btn-givesmart {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 1rem 2.2rem;
+            background: #fff;
+            color: #000;
+            border-radius: 30px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 800;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-givesmart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255, 255, 255, 0.2);
+        }
+
+        /* ── Step panels ─────────────────────────────────────────── */
+        .step-panel {
+            display: none;
+        }
+
+        .step-panel.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="page-header">
+        <a href="index.html" class="logo">EPIC Foundation</a>
+        <nav class="nav-menu">
+            <a href="auctions.html" class="nav-link member-only-link" style="display:none;">Auction</a>
+            <a href="travel-events.html" class="nav-link member-only-link" style="display:none;">Travel &amp; Events</a>
+            <a href="about.html" class="nav-link">About Us</a>
+            <a href="contact.html" class="nav-link">Contact Us</a>
+            <a href="donate.html" class="nav-link" style="color:#fff;font-weight:700;">Donate &#9829;</a>
+            <button class="login-btn">Login</button>
+        </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="donate-hero">
+        <div class="eyebrow">Support EPIC Foundation</div>
+        <h1>Make an Impact<br>on the Course</h1>
+        <p>Donate an auction round, a prized item, or contribute directly to fund programs that matter.</p>
+    </section>
+
+    <!-- Two donation paths -->
+    <div class="choose-section">
+        <div class="choose-card" style="border-left:4px solid #000;"
+            onclick="document.getElementById('auction-form-section').scrollIntoView({behavior:'smooth'})">
+            
+            <h2>Donate a Round or Item</h2>
+            <p>Submit a golf outing, exclusive experience, signed memorabilia, or any auction-worthy item. Our team
+                reviews every submission before it goes live.</p>
+            <button class="btn-next" style="margin-top:auto;"
+                onclick="event.stopPropagation();document.getElementById('auction-form-section').scrollIntoView({behavior:'smooth'})">Start Donation Form</button>
+        </div>
+        <div class="choose-card" style="border-left:4px solid #1a9e5c;"
+            onclick="document.getElementById('money-section').scrollIntoView({behavior:'smooth'})">
+            
+            <h2>Make a Monetary Donation</h2>
+            <p>Give directly to EPIC Foundation through our secure GiveSmart giving portal. Every dollar funds golf
+                programs, youth initiatives, and charitable events.</p>
+            <button class="btn-next" style="margin-top:auto;background:#1a9e5c;"
+                onclick="event.stopPropagation();document.getElementById('money-section').scrollIntoView({behavior:'smooth'})">Give Now</button>
+        </div>
+    </div>
+
+    <!-- ── AUCTION DONATION FORM ─────────────────────────────── -->
+    <div class="form-wrapper" id="auction-form-section">
+        <div class="form-anchor">Donate an Auction Round or Item</div>
+
+        <!-- Step indicators -->
+        <div class="step-indicator">
+            <div class="si-step active" id="si-1">1 · What You're Donating</div>
+            <div class="si-step" id="si-2">2 · Details</div>
+            <div class="si-step" id="si-3">3 · Your Info</div>
+            <div class="si-step" id="si-4">4 · Review &amp; Submit</div>
+        </div>
+
+        <!-- ── Step 1: Type ── -->
+        <div class="step-panel active form-card" id="fstep1">
+            <h3>What would you like to donate?</h3>
+            <p class="fc-sub">Select the category that best describes your contribution.</p>
+
+            <div class="type-tiles">
+                <label class="type-tile selected" id="tile-round">
+                    <input type="radio" name="donationType" value="round" checked>
+                                        <span class="tt-label">Golf Round</span>
+                    <span class="tt-desc">A tee time or exclusive round at your club or course</span>
+                </label>
+                <label class="type-tile" id="tile-outing">
+                    <input type="radio" name="donationType" value="outing">
+                                        <span class="tt-label">Golf Outing / Event</span>
+                    <span class="tt-desc">A private outing, tournament, or curated golf experience</span>
+                </label>
+                <label class="type-tile" id="tile-item">
+                    <input type="radio" name="donationType" value="item">
+                                        <span class="tt-label">Auction Item</span>
+                    <span class="tt-desc">Signed memorabilia, equipment, gift packages, etc.</span>
+                </label>
+                <label class="type-tile" id="tile-experience">
+                    <input type="radio" name="donationType" value="experience">
+                                        <span class="tt-label">Experience</span>
+                    <span class="tt-desc">Travel package, VIP experience, pro-am access, etc.</span>
+                </label>
+            </div>
+
+            <div class="btn-row">
+                <span></span>
+                <button class="btn-next" onclick="goStep(2)">Continue to Details</button>
+            </div>
+        </div>
+
+        <!-- ── Step 2: Details ── -->
+        <div class="step-panel form-card" id="fstep2">
+            <h3>Tell us about your donation</h3>
+            <p class="fc-sub">Provide details that will help us create a compelling auction listing.</p>
+
+            <div class="form-group">
+                <label>Donation Title *</label>
+                <input type="text" id="f-title" placeholder="e.g. Round for 2 at Augusta National">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label id="locationLabel">Course / Venue *</label>
+                    <input type="text" id="f-location" placeholder="e.g. Pebble Beach Golf Links">
+                </div>
+                <div class="form-group">
+                    <label>Expiration / Available Dates</label>
+                    <input type="text" id="f-dates" placeholder="e.g. Must be used by Dec 2025">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Description *</label>
+                <textarea id="f-description"
+                    placeholder="Describe the experience, inclusions, and what makes it special…"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Number of Players / Guests Included</label>
+                <input type="number" id="f-players" placeholder="e.g. 2" min="1" max="20" style="max-width:160px;">
+            </div>
+
+            <div class="form-group">
+                <label>Estimated Retail Value *</label>
+                <div class="value-pills">
+                    <div class="val-pill active" onclick="setPill(this,'$500–$1,000')">$500–1K</div>
+                    <div class="val-pill" onclick="setPill(this,'$1,000–$2,500')">$1K–2.5K</div>
+                    <div class="val-pill" onclick="setPill(this,'$2,500–$5,000')">$2.5K–5K</div>
+                    <div class="val-pill" onclick="setPill(this,'$5,000–$10,000')">$5K–10K</div>
+                    <div class="val-pill" onclick="setPill(this,'$10,000+')">$10K+</div>
+                </div>
+                <input type="text" id="f-value" placeholder="Or type exact value…" style="margin-top:0.6rem;">
+            </div>
+
+            <div class="form-group">
+                <label>Photos or Supporting Documents <span
+                        style="color:#bbb;font-weight:400;">(optional)</span></label>
+                <label class="file-zone" for="f-files">
+                    <input type="file" id="f-files" accept="image/*,.pdf" multiple>
+                    <div class="fz-icon" style="font-size:1.4rem;color:#aaa;">↑</div>
+                    <span id="fileLabel">Click to upload or drag & drop</span>
+                    <p>JPG, PNG, or PDF · up to 10MB each</p>
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>Additional Restrictions or Notes</label>
+                <textarea id="f-notes" placeholder="Blackout dates, cart fee required, members-only access, etc."
+                    style="min-height:70px;"></textarea>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn-back" onclick="goStep(1)">← Back</button>
+                <button class="btn-next" onclick="validateStep2()">Continue to Your Info</button>
+            </div>
+        </div>
+
+        <!-- ── Step 3: Donor Info ── -->
+        <div class="step-panel form-card" id="fstep3">
+            <h3>Your contact information</h3>
+            <p class="fc-sub">We'll use this to reach out with any questions and to confirm your donation.</p>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>First Name *</label>
+                    <input type="text" id="f-firstName" placeholder="John">
+                </div>
+                <div class="form-group">
+                    <label>Last Name *</label>
+                    <input type="text" id="f-lastName" placeholder="Smith">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Email Address *</label>
+                <input type="email" id="f-email" placeholder="john@gmail.com">
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="f-phone" placeholder="(555) 000-0000">
+            </div>
+            <div class="form-group">
+                <label>Organization / Club Name <span style="color:#bbb;font-weight:400;">(optional)</span></label>
+                <input type="text" id="f-org" placeholder="e.g. Augusta National Golf Club">
+            </div>
+            <div class="form-group" style="margin-top:1.5rem;">
+                <label
+                    style="display:flex;align-items:flex-start;gap:0.6rem;cursor:pointer;font-weight:400;font-size:0.84rem;color:#555;">
+                    <input type="checkbox" id="f-credit" style="width:auto;margin-top:2px;accent-color:#000;">
+                    I would like to be publicly credited as the donor when this item goes live
+                </label>
+            </div>
+            <div class="form-group">
+                <label
+                    style="display:flex;align-items:flex-start;gap:0.6rem;cursor:pointer;font-weight:400;font-size:0.84rem;color:#555;">
+                    <input type="checkbox" id="f-updates" style="width:auto;margin-top:2px;accent-color:#000;" checked>
+                    Send me updates when my donation is approved and when bidding starts
+                </label>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn-back" onclick="goStep(2)">← Back</button>
+                <button class="btn-next" onclick="validateStep3()">Review Submission</button>
+            </div>
+        </div>
+
+        <!-- ── Step 4: Review ── -->
+        <div class="step-panel form-card" id="fstep4">
+            <h3>Review your donation</h3>
+            <p class="fc-sub">Please confirm everything looks correct before submitting. Our team will review and be in
+                touch within 2–3 business days.</p>
+
+            <div id="reviewContent"></div>
+
+            <div
+                style="background:#f8f9fa;border-radius:10px;padding:1rem 1.2rem;font-size:0.82rem;color:#666;margin-top:1.5rem;line-height:1.65;">
+                By submitting you agree that the EPIC Foundation team may contact you to confirm details. Your
+                donation will appear on the site only after admin review and approval.
+            </div>
+
+            <div class="btn-row">
+                <button class="btn-back" onclick="goStep(3)">← Back</button>
+                <button class="btn-next" id="submitBtn" onclick="submitDonation()">Submit Donation</button>
+            </div>
+        </div>
+
+        <!-- Success -->
+        <div class="success-card" id="successCard" style="border-top:4px solid #1a9e5c;">
+            
+            <div style="width:48px;height:48px;background:#1a9e5c;border-radius:50%;margin:0 auto 1.2rem;display:flex;align-items:center;justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><h3>Thank You for Your Donation!</h3>
+            <p>Your submission has been received and is pending review by the EPIC Foundation team. We'll reach out
+                within 2–3 business days to confirm the details.</p>
+            <a href="index.html" class="btn-next" style="display:inline-flex;text-decoration:none;margin:0 auto;">Return
+                Home</a>
+        </div>
+    </div>
+
+    <!-- ── MONEY DONATION SECTION ──────────────────────────────── -->
+    <section class="money-section" id="money-section">
+        <div class="money-inner">
+            <div>
+                <div class="eyebrow">Direct Giving</div>
+                <h2>Support EPIC Foundation<br>with a Monetary Gift</h2>
+                <p>Every dollar you contribute funds youth golf programs, charitable events, and initiatives that make
+                    the sport more accessible to everyone. Donate securely through our GiveSmart portal.</p>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:1rem;align-items:center;">
+                <!-- ⬇ Replace YOUR-GIVESMART-URL with your actual GiveSmart donation link -->
+                <a href="https://givesmart.com/YOUR-GIVESMART-URL" target="_blank" rel="noopener" class="btn-givesmart">
+                    Donate on GiveSmart
+                </a>
+                <span style="font-size:0.75rem;color:rgba(255,255,255,0.35);">Secure · Tax-deductible · 501(c)(3)</span>
+            </div>
+        </div>
+    </section>
+
+    <script src="db.js"></script>
+    <script src="auth.js"></script>
+    <script src="shared-auctions.js"></script>
+    <script>
+        AUTH.applyGatedNav('');
+
+        // ── Type tile selection ─────────────────────────────────
+        document.querySelectorAll('.type-tile').forEach(tile => {
+            tile.addEventListener('click', () => {
+                document.querySelectorAll('.type-tile').forEach(t => t.classList.remove('selected'));
+                tile.classList.add('selected');
+                tile.querySelector('input[type=radio]').checked = true;
+                // Update location label contextually
+                const type = tile.querySelector('input').value;
+                const locLabel = document.getElementById('locationLabel');
+                locLabel.textContent = { round: 'Course / Venue *', outing: 'Course / Club *', item: 'Item Location / Source', experience: 'Destination / Venue' }[type] || 'Location *';
+            });
+        });
+
+        // ── Value pills ─────────────────────────────────────────
+        let selectedValue = '$500–$1,000';
+        function setPill(el, val) {
+            document.querySelectorAll('.val-pill').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
+            selectedValue = val;
+            document.getElementById('f-value').value = '';
+        }
+        document.getElementById('f-value').addEventListener('input', () => {
+            document.querySelectorAll('.val-pill').forEach(p => p.classList.remove('active'));
+            selectedValue = document.getElementById('f-value').value;
+        });
+
+        // ── File label ──────────────────────────────────────────
+        document.getElementById('f-files').addEventListener('change', function () {
+            const label = document.getElementById('fileLabel');
+            if (this.files.length > 0) {
+                label.textContent = [...this.files].map(f => f.name).join(', ');
+            } else {
+                label.textContent = 'Click to upload or drag & drop';
+            }
+        });
+
+        // ── Step navigation ─────────────────────────────────────
+        let currentStep = 1;
+        function goStep(n) {
+            document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('fstep' + n).classList.add('active');
+            [1, 2, 3, 4].forEach(i => {
+                const si = document.getElementById('si-' + i);
+                si.classList.remove('active', 'done');
+                if (i < n) si.classList.add('done');
+                if (i === n) si.classList.add('active');
+            });
+            currentStep = n;
+            document.getElementById('auction-form-section').scrollIntoView({ behavior: 'smooth' });
+            if (n === 4) buildReview();
+        }
+
+        function validateStep2() {
+            const title = document.getElementById('f-title').value.trim();
+            const loc = document.getElementById('f-location').value.trim();
+            const desc = document.getElementById('f-description').value.trim();
+            if (!title || !loc || !desc) { alert('Please fill in the title, venue, and description.'); return; }
+            goStep(3);
+        }
+
+        function validateStep3() {
+            const first = document.getElementById('f-firstName').value.trim();
+            const last = document.getElementById('f-lastName').value.trim();
+            const email = document.getElementById('f-email').value.trim();
+            if (!first || !last || !email || !email.includes('@')) { alert('Please fill in your name and a valid email address.'); return; }
+            goStep(4);
+        }
+
+        // ── Build review ────────────────────────────────────────
+        function buildReview() {
+            const type = document.querySelector('input[name=donationType]:checked').value;
+            const typeLabel = { round: 'Golf Round', outing: 'Golf Outing / Event', item: 'Auction Item', experience: 'Experience' }[type];
+            const rows = [
+                ['Donation Type', typeLabel],
+                ['Title', document.getElementById('f-title').value],
+                ['Venue / Location', document.getElementById('f-location').value],
+                ['Available Dates', document.getElementById('f-dates').value || '—'],
+                ['Players / Guests', document.getElementById('f-players').value || '—'],
+                ['Est. Value', document.getElementById('f-value').value || selectedValue],
+                ['Restrictions / Notes', document.getElementById('f-notes').value || '—'],
+                ['---', ''],
+                ['Donor Name', document.getElementById('f-firstName').value + ' ' + document.getElementById('f-lastName').value],
+                ['Donor Email', document.getElementById('f-email').value],
+                ['Phone', document.getElementById('f-phone').value || '—'],
+                ['Organization', document.getElementById('f-org').value || '—'],
+                ['Public Credit', document.getElementById('f-credit').checked ? 'Yes' : 'No'],
+            ];
+            document.getElementById('reviewContent').innerHTML = rows.map(([k, v]) =>
+                k === '---'
+                    ? '<div style="height:1px;background:#f0f0f0;margin:0.5rem 0;"></div>'
+                    : `<div class="review-row"><span class="rr-key">${k}</span><span class="rr-val">${v || '—'}</span></div>`
+            ).join('');
+        }
+
+        // ── Submit ────────────────────────────────────────────────
+        async function submitDonation() {
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = 'Submitting…';
+
+            const type = document.querySelector('input[name=donationType]:checked').value;
+            const donationObj = {
+                id: 'don_' + Date.now(),
+                type: type,
+                title: document.getElementById('f-title').value.trim(),
+                location: document.getElementById('f-location').value.trim(),
+                description: document.getElementById('f-description').value.trim(),
+                dates: document.getElementById('f-dates').value.trim(),
+                players: document.getElementById('f-players').value.trim(),
+                estimatedValue: document.getElementById('f-value').value || selectedValue,
+                notes: document.getElementById('f-notes').value.trim(),
+                donorName: document.getElementById('f-firstName').value.trim() + ' ' + document.getElementById('f-lastName').value.trim(),
+                donorEmail: document.getElementById('f-email').value.trim(),
+                donorPhone: document.getElementById('f-phone').value.trim(),
+                donorOrg: document.getElementById('f-org').value.trim(),
+                publicCredit: document.getElementById('f-credit').checked,
+                sendUpdates: document.getElementById('f-updates').checked,
+                status: 'pending_review',
+                submittedAt: new Date().toISOString()
+            };
+
+            // Create a PENDING auction entry in the shared auction system
+            const auctionEntry = {
+                id: donationObj.id,
+                title: donationObj.title,
+                location: donationObj.location || '',
+                description: donationObj.description,
+                status: 'pending',
+                donorName: donationObj.donorName,
+                donorEmail: donationObj.donorEmail,
+                donorOrg: donationObj.donorOrg,
+                estimatedValue: donationObj.estimatedValue,
+                submittedAt: donationObj.submittedAt,
+                startBid: 0,
+                currentBid: 0,
+                images: [],
+                bidCount: 0,
+                // Raw donation data for admin reference
+                _donation: donationObj
+            };
+
+            try {
+                if (typeof EPICDB !== 'undefined') {
+                    await EPICDB.saveAuction(auctionEntry);
+                } else {
+                    const auctions = JSON.parse(localStorage.getItem('epic_auctions') || '[]');
+                    auctions.unshift(auctionEntry);
+                    localStorage.setItem('epic_auctions', JSON.stringify(auctions));
+                }
+            } catch (e) {
+                console.error('Save failed, falling back to localStorage', e);
+                const auctions = JSON.parse(localStorage.getItem('epic_auctions') || '[]');
+                auctions.unshift(auctionEntry);
+                localStorage.setItem('epic_auctions', JSON.stringify(auctions));
+            }
+
+            // Show success
+            document.getElementById('fstep4').style.display = 'none';
+            document.getElementById('successCard').style.display = 'block';
+            document.querySelectorAll('.si-step').forEach(s => { s.classList.remove('active'); s.classList.add('done'); });
+            document.getElementById('auction-form-section').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+
+</html>

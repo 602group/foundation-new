@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auction Round - EPIC Foundation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="auction-round.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="page-header">
+        <a href="/" class="logo">EPIC Foundation</a>
+        <nav class="nav-menu">
+            <a href="auctions.html" class="nav-link">Auction</a>
+            <a href="travel-events.html" class="nav-link">Travel & Events</a>
+            <a href="about.html" class="nav-link">About Us</a>
+            <a href="contact.html" class="nav-link">Contact Us</a>
+            <a href="donate.html" class="nav-link" style="color:#fff;font-weight:700;">Donate ♥</a>
+            <button class="login-btn">Login</button>
+        </nav>
+    </header>
+
+    <!-- Hero Section with Images and Auction Details -->
+    <section class="auction-hero">
+        <a href="auctions.html" class="back-to-auctions">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+            </svg>
+            Back to All Auctions
+        </a>
+        <div class="hero-container">
+            <!-- Left: Main Image -->
+            <div class="main-image-container">
+                <img src="hero.png" alt="Golf Course" class="main-image">
+            </div>
+
+            <!-- Middle: Smaller Images -->
+            <div class="side-images-container">
+                <div class="side-image">
+                    <img src="hero.png" alt="Golf Course View 1">
+                </div>
+                <div class="side-image">
+                    <img src="hero.png" alt="Golf Course View 2">
+                    <button class="view-more-btn" onclick="openGallery()">
+                        <svg viewBox="0 0 24 24" fill="currentColor"
+                            style="width: 20px; height: 20px; margin-right: 8px;">
+                            <path
+                                d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+                        </svg>
+                        View more photos
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right: Auction Details -->
+            <div class="auction-details" style="display:flex;flex-direction:column;gap:1.8rem;">
+
+                <!-- Countdown -->
+                <div class="time-left-section">
+                    <h3
+                        style="font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#888;margin-bottom:0.5rem;">
+                        Auction Closes In</h3>
+                    <div class="countdown" id="auction-countdown"
+                        style="font-size:2.2rem;font-weight:900;letter-spacing:-0.02em;line-height:1;">Loading…</div>
+                    <p class="auction-end" id="auction-end-date"
+                        style="font-size:0.78rem;color:#888;margin-top:0.4rem;"></p>
+                </div>
+
+                <!-- CTA Buttons -->
+                <div style="display:flex;flex-direction:column;gap:0.75rem;">
+                    <a id="bid-now-link" href="#" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;
+                               padding:1rem 1.5rem;background:#000;color:#fff;
+                               border-radius:12px;font-size:1rem;font-weight:800;
+                               text-decoration:none;letter-spacing:0.02em;
+                               transition:opacity 0.2s,transform 0.15s;text-align:center;"
+                        onmouseover="this.style.opacity='0.85';this.style.transform='translateY(-1px)'"
+                        onmouseout="this.style.opacity='1';this.style.transform=''">
+                        Bid Now
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="7" y1="17" x2="17" y2="7" />
+                            <polyline points="7 7 17 7 17 17" />
+                        </svg>
+                    </a>
+
+                    <button id="watchlist-btn-main" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;
+                               padding:0.9rem 1.5rem;background:#fff;color:#111;
+                               border:2px solid #e0e0e0;border-radius:12px;
+                               font-family:'Poppins',sans-serif;font-size:0.9rem;font-weight:700;
+                               cursor:pointer;letter-spacing:0.02em;
+                               transition:border-color 0.2s,background 0.2s;" onclick="toggleWatchlist()"
+                        onmouseover="this.style.borderColor='#111'" onmouseout="this.style.borderColor='#e0e0e0'">
+                        <svg id="wl-heart" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                        </svg>
+                        <span id="wl-label">Add to Watchlist</span>
+                    </button>
+                </div>
+
+                <!-- Short description -->
+                <p id="auction-cta-note"
+                    style="font-size:0.78rem;color:#999;line-height:1.6;border-top:1px solid #f0f0f0;padding-top:1.2rem;">
+                    Bidding takes place on our secure auction platform. Click <strong style="color:#555;">Bid
+                        Now</strong> to view full details and place your bid.
+                </p>
+
+                <!-- Schedule button — shown only when auction is closed -->
+                <div id="schedule-btn-wrap" style="display:none;padding-top:1rem;">
+                    <div
+                        style="background:#e8f8f0;border-radius:12px;padding:1.2rem 1.4rem;border:1.5px solid #1a9e5c;">
+                        <p style="font-size:0.82rem;font-weight:700;color:#1a9e5c;margin-bottom:0.5rem;">Ready to
+                            schedule your round?</p>
+                        <p style="font-size:0.76rem;color:#555;margin-bottom:0.9rem;line-height:1.6;">This auction has
+                            closed. Contact our team to begin scheduling your outing.</p>
+                        <a href="../contact.html?subject=Schedule+My+Round" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.65rem 1.2rem;
+                                   background:#1a9e5c;color:#fff;border-radius:9px;
+                                   font-size:0.84rem;font-weight:700;text-decoration:none;"
+                            onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+                            Schedule My Round →
+                        </a>
+                    </div>
+                </div>
+
+                <!-- LEGACY BID CODE PRESERVED — hidden, not deleted
+                <div class="pricing-section">
+                    <div class="current-bid-display"><h2 id="current-bid-legacy">$8,000</h2><p>Current bid</p></div>
+                    <div class="bid-info">
+                        <div class="bid-increment"><span class="label">Bid Increment</span><span class="value">$200</span></div>
+                        <div class="buy-now-price" style="display:none;"><span class="label">Buy It Now</span><span class="value">$12,000</span></div>
+                    </div>
+                </div>
+                <div class="winning-announcement" id="winningAnnouncement" style="display:none;">🎉 You currently hold the highest bid!</div>
+                <div class="action-buttons" style="display:none;">
+                    <button class="bid-btn">BID</button>
+                    <div class="secondary-buttons">
+                        <button class="buy-now-action-btn" style="display:none;">BUY NOW</button>
+                        <button class="watchlist-btn">ADD TO WATCHLIST</button>
+                    </div>
+                </div>
+                END LEGACY -->
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Auction Information Section -->
+    <section class="auction-info">
+        <div class="info-container">
+            <div class="info-main">
+                <h1>Pebble Beach Golf Links - Round for 2 w/ a member</h1>
+
+                <div class="auction-meta">
+                    <span class="location">
+                        <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                        </svg>
+                        Pebble Beach, CA
+                    </span>
+                    <span class="date">
+                        <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
+                        </svg>
+                        Available: 10/1 - 12/31
+                    </span>
+                </div>
+
+                <div class="item-details-section">
+                    <h2>Item Details</h2>
+                    <p class="section-intro">A round for 2 with a member at Pebble Beach Golf Links to be played
+                        <strong>between 10/1 and 10/30</strong> with carts included. Food and drinks are available in
+                        the clubhouse.
+                    </p>
+
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <svg class="detail-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+                            </svg>
+                            <span class="detail-text">Number Of Guests: 2</span>
+                        </div>
+                        <div class="detail-item">
+                            <svg class="detail-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 2S4 8 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8c0-6-8-12-8-12zm0 18c-3.31 0-6-2.69-6-6 0-3.32 3.67-7.38 6-9.71 2.33 2.33 6 6.39 6 9.71 0 3.31-2.69 6-6 6z" />
+                            </svg>
+                            <span class="detail-text">Number Of Rounds: 1</span>
+                        </div>
+                        <div class="detail-item">
+                            <svg class="detail-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
+                            </svg>
+                            <div class="detail-text">
+                                <strong>Booking Restrictions:</strong> This Item Can Be Scheduled For A Mutually Agreed
+                                Upon Date With The Host/Club Between 10/1 And 10/30. Proposed Dates Are Not Guaranteed.
+                                While We Will Make Every Effort To Accommodate Your Preferred Dates, Options Are Subject
+                                To The Host/Club Schedule And Flexibility May Be Required.
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <svg class="detail-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                            </svg>
+                            <div class="detail-text">
+                                <strong>Attributes:</strong> Cart<br>
+                                <strong>Paid For By:</strong> Donor
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tax-notice">
+                        ⚠️ This purchase is NOT tax deductible
+                    </div>
+                </div>
+
+                <div class="course-details-section">
+                    <h2>Course Details</h2>
+                    <p class="section-intro">Consistently ranked among the top courses in the United States, Pebble
+                        Beach Golf Links, located off the coast of California, is a renowned golf course designed by
+                        Jack Neville & Douglas Grant in 1919. It features signature template holes, including the Redan,
+                        Biarritz, and Short.</p>
+
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <svg class="detail-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z" />
+                            </svg>
+                            <div class="detail-text">
+                                Pebble Beach Golf Links<br>
+                                <a href="#" class="detail-link">Link to Course Website</a>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <svg class="detail-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                            </svg>
+                            <div class="detail-text">
+                                Ranked 9 In Golf Digest's Top 100 US Courses & 3 In Golf Digest's Best In State -
+                                California<br>
+                                <a href="#" class="detail-link">Link to ranking page</a>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <svg class="detail-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                            </svg>
+                            <span class="detail-text">Architect: Jack Neville & Douglas Grant</span>
+                        </div>
+                        <div class="detail-item">
+                            <svg class="detail-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M14 6l-1-2H5v17h2v-7h5l1 2h7V6h-6zm4 8h-4l-1-2H7V6h5l1 2h5v6z" />
+                            </svg>
+                            <span class="detail-text">Course Type: Parkland</span>
+                        </div>
+                        <div class="detail-item">
+                            <svg class="detail-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm6 9.09c0 4-2.55 7.7-6 8.83-3.45-1.13-6-4.82-6-8.83V6.31l6-2.12 6 2.12v4.78z" />
+                            </svg>
+                            <span class="detail-text">Year Opened: 1919</span>
+                        </div>
+                        <div class="detail-item">
+                            <svg class="detail-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
+                            </svg>
+                            <span class="detail-text">Access: Private</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="location-section">
+                    <h2>Location</h2>
+                    <p class="location-address">Pebble Beach, CA</p>
+                    <div class="map-container">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3203.5847894739!2d-121.9497!3d36.5681!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808de615b717e78f%3A0x3e8d4e3f6e8e8e8e!2sPebble%20Beach%20Golf%20Links!5e0!3m2!1sen!2sus!4v1234567890"
+                            width="100%" height="400" style="border:0; border-radius: 16px;" allowfullscreen=""
+                            loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+
+                <div class="charity-support-section">
+                    <div class="charity-support-content">
+                        <div class="charity-text">
+                            <p class="support-label">This Auction Proudly Supports:</p>
+                            <h2 class="charity-name">EPIC Foundation</h2>
+                            <p class="charity-description">
+                                The EPIC Foundation exists to create extraordinary golf experiences that serve a greater purpose. We partner with world-class golf clubs to offer access that money alone can't buy — then direct the proceeds to charitable causes championed by our members and partners. When you bid, you're not just winning a round of golf. You're funding something that matters.
+                            </p>
+                        </div>
+                        <div class="charity-logo-box">
+                            <div class="epic-logo">EPIC</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-sidebar">
+                <div class="charity-info">
+                    <h3>Benefiting</h3>
+                    <div class="charity-logo">
+                        <p style="font-weight:800;letter-spacing:0.05em;">EPIC Foundation</p>
+                    </div>
+                    <p class="charity-description">Every dollar raised through EPIC Foundation auctions goes directly toward funding once-in-a-lifetime golf experiences for individuals and organizations making a meaningful difference. Play great golf. Do more good.</p>
+                </div>
+
+                <div class="share-section">
+                    <h3>Share This Auction</h3>
+                    <div class="share-buttons">
+                        <button class="share-btn">Facebook</button>
+                        <button class="share-btn">Twitter</button>
+                        <button class="share-btn">Email</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Photo Gallery Modal (White Grid View) -->
+    <div id="galleryModal" class="gallery-modal">
+        <div class="gallery-modal-content">
+            <button class="gallery-back-btn" onclick="closeGallery()">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+                </svg>
+            </button>
+            <h2 class="gallery-title">Photo Gallery</h2>
+            <div class="gallery-grid">
+                <img src="hero.png" alt="Golf Course 1" onclick="openLightbox(0)">
+                <img src="hero.png" alt="Golf Course 2" onclick="openLightbox(1)">
+                <img src="hero.png" alt="Golf Course 3" onclick="openLightbox(2)">
+                <img src="hero.png" alt="Golf Course 4" onclick="openLightbox(3)">
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox Modal (Black Full Image View) -->
+    <div id="lightboxModal" class="lightbox-modal">
+        <button class="lightbox-close" onclick="closeLightbox()">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+            </svg>
+            Close
+        </button>
+        <div class="lightbox-counter">1/4</div>
+        <div class="lightbox-content">
+            <button class="lightbox-prev" onclick="changeLightboxImage(-1)">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+                </svg>
+            </button>
+            <img id="lightboxImage" src="hero.png" alt="Golf Course">
+            <button class="lightbox-next" onclick="changeLightboxImage(1)">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3 class="footer-heading">EPIC Foundation</h3>
+                <p class="footer-description">Creating once-in-a-lifetime golf experiences while supporting charitable
+                    causes.</p>
+            </div>
+
+            <div class="footer-column">
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="auctions.html">Auctions</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4 class="footer-title">Explore</h4>
+                <ul class="footer-links">
+                    <li><a href="travel-events.html">Travel & Events</a></li>
+                    <li><a href="#">Content</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Login</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4 class="footer-title">Legal</h4>
+                <ul class="footer-links">
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                    <li><a href="#terms">Terms of Service</a></li>
+                    <li><a href="#cookies">Cookie Policy</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 EPIC Foundation. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Custom Modals -->
+    <div id="bidModal"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
+        <div style="background:#fff; padding:2rem; border-radius:12px; max-width:400px; width:90%; text-align:center;">
+            <h3 style="margin-bottom:1rem; font-family:'Poppins', sans-serif;">Place Your Bid</h3>
+            <p id="bidModalText" style="margin-bottom:1rem; font-size:0.95rem; color:#555;"></p>
+            <input type="number" id="bidModalInput"
+                style="width:100%; padding:0.8rem; font-size:1rem; border:1px solid #ddd; border-radius:8px; margin-bottom:1.5rem;"
+                placeholder="Enter amount...">
+            <div style="display:flex; justify-content:center; gap:1rem;">
+                <button id="bidModalCancel"
+                    style="padding:0.6rem 1.2rem; background:#f5f5f5; border:none; border-radius:6px; cursor:pointer; font-weight:600;">Cancel</button>
+                <button id="bidModalConfirm"
+                    style="padding:0.6rem 1.2rem; background:#000; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:600;">Confirm
+                    Bid</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Buy Now Modal -->
+    <div id="buyNowModal"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
+        <div style="background:#fff; padding:2rem; border-radius:12px; max-width:400px; width:90%; text-align:center;">
+            <h3 style="margin-bottom:1rem; font-family:'Poppins', sans-serif;">Buy It Now</h3>
+            <p id="buyNowModalText" style="margin-bottom:1.5rem; font-size:0.95rem; color:#555;"></p>
+            <div style="display:flex; justify-content:center; gap:1rem;">
+                <button id="buyNowModalCancel"
+                    style="padding:0.6rem 1.2rem; background:#f5f5f5; border:none; border-radius:6px; cursor:pointer; font-weight:600;">Cancel</button>
+                <button id="buyNowModalConfirm"
+                    style="padding:0.6rem 1.2rem; background:#000; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:600;">Confirm
+                    Purchase</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="db.js"></script>
+    <script src="auth.js"></script>
+    <script src="shared-auctions.js"></script>
+    <script src="shared-courses.js"></script>
+    <script src="auction-gallery.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            AUTH.applyGatedNav('');
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const auctionId = urlParams.get('id');
+
+            if (!auctionId) {
+                document.querySelector('.info-main').innerHTML = '<h2>Auction not found.</h2>';
+                return;
+            }
+
+            // Always fetch fresh data from server so admin changes are reflected immediately
+            let auctions;
+            if (typeof EPICDB !== 'undefined') {
+                auctions = await EPICDB.getAuctions();
+            } else {
+                auctions = loadSharedAuctions();
+            }
+            const data = auctions.find(a => a.id === auctionId);
+
+            if (!data) {
+                document.querySelector('.info-main').innerHTML = '<h2>Auction not found.</h2>';
+                return;
+            }
+
+            // --- Header Details ---
+            document.title = `${data.title} - EPIC Foundation`;
+            document.querySelector('.info-main h1').textContent = data.title;
+
+            const locSpan = document.querySelector('.auction-meta .location');
+            if (locSpan) {
+                locSpan.innerHTML = `
+                    <svg class="meta-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                    </svg>
+                    ${data.location}
+                `;
+            }
+
+            const descEl = document.querySelector('.item-details-section .section-intro');
+            if (descEl) descEl.innerHTML = data.description.replace(/\n/g, '<br>');
+
+            // --- Map Logic ---
+            const locAddressEl = document.querySelector('.location-address');
+            if (locAddressEl) locAddressEl.textContent = data.mapAddress || data.location;
+
+            // ── Linked Course Section ───────────────────────────────────────────
+            if (data.course_id) {
+                const courses = (typeof loadSharedCourses === 'function') ? loadSharedCourses() : [];
+                const course = courses.find(c => c.id === data.course_id);
+                if (course) {
+                    const amenityLabels = {
+                        driving_range:'Driving Range', practice_green:'Practice Green', caddies:'Caddies',
+                        golf_shop:'Golf Shop', restaurant:'Restaurant', bar:'Bar', lodging:'Lodging',
+                        cart_available:'Cart Available', walking_allowed:'Walking', club_rentals:'Club Rentals',
+                        lessons_available:'Lessons'
+                    };
+                    const amenityList = course.amenities
+                        ? Object.entries(course.amenities).filter(([,v]) => v).map(([k]) => `<span style="display:inline-flex;align-items:center;gap:4px;background:#f0f0f0;padding:3px 10px;border-radius:20px;font-size:0.78rem;">✓ ${amenityLabels[k]||k}</span>`).join('')
+                        : '';
+                    const quickStats = [
+                        course.holes ? `<div><strong>${course.holes}</strong><br><span>Holes</span></div>` : null,
+                        course.par ? `<div><strong>Par ${course.par}</strong><br><span>Par</span></div>` : null,
+                        course.yardage ? `<div><strong>${course.yardage.toLocaleString()}</strong><br><span>Yards</span></div>` : null,
+                        course.public_private ? `<div><strong>${course.public_private}</strong><br><span>Access</span></div>` : null,
+                    ].filter(Boolean).join('');
+                    const galleryHtml = (course.gallery && course.gallery.length > 1)
+                        ? `<div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:1.2rem;">${course.gallery.slice(1,5).map(url=>`<img src="${url}" alt="Gallery" style="width:calc(25% - 0.5rem);aspect-ratio:4/3;object-fit:cover;border-radius:8px;">`).join('')}</div>` : '';
+                    const courseSection = document.createElement('div');
+                    courseSection.className = 'course-details-section linked-course-section';
+                    courseSection.style.cssText = 'border-top:1px solid #f0f0f0;padding-top:2rem;margin-top:0.5rem;';
+                    courseSection.innerHTML = `
+                        <h2 style="font-size:1.4rem;font-weight:800;margin-bottom:1.2rem;">About the Course</h2>
+                        ${course.featured_image_url ? `<img src="${course.featured_image_url}" alt="${course.name}" style="width:100%;height:300px;object-fit:cover;border-radius:16px;margin-bottom:1.5rem;">` : ''}
+                        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1rem;">
+                            <div>
+                                <h3 style="font-size:1.2rem;font-weight:700;margin:0 0 4px;">${course.name}</h3>
+                                <p style="font-size:0.88rem;color:#888;margin:0;">${course.city || ''}${course.city && course.state ? ', ' : ''}${course.state || ''}${course.designer ? ' &bull; Designed by ' + course.designer : ''}</p>
+                            </div>
+                            ${course.badge_text ? `<span style="background:#000;color:#fff;padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:700;">${course.badge_text}</span>` : ''}
+                        </div>
+                        ${course.short_description ? `<p style="font-size:0.95rem;color:#444;line-height:1.7;margin-bottom:1.5rem;">${course.short_description}</p>` : ''}
+                        ${quickStats ? `<div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:1.5rem;padding:1rem 1.2rem;background:#f8f9fa;border-radius:12px;text-align:center;">${quickStats.replace(/<\/div><div>/g,'</div><div style="border-left:1px solid #eee;padding-left:1.5rem;margin-left:0;">').replace('<div>','<div style="">').replace(/<strong>/g,'<strong style="display:block;font-size:1.1rem;">').replace(/<span>/g,'<span style="font-size:0.75rem;color:#888;text-transform:uppercase;letter-spacing:0.05em;">')}</div>` : ''}
+                        ${amenityList ? `<div style="margin-bottom:1.5rem;"><p style="font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#888;margin-bottom:0.6rem;">Amenities</p><div style="display:flex;flex-wrap:wrap;gap:0.4rem;">${amenityList}</div></div>` : ''}
+                        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:1rem;">
+                            ${course.website_url ? `<a href="${course.website_url}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;padding:0.65rem 1.2rem;background:#000;color:#fff;border-radius:10px;font-size:0.88rem;font-weight:700;text-decoration:none;">🌐 Visit Website</a>` : ''}
+                            ${course.google_maps_url || course.city ? `<a href="${course.google_maps_url || 'https://maps.google.com/?q=' + encodeURIComponent((course.name||'') + ' ' + (course.city||'') + ' ' + (course.state||''))}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;padding:0.65rem 1.2rem;background:white;color:#000;border:2px solid #e0e0e0;border-radius:10px;font-size:0.88rem;font-weight:700;text-decoration:none;">📍 Get Directions</a>` : ''}
+                        </div>
+                        ${galleryHtml}
+                    `;
+                    // Insert before the location section
+                    const locationSection = document.querySelector('.location-section');
+                    if (locationSection) locationSection.parentNode.insertBefore(courseSection, locationSection);
+                    else document.querySelector('.info-main').appendChild(courseSection);
+                }
+            }
+
+            const mapContainer = document.querySelector('.map-container');
+            if (mapContainer) {
+                const rawMapQuery = data.mapAddress || data.location || data.course || 'Pebble Beach Golf Links, CA';
+                const mapQuery = encodeURIComponent(rawMapQuery);
+                const isPebbleBeach = rawMapQuery.toLowerCase().includes('pebble beach');
+                if (isPebbleBeach) {
+                    // Pebble Beach exact coordinates OSM embed
+                    mapContainer.innerHTML = `
+                        <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=-122.01%2C36.54%2C-121.88%2C36.60&layer=mapnik&marker=36.5681,-121.9497"
+                            width="100%" height="400" style="border:0;border-radius:16px;" loading="lazy" allowfullscreen></iframe>
+                        <div style="margin-top:0.6rem;"><a href="https://maps.google.com/?q=${mapQuery}" target="_blank" rel="noopener" style="font-size:0.82rem;color:#4A90E2;text-decoration:none;font-weight:600;">&#x1F4CD; Open in Google Maps &#x2192;</a></div>`;
+                } else {
+                    mapContainer.innerHTML = `
+                        <div style="border-radius:16px;overflow:hidden;background:#f3f4f6;display:flex;align-items:center;justify-content:center;min-height:280px;flex-direction:column;gap:1rem;padding:2rem;text-align:center;">
+                            <span style="font-size:2.5rem;">&#x1F4CD;</span>
+                            <strong style="font-size:1rem;color:#333;">${rawMapQuery.replace(/</g,'&lt;')}</strong>
+                            <a href="https://maps.google.com/?q=${mapQuery}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;padding:0.7rem 1.4rem;background:#000;color:#fff;border-radius:10px;font-size:0.88rem;font-weight:700;text-decoration:none;">Open in Google Maps &#x2192;</a>
+                        </div>`;
+                }
+            }
+
+            // --- Main Image Layout ---
+            const mainImage = document.querySelector('.main-image');
+            if (mainImage && data.images && data.images[0]) {
+                mainImage.src = data.images[0];
+            }
+
+            const sideImages = document.querySelectorAll('.side-image img');
+            if (sideImages.length > 0 && data.images) {
+                if (data.images[1]) sideImages[0].src = data.images[1];
+                if (data.images[2]) sideImages[1].src = data.images[2];
+            }
+
+            if (typeof setGalleryImages === 'function' && data.images) {
+                setGalleryImages(data.images);
+            }
+
+            // --- Bid Now External Link ---
+            const bidNowLink = document.getElementById('bid-now-link');
+            if (bidNowLink) {
+                const extUrl = data.thirdPartyUrl || data.bidUrl || data.externalUrl || '#';
+                bidNowLink.href = extUrl;
+                if (!extUrl || extUrl === '#') {
+                    bidNowLink.title = 'External bid link coming soon';
+                }
+            }
+
+            // --- Watchlist init ---
+            initWatchlistBtn(data.id);
+
+            // --- Pricing Display (legacy, still updates hidden element) ---
+            const currentBidEl = document.querySelector('#current-bid-legacy');
+            if (currentBidEl) {
+                const currentBidLabel = data.currentBid || data.startBid;
+                currentBidEl.textContent = `$${currentBidLabel.toLocaleString()}`;
+            }
+
+            const bidInfoParent = document.querySelector('.bid-info');
+            if (bidInfoParent) {
+                if (data.buyNow) {
+                    const bnVal = bidInfoParent.querySelector('.buy-now-price .value');
+                    const bnRow = bidInfoParent.querySelector('.buy-now-price');
+                    if (bnVal) bnVal.textContent = `$${data.buyNow.toLocaleString()}`;
+                    if (bnRow) bnRow.style.display = 'flex';
+                } else {
+                    const buyNowRow = bidInfoParent.querySelector('.buy-now-price');
+                    if (buyNowRow) buyNowRow.style.display = 'none';
+                    const buyNowBtn = document.querySelector('.buy-now-action-btn');
+                    if (buyNowBtn) buyNowBtn.style.display = 'none';
+                }
+            }
+
+            // --- Live Countdown Logic ---
+            const timerEl = document.getElementById('auction-countdown');
+            const endEl = document.getElementById('auction-end-date');
+            if (data.endDate && timerEl && endEl) {
+                const endTimestamp = new Date(data.endDate).getTime();
+
+                const endDateObj = new Date(data.endDate);
+                const opts = { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' };
+                endEl.textContent = `Auction Ends: ${endDateObj.toLocaleString('en-US', opts)}`;
+
+                function updateCountdown() {
+                    const now = new Date().getTime();
+                    const distance = endTimestamp - now;
+
+                    if (distance < 0) {
+                        timerEl.textContent = 'Closed';
+                        timerEl.style.color = '#e53935';
+                        endEl.textContent = 'This auction has ended.';
+                        // Update Bid Now button to reflect closed state
+                        const bidNowEl = document.getElementById('bid-now-link');
+                        if (bidNowEl) {
+                            bidNowEl.textContent = 'Auction Closed';
+                            bidNowEl.style.background = '#888';
+                            bidNowEl.style.cursor = 'default';
+                            bidNowEl.style.pointerEvents = 'none';
+                        }
+                        // Show schedule button
+                        const schedBtn = document.getElementById('schedule-btn-wrap');
+                        if (schedBtn) schedBtn.style.display = '';
+                        // Legacy bid btn (hidden but still markup)
+                        const bidBtn = document.querySelector('.bid-btn');
+                        if (bidBtn) {
+                            bidBtn.textContent = 'AUCTION CLOSED';
+                            bidBtn.style.opacity = '0.7';
+                            bidBtn.style.pointerEvents = 'none';
+                        }
+                        return;
+                    }
+
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    timerEl.textContent = `${days}d: ${hours}h: ${minutes}m: ${seconds}s`;
+                }
+
+                updateCountdown();
+                setInterval(updateCountdown, 1000);
+            }
+
+            // --- Custom Modal Elements ---
+            const bidModal = document.getElementById('bidModal');
+            const bidModalText = document.getElementById('bidModalText');
+            const bidModalInput = document.getElementById('bidModalInput');
+            const bidModalCancel = document.getElementById('bidModalCancel');
+            const bidModalConfirm = document.getElementById('bidModalConfirm');
+
+            const buyNowModal = document.getElementById('buyNowModal');
+            const buyNowModalText = document.getElementById('buyNowModalText');
+            const buyNowModalCancel = document.getElementById('buyNowModalCancel');
+            const buyNowModalConfirm = document.getElementById('buyNowModalConfirm');
+
+            const currentUser = AUTH.currentUser();
+            const bidBtn = document.querySelector('.bid-btn');
+
+            const highestBidderEmail = data.highestBidder || '';
+
+            if (currentUser && highestBidderEmail === currentUser.email) {
+                const announcement = document.getElementById('winningAnnouncement');
+                if (announcement) announcement.style.display = 'block';
+
+                if (bidBtn) {
+                    bidBtn.textContent = 'WINNING BID';
+                    bidBtn.style.opacity = '0.7';
+                    bidBtn.style.cursor = 'not-allowed';
+                    bidBtn.style.pointerEvents = 'none';
+                }
+            }
+
+            // --- Bidding Logic ---
+            if (bidBtn && (!currentUser || highestBidderEmail !== currentUser.email)) {
+                bidBtn.addEventListener('click', () => {
+                    const user = AUTH.currentUser();
+                    if (!user) {
+                        alert('You must be logged in to place a bid.');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+
+                    const currentBid = data.currentBid || data.startBid;
+                    const increment = 100;
+                    const minBid = currentBid + increment;
+
+                    bidModalText.innerHTML = `Current bid is $${currentBid.toLocaleString()}.<br>Please enter your bid (minimum $${minBid.toLocaleString()}):`;
+                    bidModalInput.value = minBid;
+                    bidModalInput.min = minBid;
+                    bidModal.style.display = 'flex';
+                    bidModalInput.focus();
+
+                    const newConfirm = bidModalConfirm.cloneNode(true);
+                    bidModalConfirm.parentNode.replaceChild(newConfirm, bidModalConfirm);
+                    const newCancel = bidModalCancel.cloneNode(true);
+                    bidModalCancel.parentNode.replaceChild(newCancel, bidModalCancel);
+
+                    newCancel.addEventListener('click', () => {
+                        bidModal.style.display = 'none';
+                    });
+
+                    newConfirm.addEventListener('click', () => {
+                        let bidAmount = parseFloat(bidModalInput.value);
+                        if (isNaN(bidAmount) || bidAmount < minBid) {
+                            alert(`Invalid bid. You must bid at least $${minBid.toLocaleString()}.`);
+                            bidModalInput.focus();
+                            return;
+                        }
+
+                        data.currentBid = bidAmount;
+                        data.bids = (data.bids || 0) + 1;
+                        data.highestBidder = user.email;
+
+                        const idx = auctions.findIndex(a => a.id === data.id);
+                        if (idx > -1) auctions[idx] = data;
+                        saveSharedAuctions(auctions);
+
+                        const bids = user.bids || [];
+                        bids.push({
+                            auctionId: data.id,
+                            amount: bidAmount,
+                            date: new Date().toISOString(),
+                            title: data.title,
+                            status: 'active'
+                        });
+                        AUTH.updateProfile({ bids });
+
+                        bidModal.style.display = 'none';
+                        alert(`Success! You have placed a bid of $${bidAmount.toLocaleString()}.`);
+                        window.location.reload();
+                    });
+                });
+            }
+
+            // --- Buy Now Logic ---
+            const buyNowBtn = document.querySelector('.buy-now-action-btn');
+            if (buyNowBtn && data.buyNow) {
+                buyNowBtn.addEventListener('click', () => {
+                    const user = AUTH.currentUser();
+                    if (!user) {
+                        alert('You must be logged in to buy an item.');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+
+                    buyNowModalText.innerHTML = `Are you sure you want to buy "${data.title}" right now for <strong>$${data.buyNow.toLocaleString()}</strong>?`;
+                    buyNowModal.style.display = 'flex';
+
+                    const newConfirm = buyNowModalConfirm.cloneNode(true);
+                    buyNowModalConfirm.parentNode.replaceChild(newConfirm, buyNowModalConfirm);
+                    const newCancel = buyNowModalCancel.cloneNode(true);
+                    yNCancel.parentNode.replaceChild(newCancel, buyNowModalCancel);
+
+                    newCancel.addEventListener('click', () => {
+                        buyNowModal.style.display = 'none';
+                    });
+
+                    newConfirm.addEventListener('click', () => {
+                        data.status = 'closed';
+                        data.highestBidder = user.email;
+                        data.currentBid = data.buyNow;
+
+                        const idx = auctions.findIndex(a => a.id === data.id);
+                        if (idx > -1) auctions[idx] = data;
+                        saveSharedAuctions(auctions);
+
+                        const purchases = user.purchases || [];
+                        purchases.push({
+                            auctionId: data.id,
+                            amount: data.buyNow,
+                            date: new Date().toISOString(),
+                            title: data.title
+                        });
+                        AUTH.updateProfile({ purchases });
+
+                        buyNowModal.style.display = 'none';
+                        alert(`Congratulations! You have purchased "${data.title}".`);
+                        window.location.reload();
+                    });
+                });
+            }
+        });
+
+        // ── Watchlist toggle ─────────────────────────────────────────
+        let _watchlistAuctionId = null;
+
+        function initWatchlistBtn(auctionId) {
+            _watchlistAuctionId = auctionId;
+            const user = typeof AUTH !== 'undefined' ? AUTH.currentUser() : null;
+            if (!user) return;
+            const key = 'epic_users';
+            let users = [];
+            try { users = JSON.parse(localStorage.getItem(key) || '[]'); } catch { }
+            const u = users.find(x => x.id === user.id);
+            const watchlist = (u && u.watchlist) || [];
+            const onList = watchlist.some(w => (w.auctionId || w) === auctionId);
+            updateWatchlistBtn(onList);
+        }
+
+        function updateWatchlistBtn(isOnList) {
+            const label = document.getElementById('wl-label');
+            const heart = document.getElementById('wl-heart');
+            const btn = document.getElementById('watchlist-btn-main');
+            if (!label || !heart || !btn) return;
+            if (isOnList) {
+                label.textContent = 'On Watchlist';
+                heart.setAttribute('fill', '#e53935');
+                heart.setAttribute('stroke', '#e53935');
+                btn.style.borderColor = '#e53935';
+                btn.style.color = '#e53935';
+            } else {
+                label.textContent = 'Add to Watchlist';
+                heart.setAttribute('fill', 'none');
+                heart.setAttribute('stroke', 'currentColor');
+                btn.style.borderColor = '#e0e0e0';
+                btn.style.color = '#111';
+            }
+        }
+
+        function toggleWatchlist() {
+            const user = typeof AUTH !== 'undefined' ? AUTH.currentUser() : null;
+            if (!user) { alert('Please log in to save to your watchlist.'); return; }
+            const auctionId = _watchlistAuctionId;
+            if (!auctionId) return;
+            const key = 'epic_users';
+            let users = [];
+            try { users = JSON.parse(localStorage.getItem(key) || '[]'); } catch { }
+            const idx = users.findIndex(x => x.id === user.id);
+            const u = idx > -1 ? users[idx] : { ...user, watchlist: [] };
+            if (!u.watchlist) u.watchlist = [];
+            const wi = u.watchlist.findIndex(w => (w.auctionId || w) === auctionId);
+            if (wi > -1) {
+                u.watchlist.splice(wi, 1);
+                updateWatchlistBtn(false);
+            } else {
+                u.watchlist.push({ auctionId, addedAt: new Date().toISOString() });
+                updateWatchlistBtn(true);
+            }
+            if (idx > -1) users[idx] = u; else users.push(u);
+            localStorage.setItem(key, JSON.stringify(users));
+            // Also persist to EPICDB if available
+            if (typeof EPICDB !== 'undefined' && EPICDB.saveUser) {
+                EPICDB.saveUser(u).catch(() => { });
+            }
+        }
+    </script>
+
+</html>

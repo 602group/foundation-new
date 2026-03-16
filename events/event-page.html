@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event — EPIC Foundation</title>
+    <meta name="description" content="Register for an exclusive EPIC Foundation golf event.">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../event-page.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ── Image gallery ─────────────────────────────────────── */
+        .evt-gallery {
+            display: flex;
+            gap: 0.75rem;
+            overflow-x: auto;
+            padding: 0.5rem 0 1rem;
+            scroll-snap-type: x mandatory;
+        }
+
+        .evt-gallery img {
+            height: 220px;
+            min-width: 320px;
+            max-width: 480px;
+            object-fit: cover;
+            border-radius: 14px;
+            scroll-snap-align: start;
+            flex-shrink: 0;
+        }
+
+        /* ── Schedule timeline ─────────────────────────────────── */
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .schedule-item {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 1.1rem 1.2rem;
+            border-left: 4px solid #2d5a1b;
+        }
+
+        .schedule-item .sch-label {
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #888;
+            margin-bottom: 0.4rem;
+        }
+
+        .schedule-item .sch-text {
+            font-size: 0.88rem;
+            color: #222;
+            font-weight: 500;
+        }
+
+        /* ── Includes list ─────────────────────────────────────── */
+        .includes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.6rem;
+            margin-top: 0.8rem;
+        }
+
+        .includes-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            font-size: 0.88rem;
+            color: #333;
+        }
+
+        .includes-item::before {
+            content: "✓";
+            color: #2d5a1b;
+            font-weight: 800;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+        }
+
+        /* ── Event ID badge ────────────────────────────────────── */
+        .evt-id-badge {
+            display: inline-block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            color: #888;
+            background: #f4f4f4;
+            border-radius: 6px;
+            padding: 0.25rem 0.65rem;
+            margin-bottom: 1rem;
+            font-family: monospace;
+        }
+
+        /* ── Deadline banner ───────────────────────────────────── */
+        .deadline-banner {
+            background: #fffbe6;
+            border: 1.5px solid #ffe082;
+            border-radius: 10px;
+            padding: 0.7rem 1rem;
+            font-size: 0.85rem;
+            color: #b8860b;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.2rem;
+        }
+
+        /* ── Not found state ───────────────────────────────────── */
+        .evt-not-found {
+            text-align: center;
+            padding: 5rem 2rem;
+        }
+
+        .evt-not-found h2 {
+            font-size: 1.6rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .evt-not-found p {
+            color: #888;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="page-header">
+        <a href="../index.html" class="logo">EPIC Foundation</a>
+        <nav class="nav-menu">
+            <a href="../auctions.html" class="nav-link">Auction</a>
+            <a href="../travel-events.html" class="nav-link">Travel &amp; Events</a>
+            <a href="../about.html" class="nav-link">About Us</a>
+            <a href="../contact.html" class="nav-link">Contact Us</a>
+            <button class="login-btn" id="headerLoginBtn">Login</button>
+        </nav>
+    </header>
+
+    <!-- Dynamic content injected here by JS -->
+    <div id="eventPageRoot"></div>
+
+    <!-- RSVP Modal -->
+    <div id="rsvpModal"
+        style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center;">
+        <div
+            style="background:#fff;width:90%;max-width:460px;border-radius:18px;padding:2rem 2rem 1.8rem;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.18);">
+            <button onclick="closeRsvp()"
+                style="position:absolute;top:1rem;right:1.1rem;background:none;border:none;font-size:1.3rem;cursor:pointer;color:#aaa;">✕</button>
+            <h2 style="font-size:1.35rem;font-weight:800;margin-bottom:0.3rem;" id="rsvpTitle">Register for Event</h2>
+            <p id="rsvpDesc" style="color:#888;font-size:0.88rem;margin-bottom:1.5rem;"></p>
+
+            <div style="margin-bottom:1rem;">
+                <label style="display:block;font-size:0.82rem;font-weight:700;margin-bottom:0.4rem;">Notes / Dietary
+                    Restrictions</label>
+                <textarea id="rsvpNotes" rows="3"
+                    style="width:100%;padding:0.75rem;border:1px solid #ddd;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.85rem;resize:vertical;"></textarea>
+            </div>
+
+            <div id="guestSectionContainer"
+                style="display:none;background:#f9f9f9;border:1px solid #eee;border-radius:10px;padding:1.1rem;margin-bottom:1.2rem;">
+                <label
+                    style="display:flex;align-items:center;gap:0.6rem;font-weight:700;font-size:0.9rem;cursor:pointer;">
+                    <input type="checkbox" id="bringGuestBox" style="transform:scale(1.2);"> I'm bringing a guest (+1
+                    spot)
+                </label>
+                <div id="guestDetails" style="display:none;margin-top:1rem;border-top:1px solid #ddd;padding-top:1rem;">
+                    <div style="margin-bottom:0.7rem;"><label
+                            style="display:block;font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;">Guest Full
+                            Name</label>
+                        <input type="text" id="guestName"
+                            style="width:100%;padding:0.6rem;border:1px solid #ccc;border-radius:6px;font-family:'Poppins',sans-serif;">
+                    </div>
+                    <div><label style="display:block;font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;">Guest Email
+                            (Optional)</label>
+                        <input type="email" id="guestEmail"
+                            style="width:100%;padding:0.6rem;border:1px solid #ccc;border-radius:6px;font-family:'Poppins',sans-serif;">
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:flex;justify-content:flex-end;gap:1rem;margin-top:1.5rem;">
+                <button onclick="closeRsvp()" id="cancelRsvpBtn"
+                    style="padding:0.7rem 1.4rem;background:none;border:none;color:#666;font-weight:600;cursor:pointer;">Cancel</button>
+                <button id="confirmRsvpBtn" onclick="confirmRsvp()"
+                    style="padding:0.7rem 1.8rem;background:#000;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Confirm
+                    Registration</button>
+            </div>
+            <div id="rsvpSuccessMsg"
+                style="display:none;margin-top:1.2rem;padding:1rem;background:#e8f8f0;color:#1a9e5c;border-radius:8px;text-align:center;font-weight:600;font-size:0.9rem;">
+                ✅ Successfully Registered! View in your profile.
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3 class="footer-heading">EPIC Foundation</h3>
+                <p class="footer-description">Creating once-in-a-lifetime golf experiences while supporting charitable
+                    causes.</p>
+            </div>
+            <div class="footer-column">
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../auctions.html">Auctions</a></li>
+                    <li><a href="../travel-events.html">Events</a></li>
+                    <li><a href="../about.html">About Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4 class="footer-title">Legal</h4>
+                <ul class="footer-links">
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                    <li><a href="#terms">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 EPIC Foundation. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../script.js"></script>
+    <script src="../db.js"></script>
+    <script src="../shared-events.js"></script>
+    <script src="../shared-courses.js"></script>
+    <script src="../auth.js"></script>
+    <script>
+        AUTH.applyHeader('../');
+
+        // ── Read Event ID from URL ─────────────────────────────────────────
+        const params = new URLSearchParams(window.location.search);
+        const EVENT_ID = params.get('id') || '';
+
+        // ── Format helpers ─────────────────────────────────────────────────
+        function fmt(str) { return str || ''; }
+        function money(n) { return n ? '$' + Number(n).toLocaleString() : ''; }
+        function fmtDate(raw) {
+            if (!raw) return '';
+            const d = new Date(raw + 'T00:00:00');
+            return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+        }
+        function includeItems(str) {
+            if (!str) return [];
+            return str.split(/[\n,]/).map(s => s.trim()).filter(Boolean);
+        }
+
+        // ── Render event page ──────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', () => {
+            const root = document.getElementById('eventPageRoot');
+            const events = loadSharedEvents();
+            const ev = events.find(e => e.id === EVENT_ID);
+
+            if (!ev) {
+                document.title = 'Event Not Found — EPIC Foundation';
+                root.innerHTML = `
+                    <div class="evt-not-found">
+                        <div style="font-size:3rem;margin-bottom:1rem;">🏌️</div>
+                        <h2>Event Not Found</h2>
+                        <p>This event may have been removed or the link is incorrect.</p>
+                        <a href="../travel-events.html" style="display:inline-block;padding:0.8rem 2rem;background:#000;color:#fff;border-radius:9px;text-decoration:none;font-weight:700;">← Back to Events</a>
+                    </div>`;
+                return;
+            }
+
+            // Set page title
+            document.title = `${ev.title} — EPIC Foundation`;
+
+            // Check hero image — prioritize custom Event image -> linked Course image -> gradient
+            let courseImg = '';
+            if (ev.course_id && typeof loadSharedCourses === 'function') {
+                const courses = loadSharedCourses();
+                const linkedCourse = courses.find(c => c.id === ev.course_id);
+                if (linkedCourse) courseImg = linkedCourse.featured_image_url || (linkedCourse.gallery && linkedCourse.gallery[0]) || '';
+            }
+            const heroImg = ev.image || (ev.images && ev.images[0]) || courseImg || '';
+            const heroStyle = heroImg
+                ? `background:url('${heroImg}') center/cover no-repeat;`
+                : `background:linear-gradient(135deg,#1a3a10 0%,#2d5a1b 50%,#4a7c30 100%);`;
+
+            // Spots
+            const sold = ev.spotsSold || 0;
+            const remaining = Math.max(0, ev.spots - sold);
+            const pct = ev.spots > 0 ? Math.round((sold / ev.spots) * 100) : 0;
+            const isSoldOut = remaining <= 0;
+
+            // Schedule
+            const sched = ev.schedule || {};
+            // If the user has provided a multi-line itinerary string, split by newline
+            let itineraryItems = [];
+            if (ev.itinerary && typeof ev.itinerary === 'string') {
+                itineraryItems = ev.itinerary.split('\n').map(s => s.trim()).filter(Boolean);
+            }
+            
+            const schedItems = [
+                sched.morning ? `<strong>Morning:</strong> ${sched.morning}` : null,
+                sched.afternoon ? `<strong>Afternoon:</strong> ${sched.afternoon}` : null,
+                sched.evening ? `<strong>Evening:</strong> ${sched.evening}` : null,
+            ].filter(Boolean);
+
+            // Images gallery
+            // Combine event image, event gallery, course featured image, and course gallery
+            let allImages = [];
+            if (ev.image) allImages.push(ev.image);
+            if (ev.images) allImages.push(...ev.images);
+            if (ev.course_id && typeof loadSharedCourses === 'function') {
+                const courses = loadSharedCourses();
+                const linkedCourse = courses.find(c => c.id === ev.course_id);
+                if (linkedCourse) {
+                    allImages.push(linkedCourse.featured_image_url);
+                    if (linkedCourse.gallery) allImages.push(...linkedCourse.gallery);
+                }
+            }
+            
+            // Deduplicate and remove empty
+            const extraImages = [...new Set(allImages)].filter(Boolean);
+            
+            const galleryHtml = extraImages.length > 0
+                ? `<section style="padding:2rem 2rem 0;max-width:1200px;margin:0 auto;">
+                       <h3 style="font-weight:800;margin-bottom:0.6rem;">Gallery</h3>
+                       <div class="evt-gallery">${extraImages.map(url => `<img src="${url}" alt="">`).join('')}</div>
+                   </section>` : '';
+
+            // Deadline
+            const deadlineHtml = ev.registrationDeadline
+                ? `<div class="deadline-banner">⏰ Registration closes ${fmtDate(ev.registrationDeadline)}</div>` : '';
+
+            root.innerHTML = `
+            <!-- HERO -->
+            <section class="event-hero" style="${heroStyle}">
+                <div class="event-hero-overlay">
+                    <div class="event-hero-content">
+                        <div class="event-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                                <line x1="4" y1="22" x2="4" y2="15"></line>
+                            </svg>
+                        </div>
+                        ${ev.eventType ? `<div style="font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.75);margin-bottom:0.4rem;">${ev.eventType}</div>` : ''}
+                        <h1 class="event-hero-title">${fmt(ev.title)}</h1>
+                        <p class="event-hero-date">${fmt(ev.date)}${ev.location ? ' &nbsp;·&nbsp; ' + ev.location : ''}</p>
+                        ${ev.description ? `<p class="event-hero-description">${ev.description}</p>` : ''}
+                        <button class="event-register-btn" id="heroRegisterBtn" onclick="openRsvpModal()">${isSoldOut ? 'Sold Out' : 'Register Now'}</button>
+                    </div>
+                </div>
+            </section>
+
+            ${galleryHtml}
+
+            <!-- DETAILS SECTION -->
+            <section class="event-details-section">
+                <div class="event-details-container">
+                    <div class="details-grid-new">
+
+                        <!-- Event Details Column -->
+                        <div class="detail-column">
+                            <div class="detail-content">
+                                <h3 class="detail-column-title">Event Details</h3>
+                                ${deadlineHtml}
+                                <ul class="detail-list">
+                                    ${ev.title ? `<li><strong>Event:</strong> ${ev.title}</li>` : ''}
+                                    ${ev.date ? `<li><strong>When:</strong> ${ev.date}</li>` : ''}
+                                    ${ev.location ? `<li><strong>Where:</strong> ${ev.location}</li>` : ''}
+                                    ${ev.mapAddress || ev.location ? `<li><strong>Address:</strong> ${ev.mapAddress || ev.location}</li>` : ''}
+                                    ${ev.format ? `<li><strong>Format:</strong> ${ev.format}</li>` : ''}
+                                    ${ev.eventType ? `<li><strong>Type:</strong> ${ev.eventType}</li>` : ''}
+                                    <li><strong>Spots Available:</strong> ${isSoldOut ? '<span style="color:#c0392b;font-weight:700;">Sold Out</span>' : `${remaining} of ${ev.spots} remaining`}</li>
+                                    ${ev.price ? `<li><strong>Price:</strong> ${money(ev.price)} per person</li>` : ''}
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- What's Included Column -->
+                        <div class="detail-column">
+                            <div class="detail-content">
+                                <h3 class="detail-column-title">What's Included</h3>
+                                ${ev.includes
+                    ? `<ul class="detail-list" style="margin-top:0;">${includeItems(ev.includes).map(item => `<li>${item}</li>`).join('')}</ul>`
+                    : '<p style="font-size:0.85rem;color:#999;">Details coming soon.</p>'}
+                            </div>
+                        </div>
+
+                        <!-- Schedule Column -->
+                        ${(itineraryItems.length > 0 || schedItems.length > 0) ? `
+                        <div class="detail-column">
+                            <div class="detail-content">
+                                <h3 class="detail-column-title">Schedule</h3>
+                                <ul class="detail-list schedule-list" style="margin-top:0;">
+                                    ${itineraryItems.length > 0
+                                        ? itineraryItems.map(item => `<li>${item.replace(/Day \d+:/, match => `<strong>${match.replace(':', '')}:</strong>`)}</li>`).join('')
+                                        : schedItems.map(s => `<li>${s}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>` : ''}
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- LOCATION / MAP -->
+            ${ev.mapAddress || ev.location ? `
+            <section class="location-section">
+                <div class="location-container">
+                    <h2 class="location-title">Location</h2>
+                    <p class="location-address">${ev.mapAddress || ev.location}</p>
+                    <div class="map-container" id="mapContainer"></div>
+                </div>
+            </section>` : ''}
+
+            <!-- PRICING / REGISTER -->
+            <section class="pricing-section">
+                <div class="pricing-container">
+                    <div class="pricing-card">
+                        <div class="pricing-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                                <line x1="4" y1="22" x2="4" y2="15"></line>
+                            </svg>
+                        </div>
+                        <h2 class="pricing-amount">${ev.price ? money(ev.price) + ' Per Person' : 'Contact Us for Pricing'}</h2>
+                        ${ev.spots > 0 ? `<p style="color:rgba(255,255,255,0.8);font-size:0.88rem;margin-bottom:1.2rem;">${isSoldOut ? 'This event is fully booked.' : `${remaining} spot${remaining === 1 ? '' : 's'} remaining`}</p>` : ''}
+                        <button class="pricing-register-btn" id="pricingRegisterBtn" onclick="openRsvpModal()">${isSoldOut ? 'Sold Out' : 'Register Now'}</button>
+                    </div>
+                </div>
+            </section>`;
+
+            // Disable buttons if sold out
+            if (isSoldOut) {
+                ['heroRegisterBtn', 'pricingRegisterBtn'].forEach(id => {
+                    const btn = document.getElementById(id);
+                    if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; btn.style.pointerEvents = 'none'; }
+                });
+            }
+
+            // Check if user is already registered
+            const currUser = AUTH.currentUser();
+            if (currUser) {
+                const usersDb = JSON.parse(localStorage.getItem('epic_users') || '[]');
+                const dbUser = usersDb.find(u => u.id === currUser.id);
+                if (dbUser && dbUser.trips && dbUser.trips.some(t => t.eventId === EVENT_ID)) {
+                    ['heroRegisterBtn', 'pricingRegisterBtn'].forEach(id => {
+                        const btn = document.getElementById(id);
+                        if (btn) {
+                            btn.textContent = '✓ Already Registered';
+                            btn.style.background = 'rgba(255,255,255,0.25)';
+                            btn.style.border = '2px solid rgba(255,255,255,0.6)';
+                            btn.style.pointerEvents = 'none';
+                            btn.disabled = true;
+                        }
+                    });
+                }
+            }
+
+            // Map embed
+            const mapEl = document.getElementById('mapContainer');
+            if (mapEl) {
+                const q = encodeURIComponent(ev.mapAddress || ev.location || ev.title || 'Golf Course');
+                mapEl.innerHTML = `<iframe width="100%" height="420" style="border:0;border-radius:16px;" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=${q}&output=embed"></iframe>`;
+            }
+
+            // RSVP modal description
+            document.getElementById('rsvpDesc').textContent = `${ev.title} · ${ev.date}`;
+            document.getElementById('rsvpTitle').textContent = `Register: ${ev.title}`;
+
+            // Guest section visibility
+            const remaining2 = Math.max(0, ev.spots - (ev.spotsSold || 0));
+            if (ev.allowGuests !== false && remaining2 >= 2) {
+                document.getElementById('guestSectionContainer').style.display = 'block';
+            }
+
+            // Guest checkbox
+            document.getElementById('bringGuestBox').addEventListener('change', e => {
+                document.getElementById('guestDetails').style.display = e.target.checked ? 'block' : 'none';
+            });
+        });
+
+        // ── RSVP ──────────────────────────────────────────────────────────
+        function openRsvpModal() {
+            const user = AUTH.currentUser();
+            if (!user) { window.location.href = '../login.html'; return; }
+            document.getElementById('rsvpModal').style.display = 'flex';
+        }
+
+        function closeRsvp() {
+            document.getElementById('rsvpModal').style.display = 'none';
+            document.getElementById('rsvpNotes').value = '';
+            const gcb = document.getElementById('bringGuestBox');
+            if (gcb) gcb.checked = false;
+            document.getElementById('guestDetails').style.display = 'none';
+            const gn = document.getElementById('guestName'); if (gn) gn.value = '';
+            const ge = document.getElementById('guestEmail'); if (ge) ge.value = '';
+        }
+
+        function confirmRsvp() {
+            const user = AUTH.currentUser();
+            if (!user) return;
+
+            let usersDb = JSON.parse(localStorage.getItem('epic_users') || '[]');
+            if (usersDb.length === 0) { usersDb = [user]; localStorage.setItem('epic_users', JSON.stringify(usersDb)); }
+
+            const userIdx = usersDb.findIndex(u => u.id === user.id);
+            if (userIdx === -1) { alert('We encountered an error finding your profile. Please log out and back in.'); return; }
+
+            const liveEvents = loadSharedEvents();
+            const evIdx = liveEvents.findIndex(e => e.id === EVENT_ID);
+            if (evIdx === -1) { alert('This event could not be found.'); return; }
+
+            const dbEvent = liveEvents[evIdx];
+            const spotsLeft = dbEvent.spots - (dbEvent.spotsSold || 0);
+            const bringingGuest = document.getElementById('guestSectionContainer').style.display === 'block'
+                && document.getElementById('bringGuestBox').checked;
+            const spotsNeeded = bringingGuest ? 2 : 1;
+
+            if (spotsLeft < spotsNeeded) { alert(`Sorry, only ${spotsLeft} spot${spotsLeft === 1 ? '' : 's'} remaining.`); return; }
+
+            dbEvent.spotsSold = (dbEvent.spotsSold || 0) + spotsNeeded;
+            saveEvent(dbEvent);
+
+            const dbUser = usersDb[userIdx];
+            dbUser.trips = dbUser.trips || [];
+            dbUser.trips.unshift({
+                eventId: EVENT_ID,
+                name: dbEvent.title,
+                date: dbEvent.date,
+                location: dbEvent.location,
+                url: `events/event-page.html?id=${EVENT_ID}`,
+                registeredOn: new Date().toISOString(),
+                notes: document.getElementById('rsvpNotes').value.trim(),
+                spotsReserved: spotsNeeded,
+                guestDetails: bringingGuest ? {
+                    name: document.getElementById('guestName').value.trim(),
+                    email: document.getElementById('guestEmail').value.trim()
+                } : null
+            });
+
+            localStorage.setItem('epic_users', JSON.stringify(usersDb));
+            if (user.id === dbUser.id) localStorage.setItem('epic_session', JSON.stringify(dbUser));
+
+            document.getElementById('confirmRsvpBtn').style.display = 'none';
+            document.getElementById('cancelRsvpBtn').style.display = 'none';
+            document.getElementById('rsvpSuccessMsg').style.display = 'block';
+
+            setTimeout(() => window.location.reload(), 2200);
+        }
+    </script>
+</body>
+
+</html>

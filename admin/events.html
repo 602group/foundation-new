@@ -1,0 +1,2049 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events & Trips - EPIC Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <style>
+        /* Page layout */
+        .split-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .panel-box {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+        }
+
+        .panel-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .add-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.45rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .add-btn:hover {
+            opacity: 0.8;
+        }
+
+        /* Table row clickable */
+        tbody tr {
+            cursor: pointer;
+        }
+
+        tbody tr:hover {
+            background: #f0f4ff !important;
+        }
+
+        tbody tr.selected {
+            background: #e8eeff !important;
+        }
+
+        .spots-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .spots-track {
+            flex: 1;
+            height: 6px;
+            background: #eee;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .spots-fill {
+            height: 100%;
+            background: #2ecc71;
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+
+        /* Destinations */
+        .dest-card-small {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.65rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .dest-card-small:last-child {
+            border-bottom: none;
+        }
+
+        .dest-img-thumb {
+            width: 48px;
+            height: 48px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+
+        .dest-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .btn-small {
+            padding: 0.28rem 0.65rem;
+            font-size: 0.78rem;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            margin-left: auto;
+            font-family: 'Poppins', sans-serif;
+            white-space: nowrap;
+        }
+
+        .btn-delete {
+            background: #fdecea;
+            color: #e53935;
+        }
+
+        .btn-delete:hover {
+            background: #f9c6c4;
+        }
+
+        /* ===== DRAWER ===== */
+        .drawer-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            z-index: 500;
+        }
+
+        .drawer-overlay.open {
+            display: block;
+        }
+
+        .event-drawer {
+            position: fixed;
+            top: 0;
+            right: -700px;
+            width: 680px;
+            height: 100vh;
+            background: white;
+            box-shadow: -4px 0 30px rgba(0, 0, 0, 0.15);
+            z-index: 600;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .event-drawer.open {
+            right: 0;
+        }
+
+        .drawer-head {
+            padding: 1.5rem 2rem 0;
+            border-bottom: 1px solid #eee;
+            flex-shrink: 0;
+        }
+
+        .drawer-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .drawer-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .drawer-subtitle {
+            font-size: 0.9rem;
+            color: #888;
+            margin: 0.2rem 0 1rem;
+        }
+
+        .close-drawer {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+            line-height: 1;
+            padding: 0;
+        }
+
+        .close-drawer:hover {
+            color: #333;
+        }
+
+        /* Tabs */
+        .drawer-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: none;
+            margin-top: 0.5rem;
+        }
+
+        .drawer-tab {
+            padding: 0.7rem 1.4rem;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: #888;
+            cursor: pointer;
+        }
+
+        .drawer-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--accent-color);
+        }
+
+        .drawer-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem 2rem 2rem;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* Overview tab */
+        .event-hero-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 1.2rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem 1.5rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .info-item label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #999;
+            margin-bottom: 0.2rem;
+        }
+
+        .info-item span {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .kpi-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .kpi-card .kpi-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .kpi-card .kpi-label {
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 0.2rem;
+        }
+
+        .progress-section label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 0.4rem;
+            display: block;
+        }
+
+        .progress-bar-large {
+            height: 12px;
+            background: #eee;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 0.4rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4A90E2, #2ecc71);
+            border-radius: 6px;
+            transition: width 0.4s;
+        }
+
+        .progress-legend {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        /* Financial / Edit tab */
+        .section-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #bbb;
+            font-weight: 600;
+            margin: 1.5rem 0 0.75rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .section-label:first-child {
+            margin-top: 0;
+        }
+
+        .fin-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .fin-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .fin-group.full {
+            grid-column: span 2;
+        }
+
+        .fin-group label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.3rem;
+            font-weight: 500;
+        }
+
+        .fin-group input,
+        .fin-group textarea,
+        .fin-group select {
+            padding: 0.6rem 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.88rem;
+            resize: vertical;
+        }
+
+        .fin-group input:focus,
+        .fin-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .save-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        /* P&L tab */
+        .pl-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .pl-header h3 {
+            font-size: 1rem;
+            color: #888;
+            margin: 0 0 0.2rem;
+        }
+
+        .pl-header .pl-net {
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+
+        .pl-net.positive {
+            color: #2ecc71;
+        }
+
+        .pl-net.negative {
+            color: #e74c3c;
+        }
+
+        .pl-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .pl-table tr td {
+            padding: 0.6rem 0.5rem;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .pl-table tr td:last-child {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .pl-section-row td {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #bbb;
+            padding-top: 1.2rem !important;
+            font-weight: 600;
+            border-bottom: 1px solid #eee !important;
+        }
+
+        .pl-total-row td {
+            font-weight: 700;
+            font-size: 0.95rem;
+            border-top: 2px solid #333 !important;
+            border-bottom: none !important;
+            padding-top: 0.8rem !important;
+        }
+
+        .pl-total-row.positive td:last-child {
+            color: #2ecc71;
+        }
+
+        .pl-total-row.negative td:last-child {
+            color: #e74c3c;
+        }
+
+        .pl-subtotal-row td {
+            background: #f8f9fa;
+            font-weight: 600;
+            border-bottom: 1px solid #e0e0e0 !important;
+        }
+
+        /* Add event modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-box h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group {
+            margin-bottom: 0.9rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.32rem;
+            font-size: 0.82rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-family: inherit;
+            font-size: 0.88rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-cancel {
+            background: white;
+            color: #333;
+            border: 1px solid #ccc;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .btn-save {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+        }
+
+        .btn-save:hover {
+            opacity: 0.85;
+        }
+
+        /* File upload */
+        .upload-label {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.6rem 0.9rem;
+            border: 1.5px dashed #ccc;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #666;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .upload-label:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .upload-label input[type=file] {
+            display: none;
+        }
+
+        .img-preview {
+            width: 100%;
+            max-height: 150px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .img-preview.has-image {
+            display: block;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-sold-out {
+            background: #fdecea;
+            color: #e53935;
+        }
+
+        .badge-available {
+            background: #e8f8f5;
+            color: #27ae60;
+        }
+
+        .badge-almost {
+            background: #fff8e1;
+            color: #f39c12;
+        }
+
+        .badge-draft {
+            background: #f3f3f3;
+            color: #888;
+        }
+
+        .badge-cancelled {
+            background: #fdecea;
+            color: #c0392b;
+        }
+
+        .badge-active {
+            background: #e8f8f5;
+            color: #27ae60;
+        }
+
+        tr.row-draft {
+            background: #fffde7 !important;
+        }
+
+        tr.row-draft:hover {
+            background: #fff9c4 !important;
+        }
+
+        th.sortable {
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        th.sortable:hover {
+            color: var(--primary-color);
+        }
+
+        th.sortable .sort-icon {
+            margin-left: 4px;
+            opacity: 0.4;
+            font-size: 0.8rem;
+        }
+
+        th.sortable.sort-asc .sort-icon,
+        th.sortable.sort-desc .sort-icon {
+            opacity: 1;
+            color: var(--accent-color);
+        }
+        /* Course selector */
+        .course-selector-wrap { position:relative; }
+        .course-search-input { width:100%; padding:0.6rem 0.8rem; border:1px solid #e0e0e0; border-radius:8px; font-family:inherit; font-size:0.88rem; outline:none; transition:border 0.2s; background:white; box-sizing:border-box; }
+        .course-search-input:focus { border-color:#4A90E2; box-shadow:0 0 0 3px rgba(74,144,226,0.1); }
+        .course-dropdown { position:absolute; top:100%; left:0; right:0; background:white; border:1px solid #e0e0e0; border-radius:8px; box-shadow:0 8px 24px rgba(0,0,0,0.12); z-index:9000; max-height:220px; overflow-y:auto; display:none; margin-top:2px; }
+        .course-dropdown.open { display:block; }
+        .course-option { display:flex; align-items:center; gap:0.7rem; padding:0.6rem 0.8rem; cursor:pointer; border-bottom:1px solid #f5f5f5; transition:background 0.15s; }
+        .course-option:hover { background:#f0f7ff; }
+        .course-option img { width:48px; height:34px; object-fit:cover; border-radius:5px; flex-shrink:0; }
+        .course-option-info strong { display:block; font-size:0.85rem; font-weight:700; }
+        .course-option-info span { font-size:0.74rem; color:#888; }
+        .course-preview-card { background:#f8f9fa; border-radius:10px; padding:0.9rem; display:flex; gap:0.85rem; align-items:center; margin-top:0.6rem; border:1px solid #e8e8e8; }
+        .course-preview-card img { width:72px; height:52px; object-fit:cover; border-radius:7px; flex-shrink:0; background:#eee; }
+        .course-preview-info { flex:1; }
+        .course-preview-info strong { display:block; font-size:0.88rem; font-weight:700; margin-bottom:2px; }
+        .course-preview-info span { font-size:0.77rem; color:#666; }
+        .course-preview-remove { background:none; border:none; color:#aaa; cursor:pointer; font-size:0.78rem; margin-left:auto; flex-shrink:0; padding:0.2rem 0.5rem; border-radius:5px; }
+        .course-preview-remove:hover { background:#fee2e2; color:#e74c3c; }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+                    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="../index.html" class="logo">EPIC ADMIN</a>
+        </div>
+        <nav class="nav-links">
+            <a href="dashboard.html" class="nav-item" data-section="dashboard"><span class="nav-icon">📊</span> Dashboard</a>
+            <a href="auctions.html?v=2" class="nav-item" data-section="auctions"><span class="nav-icon">⛳</span> Auctions</a>
+            <a href="courses.html?v=2" class="nav-item" data-section="courses"><span class="nav-icon">&#127948;&#65039;</span> Courses</a>
+            <a href="users.html?v=2" class="nav-item" data-section="users"><span class="nav-icon">👥</span> Users</a>
+            <a href="events.html?v=2" class="nav-item active" data-section="events"><span class="nav-icon">✈️</span> Events &amp; Trips</a>
+            <a href="messages.html" class="nav-item" data-section="messages"><span class="nav-icon">&#128172;</span> Messages <span class="nav-msg-badge" style="display:none;background:#e74c3c;color:#fff;border-radius:10px;padding:1px 6px;font-size:0.7rem;font-weight:700;margin-left:4px;"></span></a>
+            <a href="tasks.html" class="nav-item" data-section="tasks"><span class="nav-icon">✅</span> Tasks</a>
+            <a href="financials.html" class="nav-item" data-section="financials"><span class="nav-icon">📈</span> Financials</a>
+            <a href="newsletter.html?v=2" class="nav-item" data-section="newsletter"><span class="nav-icon">📧</span> Newsletter</a>
+            <a href="bids.html?v=2" class="nav-item" data-section="bids"><span class="nav-icon">💰</span> Bids</a>
+            <a href="settings.html?v=2" class="nav-item" data-section="settings"><span class="nav-icon">⚙️</span> Settings</a>
+        </nav>
+        <div class="user-profile">
+            <div class="avatar"></div>
+            <div class="user-info">
+                <h4>Admin User</h4>
+                <p>admin@epic.org</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="top-header">
+            <h1 class="page-title">Events & Trips</h1>
+            <div class="header-actions">
+                <button onclick="window.open('../travel-events.html', '_blank')">View Live Page ↗</button>
+            </div>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="split-layout">
+
+                <!-- Events Table -->
+                <div class="panel-box">
+                    <div class="panel-header">
+                        <h2>Upcoming Events</h2>
+                        <button class="add-btn" onclick="openEventModal()">+ Add Event</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:52px;">Photo</th>
+                                <th class="sortable" onclick="cycleSort('title')" id="th-title">Trip <span
+                                        class="sort-icon">↕</span></th>
+                                <th class="sortable" onclick="cycleSort('date')" id="th-date">Dates <span
+                                        class="sort-icon">↕</span></th>
+                                <th class="sortable" onclick="cycleSort('spots')" id="th-spots">Spots Sold <span
+                                        class="sort-icon">↕</span></th>
+                                <th class="sortable" onclick="cycleSort('revenue')" id="th-revenue">Revenue <span
+                                        class="sort-icon">↕</span></th>
+                                <th class="sortable" onclick="cycleSort('status')" id="th-status">Status <span
+                                        class="sort-icon">↕</span></th>
+                                <th>Visibility</th>
+                            </tr>
+                        </thead>
+                        <tbody id="events-tbody"></tbody>
+                    </table>
+                </div>
+
+                <!-- Destinations -->
+                <div class="panel-box">
+                    <div class="panel-header">
+                        <h2>Travel Destinations</h2>
+                        <button class="add-btn" onclick="openDestModal()">+ Add</button>
+                    </div>
+                    <div id="dest-container"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Drawer Overlay -->
+    <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+
+    <!-- Event Detail Drawer -->
+    <div class="event-drawer" id="eventDrawer">
+        <div class="drawer-head">
+            <div class="drawer-top-row">
+                <div>
+                    <h2 class="drawer-title" id="drawerTitle">—</h2>
+                    <p class="drawer-subtitle" id="drawerSubtitle">—</p>
+                </div>
+                <button class="close-drawer" onclick="closeDrawer()">✕</button>
+            </div>
+            <div class="drawer-tabs">
+                <button class="drawer-tab active" onclick="switchTab('overview', this)">Overview</button>
+                <button class="drawer-tab" onclick="switchTab('edit', this)">Details & Costs</button>
+                <button class="drawer-tab" onclick="switchTab('pl', this)">P&L Statement</button>
+                <button class="drawer-tab" onclick="switchTab('attendees', this)">Attendees</button>
+            </div>
+        </div>
+
+        <div class="drawer-body">
+
+            <!-- Overview Tab -->
+            <div class="tab-panel active" id="tab-overview">
+                <img id="drawerImg" src="" alt="" class="event-hero-img">
+
+                <div class="kpi-row">
+                    <div class="kpi-card">
+                        <div class="kpi-value" id="kpiRevenue">—</div>
+                        <div class="kpi-label">Total Revenue</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value" id="kpiExpenses">—</div>
+                        <div class="kpi-label">Total Expenses</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value" id="kpiNet">—</div>
+                        <div class="kpi-label">Net Profit</div>
+                    </div>
+                </div>
+
+                <div class="progress-section" style="margin-bottom:1.5rem;">
+                    <label>Spots Sold</label>
+                    <div class="progress-bar-large">
+                        <div class="progress-fill" id="spotsBarFill" style="width:0%"></div>
+                    </div>
+                    <div class="progress-legend">
+                        <span id="spotsLegendLeft">0 sold</span>
+                        <span id="spotsLegendRight">0 available</span>
+                    </div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-item"><label>Location</label><span id="drawerLocation">—</span></div>
+                    <div class="info-item"><label>Dates</label><span id="drawerDate">—</span></div>
+                    <div class="info-item"><label>Price Per Person</label><span id="drawerPrice">—</span></div>
+                    <div class="info-item"><label>Total Spots</label><span id="drawerSpots">—</span></div>
+                </div>
+
+                <div class="info-item" style="margin-bottom:1rem;">
+                    <label
+                        style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.05em;color:#999;margin-bottom:0.3rem;display:block;">Description</label>
+                    <span id="drawerDescription" style="font-size:0.88rem;line-height:1.6;color:#555;">—</span>
+                </div>
+                <div class="info-item">
+                    <label
+                        style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.05em;color:#999;margin-bottom:0.3rem;display:block;">What's
+                        Included</label>
+                    <span id="drawerIncludes" style="font-size:0.88rem;color:#555;">—</span>
+                </div>
+            </div>
+
+            <!-- Edit / Financials Tab -->
+            <div class="tab-panel" id="tab-edit">
+                <form onsubmit="handleDrawerSave(event)" novalidate>
+                    <input type="hidden" id="drawer-event-id">
+
+                    <div class="section-label">Event Details</div>
+
+                    <!-- Course selector in edit drawer -->
+                    <div style="margin-bottom:1.2rem;background:#f0f7ff;border-radius:10px;padding:0.9rem 1rem;border:1.5px solid #c3d9f7;">
+                        <div style="font-size:0.7rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#4A90E2;margin-bottom:0.6rem;">⛳ Link a Course <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#888;">(auto-fills location &amp; image)</span></div>
+                        <div class="course-selector-wrap">
+                            <input type="text" id="d-course-search" class="course-search-input" placeholder="Search courses…" autocomplete="off" oninput="filterEventCourseOptions('d')" onfocus="showEventCourseDropdown('d')">
+                            <div class="course-dropdown" id="d-course-dropdown"></div>
+                        </div>
+                        <div id="d-course-preview" style="display:none;"></div>
+                        <input type="hidden" id="d-course_id" value="">
+                    </div>
+
+                    <div class="fin-grid">
+                        <div class="fin-group">
+                            <label>Status</label>
+                            <select id="d-status"
+                                style="padding:0.6rem 0.8rem;border:1px solid #ddd;border-radius:6px;font-family:inherit;font-size:0.88rem;background:white;">
+                                <option value="active">Active — Visible on site</option>
+                                <option value="draft">Draft — Hidden from site</option>
+                                <option value="cancelled">Cancelled — Hidden from site</option>
+                                <option value="sold-out">Sold Out — Hidden from site</option>
+                            </select>
+                        </div>
+                        <div class="fin-group">
+                            <label>Visibility</label>
+                            <select id="d-visibility"
+                                style="padding:0.6rem 0.8rem;border:1px solid #ddd;border-radius:6px;font-family:inherit;font-size:0.88rem;background:white;">
+                                <option value="all">All Users</option>
+                                <option value="epic_only">Members Only</option>
+                            </select>
+                        </div>
+                        <div class="fin-group"><label>Title</label><input type="text" id="d-title"></div>
+                        <div class="fin-group"><label>Location</label><input type="text" id="d-location"></div>
+                        <div class="fin-group"><label>Start Date</label><input type="date" id="d-date-start">
+                        </div>
+                        <div class="fin-group"><label>End Date</label><input type="date" id="d-date-end"></div>
+                        <div class="fin-group"><label>Price Per Person ($)</label><input type="number" id="d-price"
+                                min="0"></div>
+                        <div class="fin-group">
+                            <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; height: 100%;">
+                                <input type="checkbox" id="d-allowGuests" style="width:auto; margin:0;"> Allow Guests
+                            </label>
+                        </div>
+                        <div class="fin-group"><label>Total Spots</label><input type="number" id="d-spots" min="1"
+                               ></div>
+                        <div class="fin-group"><label>Spots Sold</label><input type="number" id="d-spotsSold" min="0">
+                        </div>
+                        <div class="fin-group full"><label>Description</label><textarea id="d-description"
+                                rows="3"></textarea></div>
+                        <div class="fin-group full"><label>What's Included</label><input type="text" id="d-includes"
+                                placeholder="e.g. Lodging, Meals, Greens Fees"></div>
+                        <div class="fin-group full"><label>Multi-Day Itinerary</label><textarea id="d-itinerary"
+                                rows="4" placeholder="Day 1: Arrival & Welcome Reception&#13;&#10;Day 2: Pebble Beach Round" style="padding:0.6rem 0.8rem; border:1px solid #ddd; border-radius:6px; font-family:inherit; font-size:0.88rem; resize:vertical;"></textarea></div>
+                        <div class="fin-group">
+                            <label>Cover Image</label>
+                            <input type="hidden" id="d-image">
+                            <label class="upload-label">
+                                <input type="file" accept="image/*,.pdf"
+                                    onchange="uploadImage(this, 'd-image', 'd-image-preview')">
+                                📁 Choose file (PNG, JPG, PDF)
+                            </label>
+                            <img id="d-image-preview" class="img-preview" alt="preview">
+                        </div>
+                        <div class="fin-group"><label>Page Link</label><input type="text" id="d-link"></div>
+                    </div>
+
+                    <div class="section-label">Operating Costs</div>
+                    <div class="fin-grid">
+                        <div class="fin-group"><label>Venue / Greens Fees ($)</label><input type="number"
+                                id="d-costVenue" min="0"></div>
+                        <div class="fin-group"><label>Catering / Meals ($)</label><input type="number"
+                                id="d-costCatering" min="0"></div>
+                        <div class="fin-group"><label>Transportation ($)</label><input type="number"
+                                id="d-costTransportation" min="0"></div>
+                        <div class="fin-group"><label>Marketing ($)</label><input type="number" id="d-costMarketing"
+                                min="0"></div>
+                        <div class="fin-group"><label>Staff / Guides ($)</label><input type="number" id="d-costStaff"
+                                min="0"></div>
+                        <div class="fin-group"><label>Miscellaneous ($)</label><input type="number" id="d-costMisc"
+                                min="0"></div>
+                    </div>
+
+                    <div class="save-bar">
+                        <button type="button" class="btn-cancel" onclick="closeDrawer()">Cancel</button>
+                        <button type="submit" class="btn-save">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- P&L Tab -->
+            <div class="tab-panel" id="tab-pl">
+                <div class="pl-header">
+                    <h3 id="plEventTitle">Profit & Loss Statement</h3>
+                    <div class="pl-net" id="plNetDisplay">—</div>
+                    <div style="font-size:0.8rem;color:#999;margin-top:0.3rem;" id="plNetLabel">Net Profit / Loss</div>
+                </div>
+
+                <table class="pl-table">
+                    <tbody id="pl-tbody"></tbody>
+                </table>
+
+                <p style="font-size:0.75rem;color:#bbb;margin-top:1.5rem;text-align:center;">
+                    Revenue is calculated as <strong>Spots Sold × Price Per Person</strong>.<br>
+                    Update spots sold in the "Details & Costs" tab to reflect current bookings.
+                </p>
+            </div>
+
+            <!-- Attendees Tab -->
+            <div class="tab-panel" id="tab-attendees">
+                <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:1rem;">
+                    <h3 style="margin:0; font-size:1.1rem; color: #333;">Guest List</h3>
+                    <div style="display:flex; gap:0.5rem; align-items:center;">
+                        <select id="manualAttendeeSelect"
+                            style="padding:0.4rem 0.6rem; border-radius:6px; border:1px solid #ddd; font-family:inherit; font-size:0.85rem; max-width:200px; background: white;">
+                            <option value="">Select User...</option>
+                        </select>
+                        <label style="font-size:0.8rem; display:flex; align-items:center; gap:0.3rem; margin:0;"><input
+                                type="checkbox" id="manualAttendeeGuest" style="margin:0;"> +Guest</label>
+                        <button type="button" class="btn-small"
+                            style="background:var(--primary-color); color:white; padding:0.4rem 0.8rem;"
+                            onclick="addManualAttendee()">Add</button>
+                    </div>
+                </div>
+                <div style="background:#f8f9fa; border-radius:8px; padding:1rem; border: 1px solid #eee;">
+                    <table class="pl-table" style="font-size:0.85rem; width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="text-align:left; color:#888; border-bottom:1px solid #ddd;">
+                                <th style="padding-bottom:0.5rem; font-weight:600;">Attendee</th>
+                                <th style="padding-bottom:0.5rem; font-weight:600;">Spots</th>
+                                <th style="padding-bottom:0.5rem; font-weight:600;">Notes</th>
+                                <th style="padding-bottom:0.5rem; text-align:right; font-weight:600;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendees-tbody"></tbody>
+                    </table>
+                    <div id="attendees-empty-state"
+                        style="text-align:center; padding:2rem 0; color:#888; font-size:0.85rem;">
+                        No attendees registered yet.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Add Event Modal -->
+    <div class="modal" id="eventModal">
+        <div class="modal-box" style="max-width:700px;max-height:92vh;overflow-y:auto;">
+            <h2 style="margin-bottom:0.25rem;">New Event</h2>
+            <p style="font-size:0.82rem;color:#999;margin-bottom:1.5rem;">Fill in all the details. An Event ID is generated automatically. Edit anything later from the drawer.</p>
+            <form onsubmit="handleEventModalSubmit(event)" novalidate>
+
+                <!-- COURSE SELECTOR (auto-fills location, description, images) -->
+                <div style="margin-bottom:1.2rem;background:#f0f7ff;border-radius:12px;padding:1rem 1.1rem;border:1.5px solid #c3d9f7;">
+                    <div style="font-size:0.7rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#4A90E2;margin-bottom:0.7rem;">⛳ Link a Course <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#888;">(auto-fills location, description &amp; images)</span></div>
+                    <div class="course-selector-wrap">
+                        <input type="text" id="evt-course-search" class="course-search-input" placeholder="Search your course network — type to find…" autocomplete="off" oninput="filterEventCourseOptions()" onfocus="showEventCourseDropdown()">
+                        <div class="course-dropdown" id="evt-course-dropdown"></div>
+                    </div>
+                    <div id="evt-course-preview" style="display:none;"></div>
+                    <input type="hidden" id="evt-course_id" value="">
+                </div>
+
+                <!-- CORE -->
+                <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#bbb;font-weight:700;margin-bottom:0.7rem;padding-bottom:0.3rem;border-bottom:1px solid #f0f0f0;">Core</div>
+                <div class="form-row">
+                    <div class="form-group" style="flex:2"><label>Event Title *</label><input type="text" id="new-title" placeholder="e.g. Quaker Ridge Golf Day 2026"></div>
+                    <div class="form-group" style="flex:1">
+                        <label>Event Type</label>
+                        <select id="new-eventType" style="width:100%;padding:0.6rem 0.8rem;border-radius:6px;border:1px solid #ddd;font-family:inherit;font-size:0.88rem;background:white;">
+                            <option value="Golf Day">Golf Day</option>
+                            <option value="Gala">Gala</option>
+                            <option value="Clinic">Clinic</option>
+                            <option value="Trip">Trip</option>
+                            <option value="Tournament">Tournament</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex:1">
+                        <label>Status</label>
+                        <select id="new-status" style="width:100%;padding:0.6rem 0.8rem;border-radius:6px;border:1px solid #ddd;font-family:inherit;font-size:0.88rem;background:white;">
+                            <option value="pending" selected>Pending — Hidden</option>
+                            <option value="draft">Draft — Hidden</option>
+                            <option value="active">Active — Live</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- LOCATION -->
+                <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#bbb;font-weight:700;margin:1.1rem 0 0.7rem;padding-bottom:0.3rem;border-bottom:1px solid #f0f0f0;">Location</div>
+                <div class="form-row">
+                    <div class="form-group"><label>Display Location <span style="font-weight:400;color:#bbb;">(city, state)</span></label><input type="text" id="new-location" placeholder="e.g. Pebble Beach, California"></div>
+                    <div class="form-group"><label>Map Address <span style="font-weight:400;color:#bbb;">(full address for map embed)</span></label><input type="text" id="new-mapAddress" placeholder="1700 17-Mile Dr, Pebble Beach, CA 93953"></div>
+                </div>
+
+                <!-- DATES -->
+                <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#bbb;font-weight:700;margin:1.1rem 0 0.7rem;padding-bottom:0.3rem;border-bottom:1px solid #f0f0f0;">Dates</div>
+                <div class="form-row">
+                    <div class="form-group"><label>Event Start *</label><input type="date" id="new-date-start"></div>
+                    <div class="form-group"><label>Event End</label><input type="date" id="new-date-end"></div>
+                    <div class="form-group"><label>Registration Deadline</label><input type="date" id="new-regDeadline"></div>
+                </div>
+
+                <!-- CAPACITY & PRICING -->
+                <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#bbb;font-weight:700;margin:1.1rem 0 0.7rem;padding-bottom:0.3rem;border-bottom:1px solid #f0f0f0;">Capacity &amp; Pricing</div>
+                <div class="form-row">
+                    <div class="form-group"><label>Total Spots *</label><input type="number" id="new-spots" min="1"></div>
+                    <div class="form-group"><label>Spots Sold</label><input type="number" id="new-spotsSold" min="0" value="0"></div>
+                    <div class="form-group"><label>Price Per Person ($) *</label><input type="number" id="new-price" min="0"></div>
+                </div>
+                <div class="form-group" style="margin-top:-0.4rem;margin-bottom:0.5rem;">
+                    <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;"><input type="checkbox" id="new-allowGuests" checked style="width:auto;"> Allow Guests (+1 spot per registration)</label>
+                </div>
+
+                <!-- CONTENT -->
+                <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#bbb;font-weight:700;margin:1.1rem 0 0.7rem;padding-bottom:0.3rem;border-bottom:1px solid #f0f0f0;">Content</div>
+                <div class="form-group"><label>Event Description <span style="font-weight:400;color:#bbb;">(shown on public event page)</span></label><textarea id="new-description" rows="3" style="width:100%;padding:0.6rem 0.8rem;border-radius:6px;border:1px solid #ddd;font-family:inherit;font-size:0.88rem;resize:vertical;" placeholder="Describe the experience..."></textarea></div>
+                <div class="form-group"><label>What's Included</label><textarea id="new-includes" rows="2" style="width:100%;padding:0.6rem 0.8rem;border-radius:6px;border:1px solid #ddd;font-family:inherit;font-size:0.88rem;resize:vertical;" placeholder="Greens Fees&#13;&#10;Breakfast &amp; Lunch&#13;&#10;Cocktail Reception"></textarea></div>
+                <div class="form-group"><label>Format / Competition Style</label><input type="text" id="new-format" placeholder="e.g. Shotgun start, Best Ball competition"></div>
+
+                <!-- SCHEDULE -->
+                <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#bbb;font-weight:700;margin:1.1rem 0 0.7rem;padding-bottom:0.3rem;border-bottom:1px solid #f0f0f0;">Day Schedule / Itinerary <span style="font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></div>
+                <div class="form-group"><label>Multi-Day Itinerary</label><textarea id="new-itinerary" rows="4" style="width:100%;padding:0.6rem 0.8rem;border-radius:6px;border:1px solid #ddd;font-family:inherit;font-size:0.88rem;resize:vertical;" placeholder="Day 1: Arrival & Welcome Reception&#13;&#10;Day 2: Pebble Beach Round"></textarea></div>
+                <div class="form-row">
+                    <div class="form-group"><label>🌅 Morning</label><input type="text" id="new-scheduleMorning" placeholder="9:30 AM Registration / 10:00 AM Breakfast"></div>
+                    <div class="form-group"><label>⛳ Afternoon</label><input type="text" id="new-scheduleAfternoon" placeholder="12:00 PM Shotgun Start"></div>
+                    <div class="form-group"><label>🍸 Evening</label><input type="text" id="new-scheduleEvening" placeholder="5:00 PM Cocktail Reception"></div>
+                </div>
+
+                <!-- IMAGES -->
+                <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#bbb;font-weight:700;margin:1.1rem 0 0.7rem;padding-bottom:0.3rem;border-bottom:1px solid #f0f0f0;">Images</div>
+                <div id="new-event-img-grid" style="display:flex;flex-wrap:wrap;gap:0.6rem;margin-bottom:0.8rem;"></div>
+                <label style="display:flex;align-items:center;gap:0.6rem;padding:0.75rem 1rem;border:2px dashed #ddd;border-radius:10px;cursor:pointer;font-size:0.85rem;color:#888;margin-bottom:0.5rem;">
+                    <input type="file" accept="image/*" multiple style="display:none" onchange="newEventAddImages(this)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    Click to upload images — first image = cover
+                </label>
+                <input type="hidden" id="new-image">
+
+                <!-- ADMIN -->
+                <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#b8860b;font-weight:700;margin:1.1rem 0 0.7rem;padding-bottom:0.3rem;border-bottom:1px solid #ffe082;">🔒 Admin Only</div>
+                <div class="form-row" style="background:#fffbe6;border-radius:8px;padding:0.8rem;border:1.5px solid #ffe082;">
+                    <div class="form-group"><label style="color:#b8860b;">Event Coordinator</label><input type="text" id="new-coordinator" placeholder="Name / team lead"></div>
+                    <div class="form-group"><label style="color:#b8860b;">Internal Notes</label><input type="text" id="new-adminNotes" placeholder="Internal tracking notes"></div>
+                </div>
+
+                <!-- OPERATING COSTS -->
+                <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#bbb;font-weight:700;margin:1.1rem 0 0.7rem;padding-bottom:0.3rem;border-bottom:1px solid #f0f0f0;">Operating Costs <span style="font-weight:400;text-transform:none;letter-spacing:0;">(Optional)</span></div>
+                <div class="form-row">
+                    <div class="form-group"><label>Venue / Greens Fees ($)</label><input type="number" id="new-costVenue" min="0" value="0"></div>
+                    <div class="form-group"><label>Catering / Meals ($)</label><input type="number" id="new-costCatering" min="0" value="0"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Transportation ($)</label><input type="number" id="new-costTransportation" min="0" value="0"></div>
+                    <div class="form-group"><label>Marketing ($)</label><input type="number" id="new-costMarketing" min="0" value="0"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Staff / Guides ($)</label><input type="number" id="new-costStaff" min="0" value="0"></div>
+                    <div class="form-group"><label>Miscellaneous ($)</label><input type="number" id="new-costMisc" min="0" value="0"></div>
+                </div>
+
+                <div class="modal-footer" style="margin-top:2rem;">
+                    <button type="button" class="btn-cancel" onclick="closeModals()">Cancel</button>
+                    <button type="submit" class="btn-save">Create Event →</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Destination Modal -->
+    <div class="modal" id="destModal">
+        <div class="modal-box">
+            <h2>Add Destination</h2>
+            <form onsubmit="handleDestSubmit(event)">
+                <div class="form-group"><label>Country / Region</label><input type="text" id="dest-name" required
+                        placeholder="e.g. Scotland"></div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="dest-status"
+                        style="width:100%;padding:0.6rem 0.8rem;border-radius:6px;border:1px solid #ddd;font-family:inherit;font-size:0.88rem;background:white;">
+                        <option value="active">Active — Visible on site</option>
+                        <option value="pending">Pending — Hidden from site</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Cover Image</label>
+                    <input type="hidden" id="dest-image">
+                    <label class="upload-label">
+                        <input type="file" accept="image/*,.pdf"
+                            onchange="uploadImage(this, 'dest-image', 'dest-image-preview')">
+                        📁 Choose file (PNG, JPG, PDF)
+                    </label>
+                    <img id="dest-image-preview" class="img-preview" alt="preview">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="closeModals()">Cancel</button>
+                    <button type="submit" class="btn-save">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../db.js"></script>
+    <script src="../auth.js"></script>
+    <script src="../shared-events.js"></script>
+    <script>
+        // Shared image upload helper — reads file as base64 data URL
+        function uploadImage(fileInput, hiddenId, previewId) {
+            const file = fileInput.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                document.getElementById(hiddenId).value = e.target.result;
+                const preview = document.getElementById(previewId);
+                if (preview && file.type.startsWith('image/')) {
+                    preview.src = e.target.result;
+                    preview.classList.add('has-image');
+                    // Update the upload label text
+                    fileInput.closest('.upload-label').childNodes.forEach(n => {
+                        if (n.nodeType === Node.TEXT_NODE) n.textContent = ' ' + file.name;
+                    });
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+        let currentEventId = null;
+        let sortCol = null;   // 'title' | 'date' | 'spots' | 'revenue' | 'status'
+        let sortDir = 0;      // 0=default, 1=asc, -1=desc
+
+        function cycleSort(col) {
+            if (sortCol !== col) { sortCol = col; sortDir = 1; }
+            else if (sortDir === 1) { sortDir = -1; }
+            else if (sortDir === -1) { sortCol = null; sortDir = 0; }
+            // Update header indicators
+            document.querySelectorAll('th.sortable').forEach(th => {
+                th.classList.remove('sort-asc', 'sort-desc');
+                const icon = th.querySelector('.sort-icon');
+                if (icon) icon.textContent = '↕';
+            });
+            if (sortCol) {
+                const th = document.getElementById('th-' + sortCol);
+                if (th) {
+                    th.classList.add(sortDir === 1 ? 'sort-asc' : 'sort-desc');
+                    const icon = th.querySelector('.sort-icon');
+                    if (icon) icon.textContent = sortDir === 1 ? '↑' : '↓';
+                }
+            }
+            renderEvents();
+        }
+
+        function sortedEvents() {
+            const events = loadSharedEvents();
+            if (!sortCol || sortDir === 0) return events;
+            return [...events].sort((a, b) => {
+                let av, bv;
+                if (sortCol === 'title') { av = (a.title || '').toLowerCase(); bv = (b.title || '').toLowerCase(); }
+                if (sortCol === 'date') { av = new Date(a.date).getTime() || 0; bv = new Date(b.date).getTime() || 0; }
+                if (sortCol === 'spots') { av = (a.spotsSold || 0); bv = (b.spotsSold || 0); }
+                if (sortCol === 'revenue') { av = (a.spotsSold || 0) * a.price; bv = (b.spotsSold || 0) * b.price; }
+                if (sortCol === 'status') { av = (a.status || 'active'); bv = (b.status || 'active'); }
+                if (av < bv) return -1 * sortDir;
+                if (av > bv) return 1 * sortDir;
+                return 0;
+            });
+        }
+
+        let adminUsers = []; // populated from DB on page load
+        let _evtCachedCourses = null;
+
+        // ── Course Selector for Events ─────────────────────────────────────────
+        async function getCachedCoursesForEvents() {
+            if (_evtCachedCourses) return _evtCachedCourses;
+            try {
+                if (typeof EPICDB !== 'undefined') {
+                    _evtCachedCourses = await EPICDB.getCourses();
+                } else {
+                    _evtCachedCourses = JSON.parse(localStorage.getItem('epic_courses') || '[]');
+                }
+            } catch(e) {
+                _evtCachedCourses = JSON.parse(localStorage.getItem('epic_courses') || '[]');
+            }
+            return _evtCachedCourses || [];
+        }
+
+        function getCachedCoursesForEventsSync() {
+            if (_evtCachedCourses) return _evtCachedCourses;
+            return JSON.parse(localStorage.getItem('epic_courses') || '[]');
+        }
+
+        async function filterEventCourseOptions(prefix) {
+            prefix = prefix || 'evt';
+            const searchId = prefix === 'evt' ? 'evt-course-search' : 'd-course-search';
+            const ddId     = prefix === 'evt' ? 'evt-course-dropdown' : 'd-course-dropdown';
+            const q = (document.getElementById(searchId).value || '').toLowerCase();
+            const dd = document.getElementById(ddId);
+            const courses = await getCachedCoursesForEvents();
+            const matches = q ? courses.filter(c => ((c.name||'') + ' ' + (c.city||'') + ' ' + (c.state||'')).toLowerCase().includes(q)) : courses;
+            if (!matches.length) {
+                dd.innerHTML = '<div style="padding:0.8rem;color:#aaa;font-size:0.84rem;">No courses found</div>';
+            } else {
+                dd.innerHTML = matches.slice(0, 12).map(c => `
+                    <div class="course-option" onclick="selectCourseForEvent('${c.id}','${prefix}')">
+                        ${c.featured_image_url ? `<img src="${c.featured_image_url}" alt="" onerror="this.style.display='none'">` : ''}
+                        <div class="course-option-info">
+                            <strong>${c.name}</strong>
+                            <span>${c.city || ''}, ${c.state || ''} &bull; ${c.public_private || ''}</span>
+                        </div>
+                    </div>`).join('');
+            }
+            dd.classList.add('open');
+        }
+
+        function showEventCourseDropdown(prefix) {
+            prefix = prefix || 'evt';
+            const searchId = prefix === 'evt' ? 'evt-course-search' : 'd-course-search';
+            const q = document.getElementById(searchId).value;
+            if (!q) filterEventCourseOptions(prefix);
+        }
+
+        async function selectCourseForEvent(courseId, prefix) {
+            prefix = prefix || 'evt';
+            const idPfx = prefix === 'evt' ? 'evt' : 'd';
+            const courses = await getCachedCoursesForEvents();
+            const course = courses.find(c => c.id === courseId);
+            if (!course) return;
+
+            document.getElementById(idPfx + '-course_id').value = courseId;
+            document.getElementById(idPfx + '-course-search').value = course.name;
+            document.getElementById(idPfx + '-course-dropdown').classList.remove('open');
+            renderEventCoursePreview(course, prefix);
+
+            // Auto-fill form fields
+            const sv = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+            const svIfBlank = (id, val) => { const el = document.getElementById(id); if (el && !el.value && val) el.value = val; };
+
+            const loc = [course.city, course.state].filter(Boolean).join(', ');
+            const addr = [course.address, course.city, course.state, course.zip_code].filter(Boolean).join(', ');
+            const titleField = prefix === 'evt' ? 'new-title' : 'd-title';
+            const locationField = prefix === 'evt' ? 'new-location' : 'd-location';
+            const descField = prefix === 'evt' ? 'new-description' : 'd-description';
+            const imgField = prefix === 'evt' ? 'new-image' : 'd-image';
+
+            sv(locationField, loc);
+            if (prefix === 'evt') sv('new-mapAddress', addr);
+            svIfBlank(titleField, course.name + ' Golf Day');
+            svIfBlank(descField, course.description || course.course_description || '');
+
+            // We deliberately DO NOT copy the course image into the event's custom image field.
+            // This prevents stale image copies if the Course updates its photo later.
+        }
+
+        function renderEventCoursePreview(course, prefix) {
+            const idPfx = (prefix === 'evt' || !prefix) ? 'evt' : 'd';
+            const previewEl = document.getElementById(idPfx + '-course-preview');
+            const stats = [course.holes ? course.holes + ' holes' : null, course.par ? 'Par ' + course.par : null, course.ranking].filter(Boolean).join(' &bull; ');
+            previewEl.innerHTML = `
+                <div class="course-preview-card">
+                    ${course.featured_image_url ? `<img src="${course.featured_image_url}" alt="${course.name}" onerror="this.style.display='none'">` : ''}
+                    <div class="course-preview-info">
+                        <strong>${course.name}</strong>
+                        <span>${course.city || ''}, ${course.state || ''} &bull; ${course.public_private || ''}</span>
+                        ${stats ? `<div style="margin-top:4px;font-size:0.74rem;color:#888;">${stats}</div>` : ''}
+                    </div>
+                    <button class="course-preview-remove" onclick="clearEventCourse('${idPfx}')" title="Remove">✕ Remove</button>
+                </div>`;
+            previewEl.style.display = '';
+        }
+
+        function clearEventCourse(prefix) {
+            const idPfx = prefix || 'evt';
+            const searchId = idPfx + '-course-search';
+            const el = document.getElementById(searchId);
+            if (el) el.value = '';
+            const cid = document.getElementById(idPfx + '-course_id');
+            if (cid) cid.value = '';
+            const prev = document.getElementById(idPfx + '-course-preview');
+            if (prev) prev.style.display = 'none';
+        }
+
+        // Close course dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.course-selector-wrap')) {
+                document.querySelectorAll('.course-dropdown').forEach(d => d.classList.remove('open'));
+            }
+        });
+
+        // ── Render ────────────────────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Render immediately from localStorage so the table is never blank
+            recomputeAllSpotsSold();
+            renderEvents();
+            renderDestinations();
+
+            // Then fetch fresh data from Postgres in the background
+            if (typeof EPICDB !== 'undefined') {
+                try {
+                    const [freshEvents, freshUsers] = await Promise.all([EPICDB.getEvents(), EPICDB.getUsers()]);
+                    const local = loadSharedEvents();
+
+                    if (freshEvents && freshEvents.length > 0) {
+                        // Merge: push any local-only events (not in DB) up to Postgres first
+                        const dbIds = new Set(freshEvents.map(e => e.id));
+                        const localOnly = local.filter(e => !dbIds.has(e.id));
+                        if (localOnly.length > 0) {
+                            console.log('EPICDB: uploading', localOnly.length, 'local-only events to Postgres…');
+                            await Promise.all(localOnly.map(ev => EPICDB.saveEvent(ev).catch(() => {})));
+                            // Fetch again to get the fully merged list
+                            const merged = await EPICDB.getEvents();
+                            if (merged && merged.length) {
+                                saveSharedEvents(merged);
+                                recomputeAllSpotsSold();
+                                renderEvents();
+                            }
+                        } else {
+                            // DB is the superset — just update localStorage
+                            saveSharedEvents(freshEvents);
+                            recomputeAllSpotsSold();
+                            renderEvents();
+                        }
+                    } else if (freshEvents && freshEvents.length === 0) {
+                        // Postgres is empty — push all localStorage events up
+                        if (local.length > 0) {
+                            console.log('EPICDB: seeding', local.length, 'events to Postgres…');
+                            await Promise.all(local.map(ev => EPICDB.saveEvent(ev).catch(() => {})));
+                        }
+                    }
+                    adminUsers = freshUsers || [];
+                    if (adminUsers.length) {
+                        localStorage.setItem('epic_users', JSON.stringify(adminUsers));
+                        renderEvents(); // refresh spots sold
+                    }
+                } catch (err) {
+                    console.warn('EPICDB fetch failed, using localStorage:', err);
+                }
+            } else {
+                adminUsers = JSON.parse(localStorage.getItem('epic_users') || '[]');
+            }
+        });
+
+        function renderEvents() {
+            const tbody = document.getElementById('events-tbody');
+            const events = sortedEvents();
+            tbody.innerHTML = events.map(e => {
+                const sold = computeSpotsSold(e.id); // always live from epic_users trips
+                const pct = Math.round((sold / e.spots) * 100);
+                const revenue = sold * e.price;
+                const status = e.status || 'active';
+
+                const statusBadge = {
+                    active: '<span class="badge badge-active">Active</span>',
+                    draft: '<span class="badge badge-draft">Draft</span>',
+                    cancelled: '<span class="badge badge-cancelled">Cancelled</span>',
+                    'sold-out': '<span class="badge badge-sold-out">Sold Out</span>'
+                }[status] || '<span class="badge badge-draft">Draft</span>';
+
+                const visibilityText = status === 'active'
+                    ? '<span style="color:#2ecc71;font-size:0.82rem;font-weight:600;">● Live</span>'
+                    : '<span style="color:#ccc;font-size:0.82rem;font-weight:600;">● Not Live</span>';
+
+                const remaining = e.spots - sold;
+                const almostBadge = (status === 'active' && pct >= 75 && remaining > 0)
+                    ? ' <span class="badge" style="background:#fff8e1;color:#f39c12">Almost Sold Out</span>'
+                    : '';
+
+                const isDraft = status === 'draft' || status === 'pending';
+                
+                // Fetch image dynamically: Custom Event Image -> Linked Course Image -> Placeholder
+                let coverImg = e.image || '';
+                if (!coverImg && e.course_id) {
+                    const linkedC = (typeof getCachedCoursesForEvents !== 'undefined') ? getCachedCoursesForEventsSync().find(c => c.id === e.course_id) : null;
+                    if (linkedC) {
+                        coverImg = linkedC.featured_image_url || (linkedC.gallery && linkedC.gallery[0]) || '';
+                    }
+                }
+                
+                const thumb = coverImg
+                    ? `<img src="${coverImg}" style="width:44px;height:32px;object-fit:cover;border-radius:6px;flex-shrink:0;" onerror="this.style.background='#eee';this.src=''">`
+                    : `<div style="width:44px;height:32px;border-radius:6px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:1rem;">⛳</div>`;
+                return `<tr onclick="openDrawer('${e.id}')" class="${currentEventId === e.id ? 'selected' : isDraft ? 'row-draft' : ''}">
+                    <td style="padding:6px 8px;">${thumb}</td>
+                    <td><strong>${e.title}</strong><br><small style="color:#888">${e.location}</small></td>
+                    <td>${e.date}</td>
+                    <td>
+                        <div class="spots-bar">
+                            <div class="spots-track"><div class="spots-fill" style="width:${pct}%"></div></div>
+                            ${sold}/${e.spots}
+                        </div>
+                    </td>
+                    <td><strong>$${revenue.toLocaleString()}</strong></td>
+                    <td>${statusBadge}${almostBadge}</td>
+                    <td>${visibilityText}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        function renderDestinations() {
+            const container = document.getElementById('dest-container');
+            container.innerHTML = loadSharedDestinations().map(d => {
+                const isActive = (d.status || 'active') === 'active';
+                const badge = isActive
+                    ? `<span style="font-size:0.68rem;background:#e8f8f0;color:#27ae60;padding:2px 7px;border-radius:10px;font-weight:600;">Active</span>`
+                    : `<span style="font-size:0.68rem;background:#fff8e1;color:#b8860b;padding:2px 7px;border-radius:10px;font-weight:600;">Pending</span>`;
+                const toggleLabel = isActive ? 'Set Pending' : 'Set Active';
+                return `
+                <div class="dest-card-small">
+                    <img src="${d.image}" class="dest-img-thumb" alt="${d.name}">
+                    <span class="dest-name">${d.name} ${badge}</span>
+                    <div style="display:flex;gap:0.4rem;margin-top:0.3rem;">
+                        <button class="btn-small" style="background:#f0f0f0;color:#333;border:none;" onclick="toggleDestStatus('${d.id}')">${toggleLabel}</button>
+                        <button class="btn-small btn-delete" onclick="removeDest('${d.id}')">Delete</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function toggleDestStatus(id) {
+            const dests = loadSharedDestinations();
+            const idx = dests.findIndex(d => d.id === id);
+            if (idx === -1) return;
+            dests[idx].status = (dests[idx].status || 'active') === 'active' ? 'pending' : 'active';
+            localStorage.setItem('epic_destinations', JSON.stringify(dests));
+            renderDestinations();
+        }
+
+        // ── Drawer ────────────────────────────────────────────────────────────
+        function openDrawer(id) {
+            currentEventId = id;
+            const e = getEventById(id);
+            if (!e) return;
+
+            // Reset to overview tab
+            switchTab('overview', document.querySelector('.drawer-tab'));
+
+            // Populate overview
+            document.getElementById('drawerTitle').textContent = e.title;
+            document.getElementById('drawerSubtitle').textContent = e.location + ' · ' + e.date;
+            document.getElementById('drawerImg').src = e.image;
+            document.getElementById('drawerLocation').textContent = e.location;
+            document.getElementById('drawerDate').textContent = e.date;
+            document.getElementById('drawerPrice').textContent = '$' + Number(e.price).toLocaleString();
+            document.getElementById('drawerSpots').textContent = e.spots;
+            document.getElementById('drawerDescription').textContent = e.description || 'No description set.';
+            document.getElementById('drawerIncludes').textContent = e.includes || '—';
+
+            const sold = e.spotsSold || 0;
+            const pct = Math.round((sold / e.spots) * 100);
+            const revenue = sold * e.price;
+            const expenses = totalExpenses(e);
+            const net = revenue - expenses;
+
+            document.getElementById('spotsBarFill').style.width = pct + '%';
+            document.getElementById('spotsLegendLeft').textContent = sold + ' sold (' + pct + '%)';
+            document.getElementById('spotsLegendRight').textContent = (e.spots - sold) + ' remaining';
+
+            document.getElementById('kpiRevenue').textContent = '$' + revenue.toLocaleString();
+            document.getElementById('kpiExpenses').textContent = '$' + expenses.toLocaleString();
+            const kpiNet = document.getElementById('kpiNet');
+            kpiNet.textContent = (net >= 0 ? '+' : '') + '$' + Math.abs(net).toLocaleString();
+            kpiNet.style.color = net >= 0 ? '#2ecc71' : '#e74c3c';
+
+            // Populate edit form
+            document.getElementById('drawer-event-id').value = e.id;
+            document.getElementById('d-status').value = e.status || 'active';
+            document.getElementById('d-visibility').value = e.visibility || 'all';
+            document.getElementById('d-title').value = e.title;
+            document.getElementById('d-location').value = e.location;
+            // Use explicitly stored start/end dates if available, otherwise parse legacy string
+            let ds = e.dateStart || '';
+            let de = e.dateEnd || '';
+            
+            if (!ds && e.date) {
+                const str = e.date;
+                const yearMatch = str.match(/\d{4}/);
+                const year = yearMatch ? yearMatch[0] : new Date().getFullYear();
+                const months = str.match(/[A-Za-z]+/g) || [];
+                const days = str.match(/\b\d{1,2}\b/g) || [];
+
+                if (months.length > 0 && days.length > 0) {
+                    const toISO = (m, d, y) => {
+                        const dateObj = new Date(`${m} ${d}, ${y}`);
+                        return isNaN(dateObj) ? '' : dateObj.toISOString().slice(0, 10);
+                    };
+                    const firstMonth = months[0];
+                    const lastMonth = months.length > 1 ? months[months.length - 1] : firstMonth;
+                    
+                    ds = toISO(firstMonth, days[0], year);
+                    de = toISO(lastMonth, days.length > 1 ? days[1] : days[0], year);
+                }
+            }
+            
+            document.getElementById('d-date-start').value = ds;
+            document.getElementById('d-date-end').value = de;
+            document.getElementById('d-price').value = e.price;
+            document.getElementById('d-allowGuests').checked = e.allowGuests !== false;
+            document.getElementById('d-spots').value = e.spots;
+            document.getElementById('d-spotsSold').value = e.spotsSold || 0;
+            document.getElementById('d-description').value = e.description || '';
+            document.getElementById('d-includes').value = e.includes || '';
+            document.getElementById('d-itinerary').value = e.itinerary || '';
+            document.getElementById('d-image').value = e.image;
+            document.getElementById('d-link').value = e.link || '#';
+            document.getElementById('d-costVenue').value = e.costVenue || 0;
+            document.getElementById('d-costCatering').value = e.costCatering || 0;
+            document.getElementById('d-costTransportation').value = e.costTransportation || 0;
+            document.getElementById('d-costMarketing').value = e.costMarketing || 0;
+            document.getElementById('d-costStaff').value = e.costStaff || 0;
+            document.getElementById('d-costMisc').value = e.costMisc || 0;
+
+            // Course selection
+            document.getElementById('d-course_id').value = e.course_id || '';
+            if (e.course_id) {
+                getCachedCoursesForEvents().then(courses => {
+                    const c = courses.find(x => x.id === e.course_id);
+                    if (c) {
+                        document.getElementById('d-course-search').value = c.name;
+                        // Show what the linked course is, but this UI preview doesn't override the event's custom image payload.
+                        renderEventCoursePreview(c, 'd');
+                    } else {
+                        clearEventCourse('d');
+                    }
+                });
+            } else {
+                clearEventCourse('d');
+            }
+
+            // Build P&L table
+            renderPL(e);
+
+            // Populate Attendees Tab
+            renderAttendees(id);
+
+            document.getElementById('drawerOverlay').classList.add('open');
+            document.getElementById('eventDrawer').classList.add('open');
+            renderEvents(); // highlight selected row
+        }
+
+        function closeDrawer() {
+            currentEventId = null;
+            document.getElementById('drawerOverlay').classList.remove('open');
+            document.getElementById('eventDrawer').classList.remove('open');
+            renderEvents();
+        }
+
+        function switchTab(name, btn) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.drawer-tab').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + name).classList.add('active');
+            if (btn) btn.classList.add('active');
+        }
+
+        // ── Attendees Tab ─────────────────────────────────────────────────────
+        function renderAttendees(eventId) {
+            const tbody = document.getElementById('attendees-tbody');
+            const emptyState = document.getElementById('attendees-empty-state');
+            const users = adminUsers.length ? adminUsers : JSON.parse(localStorage.getItem('epic_users') || '[]');
+
+            // Populate the Dropdown for manual additions
+            const select = document.getElementById('manualAttendeeSelect');
+            select.innerHTML = '<option value="">Select User...</option>' +
+                users.map(u => `<option value="${u.id}">${u.firstName} ${u.lastName} (${u.email})</option>`).join('');
+
+            let html = '';
+            let count = 0;
+
+            users.forEach(u => {
+                if (u.trips && u.trips.length > 0) {
+                    const match = u.trips.find(t => t.eventId === eventId);
+                    if (match) {
+                        count++;
+                        let spotDesc = match.spotsReserved;
+                        if (match.guestDetails && match.guestDetails.name) {
+                            spotDesc += ` <br><span style="color:#888;font-size:0.75rem;">(+Guest: ${match.guestDetails.name})</span>`;
+                        }
+
+                        html += `
+                        <tr style="border-bottom:1px solid #f0f0f0;">
+                            <td style="padding:0.7rem 0;"><strong>${u.firstName} ${u.lastName}</strong><br><a href="user-profile.html?id=${u.id}" style="color:var(--accent-color);font-size:0.75rem;text-decoration:none;">View Profile &rarr;</a></td>
+                            <td style="padding:0.7rem 0;">${spotDesc}</td>
+                            <td style="padding:0.7rem 0; color:#555;">${match.notes || '—'}</td>
+                            <td style="padding:0.7rem 0; text-align:right;">
+                                <button class="btn-small btn-delete" onclick="removeAttendee('${u.id}', '${eventId}', ${match.spotsReserved})">Remove</button>
+                            </td>
+                        </tr>`;
+                    }
+                }
+            });
+
+            if (count === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+            } else {
+                tbody.innerHTML = html;
+                emptyState.style.display = 'none';
+            }
+        }
+
+        function removeAttendee(userId, eventId, spotsToReturn) {
+            // 1. Remove trip from user
+            const users = adminUsers.length ? adminUsers : JSON.parse(localStorage.getItem('epic_users') || '[]');
+            const uIdx = users.findIndex(u => u.id === userId);
+            if (uIdx > -1 && users[uIdx].trips) {
+                users[uIdx].trips = users[uIdx].trips.filter(t => t.eventId !== eventId);
+                localStorage.setItem('epic_users', JSON.stringify(users));
+                adminUsers = users;
+                // Sync to server
+                if (typeof EPICDB !== 'undefined') EPICDB.saveUser(users[uIdx]).catch(console.warn);
+            }
+
+            // 2. Return spots to event pool
+            const liveEvents = loadSharedEvents();
+            const eIdx = liveEvents.findIndex(e => e.id === eventId);
+            if (eIdx > -1) {
+                liveEvents[eIdx].spotsSold = Math.max(0, (liveEvents[eIdx].spotsSold || 0) - spotsToReturn);
+                saveEvent(liveEvents[eIdx]);
+                if (typeof EPICDB !== 'undefined') EPICDB.saveEvent(liveEvents[eIdx]).catch(console.warn);
+            }
+
+            // 3. Refresh views
+            renderAttendees(eventId);
+            openDrawer(eventId); // force full re-render of capacity gauges
+            renderEvents();
+        }
+
+        function addManualAttendee() {
+            const userId = document.getElementById('manualAttendeeSelect').value;
+            const isGuest = document.getElementById('manualAttendeeGuest').checked;
+
+            if (!userId) {
+                alert('Please select a user to add.');
+                return;
+            }
+            if (!currentEventId) return;
+
+            const liveEvents = loadSharedEvents();
+            const eIdx = liveEvents.findIndex(e => e.id === currentEventId);
+            if (eIdx === -1) return;
+
+            const dbEvent = liveEvents[eIdx];
+            const spotsRemaining = dbEvent.spots - (dbEvent.spotsSold || 0);
+            const spotsNeeded = isGuest ? 2 : 1;
+
+            // Allow admin override if full, but show warning
+            if (spotsRemaining < spotsNeeded) {
+                if (!confirm(`Warning: This event only has ${Math.max(0, spotsRemaining)} spots remaining. Adding this person requires ${spotsNeeded} spot(s), which pushes the event over capacity. Proceed anyway?`)) {
+                    return;
+                }
+            }
+
+            // 1. Update User Profile
+            const users = adminUsers.length ? adminUsers : JSON.parse(localStorage.getItem('epic_users') || '[]');
+            const uIdx = users.findIndex(u => u.id === userId);
+            if (uIdx > -1) {
+                const u = users[uIdx];
+                u.trips = u.trips || [];
+
+                // Prevent duplicate registrations
+                if (u.trips.some(t => t.eventId === currentEventId)) {
+                    alert('This user is already registered for this event.');
+                    return;
+                }
+
+                u.trips.unshift({
+                    eventId: dbEvent.id,
+                    name: dbEvent.title,
+                    date: dbEvent.date,
+                    registeredOn: new Date().toISOString(),
+                    notes: 'Manually added by Admin',
+                    spotsReserved: spotsNeeded,
+                    guestDetails: isGuest ? { name: 'Admin TBD Guest', email: '' } : null
+                });
+                localStorage.setItem('epic_users', JSON.stringify(users));
+                adminUsers = users;
+                // Sync to server
+                if (typeof EPICDB !== 'undefined') EPICDB.saveUser(u).catch(console.warn);
+            }
+
+            // 2. Adjust capacity
+            dbEvent.spotsSold = (dbEvent.spotsSold || 0) + spotsNeeded;
+            saveEvent(dbEvent);
+            if (typeof EPICDB !== 'undefined') EPICDB.saveEvent(dbEvent).catch(console.warn);
+
+            // 3. Reset form and refresh tables
+            document.getElementById('manualAttendeeSelect').value = '';
+            document.getElementById('manualAttendeeGuest').checked = false;
+
+            renderAttendees(currentEventId);
+            openDrawer(currentEventId);
+            renderEvents();
+        }
+
+        function totalExpenses(e) {
+            return (Number(e.costVenue) || 0)
+                + (Number(e.costCatering) || 0)
+                + (Number(e.costTransportation) || 0)
+                + (Number(e.costMarketing) || 0)
+                + (Number(e.costStaff) || 0)
+                + (Number(e.costMisc) || 0);
+        }
+
+        function renderPL(e) {
+            const sold = e.spotsSold || 0;
+            const revenue = sold * e.price;
+            const venue = Number(e.costVenue) || 0;
+            const catering = Number(e.costCatering) || 0;
+            const transport = Number(e.costTransportation) || 0;
+            const marketing = Number(e.costMarketing) || 0;
+            const staff = Number(e.costStaff) || 0;
+            const misc = Number(e.costMisc) || 0;
+            const expenses = venue + catering + transport + marketing + staff + misc;
+            const net = revenue - expenses;
+            const margin = revenue > 0 ? ((net / revenue) * 100).toFixed(1) : 0;
+
+            const fmt = n => '$' + Math.abs(n).toLocaleString();
+
+            document.getElementById('plEventTitle').textContent = e.title + ' — P&L';
+            const netEl = document.getElementById('plNetDisplay');
+            netEl.textContent = (net >= 0 ? '+' : '-') + fmt(net);
+            netEl.className = 'pl-net ' + (net >= 0 ? 'positive' : 'negative');
+            document.getElementById('plNetLabel').textContent = net >= 0 ? 'Net Profit' : 'Net Loss';
+
+            document.getElementById('pl-tbody').innerHTML = `
+                <tr class="pl-section-row"><td colspan="2">Revenue</td></tr>
+                <tr><td>Spots Sold (${sold} × $${Number(e.price).toLocaleString()})</td><td>$${revenue.toLocaleString()}</td></tr>
+                <tr class="pl-subtotal-row"><td>Gross Revenue</td><td>$${revenue.toLocaleString()}</td></tr>
+
+                <tr class="pl-section-row"><td colspan="2">Operating Expenses</td></tr>
+                <tr><td>Venue / Greens Fees</td><td>-${fmt(venue)}</td></tr>
+                <tr><td>Catering / Meals</td><td>-${fmt(catering)}</td></tr>
+                <tr><td>Transportation</td><td>-${fmt(transport)}</td></tr>
+                <tr><td>Marketing</td><td>-${fmt(marketing)}</td></tr>
+                <tr><td>Staff / Guides</td><td>-${fmt(staff)}</td></tr>
+                <tr><td>Miscellaneous</td><td>-${fmt(misc)}</td></tr>
+                <tr class="pl-subtotal-row"><td>Total Expenses</td><td>-${fmt(expenses)}</td></tr>
+
+                <tr class="pl-section-row"><td colspan="2">Summary</td></tr>
+                <tr class="pl-total-row ${net >= 0 ? 'positive' : 'negative'}">
+                    <td>Net ${net >= 0 ? 'Profit' : 'Loss'}</td>
+                    <td>${(net >= 0 ? '+' : '-') + fmt(net)}</td>
+                </tr>
+                <tr><td style="color:#888;font-size:0.83rem;">Profit Margin</td><td style="color:#888;font-size:0.83rem;">${margin}%</td></tr>
+                <tr><td style="color:#888;font-size:0.83rem;">Full Capacity Revenue</td><td style="color:#888;font-size:0.83rem;">$${(e.spots * e.price).toLocaleString()}</td></tr>
+            `;
+        }
+
+        // ── Save drawer form ──────────────────────────────────────────────────
+        function handleDrawerSave(e) {
+            e.preventDefault();
+
+            const fmtD = raw => {
+                if (!raw) return '';
+                const d = new Date(raw + 'T00:00:00');
+                return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            };
+            const ds = document.getElementById('d-date-start').value;
+            const de = document.getElementById('d-date-end').value;
+            const dateRange = ds && de ? fmtD(ds) + ' – ' + fmtD(de) : fmtD(ds) || fmtD(de);
+            const eventId = document.getElementById('drawer-event-id').value;
+
+            // Merge with existing event so no fields (images, schedule, etc.) are lost
+            const existing = getEventById(eventId) || {};
+            const newImg = document.getElementById('d-image').value;
+            const payload = {
+                ...existing,
+                id: eventId,
+                status: document.getElementById('d-status').value,
+                visibility: document.getElementById('d-visibility').value || 'all',
+                title: document.getElementById('d-title').value,
+                location: document.getElementById('d-location').value,
+                course_id: document.getElementById('d-course_id').value.trim() || null,
+                date: dateRange,
+                dateStart: ds,
+                dateEnd: de,
+                price: parseInt(document.getElementById('d-price').value),
+                allowGuests: document.getElementById('d-allowGuests').checked,
+                spots: parseInt(document.getElementById('d-spots').value),
+                spotsSold: parseInt(document.getElementById('d-spotsSold').value) || 0,
+                description: document.getElementById('d-description').value,
+                includes: document.getElementById('d-includes').value,
+                itinerary: document.getElementById('d-itinerary').value,
+                image: newImg || existing.image || '',
+                link: document.getElementById('d-link').value || existing.link || '#',
+                costVenue: parseInt(document.getElementById('d-costVenue').value) || 0,
+                costCatering: parseInt(document.getElementById('d-costCatering').value) || 0,
+                costTransportation: parseInt(document.getElementById('d-costTransportation').value) || 0,
+                costMarketing: parseInt(document.getElementById('d-costMarketing').value) || 0,
+                costStaff: parseInt(document.getElementById('d-costStaff').value) || 0,
+                costMisc: parseInt(document.getElementById('d-costMisc').value) || 0,
+                updated_at: new Date().toISOString(),
+            };
+
+            saveEvent(payload);
+            if (typeof EPICDB !== 'undefined') {
+                EPICDB.saveEvent(payload).catch(err => console.warn("EPICDB.saveEvent failed", err));
+            }
+            if (typeof showToast === 'function') showToast('Event saved ✓', 'success');
+            clearEventCourse('d');
+            openDrawer(payload.id);
+            renderEvents();
+        }
+
+        // ── Delete ────────────────────────────────────────────────────────────
+        function removeEvent(id) {
+            deleteEvent(id);
+            closeDrawer();
+            renderEvents();
+        }
+        function removeDest(id) {
+            deleteDestination(id);
+            renderDestinations();
+        }
+
+        // ── Add Event Modal ───────────────────────────────────────────────────
+        function openEventModal() { document.getElementById('eventModal').classList.add('active'); }
+        function openDestModal() { document.getElementById('destModal').classList.add('active'); }
+        function closeModals() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('active')); }
+
+        // ── Event ID Generator ────────────────────────────────────────
+        // Format: EPIC-EVT-YYYYMMDD-NNNNN
+        function generateEventId() {
+            const today = new Date();
+            const datePart = today.getFullYear().toString()
+                + String(today.getMonth() + 1).padStart(2, '0')
+                + String(today.getDate()).padStart(2, '0');
+            const prefix = 'EPIC-EVT-' + datePart + '-';
+            const events = loadSharedEvents() || [];
+            let maxSeq = 0;
+            events.forEach(ev => {
+                if (ev.id && ev.id.startsWith(prefix)) {
+                    const seq = parseInt(ev.id.replace(prefix, ''), 10);
+                    if (!isNaN(seq) && seq > maxSeq) maxSeq = seq;
+                }
+            });
+            return prefix + String(maxSeq + 1).padStart(5, '0');
+        }
+
+        // ── New Event Modal Image Manager ──────────────────────────────
+        let _newEventImages = [];
+
+        function newEventAddImages(input) {
+            Array.from(input.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    _newEventImages.push({ dataUrl: e.target.result, name: file.name });
+                    renderNewEventImages();
+                };
+                reader.readAsDataURL(file);
+            });
+            input.value = '';
+        }
+
+        function renderNewEventImages() {
+            const grid = document.getElementById('new-event-img-grid');
+            if (!grid) return;
+            if (_newEventImages.length === 0) { grid.innerHTML = ''; return; }
+            grid.innerHTML = _newEventImages.map((img, i) => `
+                <div style="position:relative;width:80px;height:80px;flex-shrink:0;border-radius:9px;overflow:hidden;
+                            border:${i===0?'2.5px solid #4A90E2':'2px solid #e5e5e5'};">
+                    <img src="${img.dataUrl}" style="width:100%;height:100%;object-fit:cover;display:block;">
+                    ${i===0?'<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(74,144,226,0.9);color:#fff;font-size:0.58rem;font-weight:800;text-align:center;padding:2px;">Cover</div>':''}
+                    <button onclick="newEventRemoveImg(${i})" style="position:absolute;top:3px;right:3px;width:18px;height:18px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:50%;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">×</button>
+                    ${i>0?`<button onclick="newEventSetCover(${i})" title="Set as cover" style="position:absolute;top:3px;left:3px;width:18px;height:18px;background:rgba(74,144,226,0.75);color:#fff;border:none;border-radius:50%;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;">★</button>`:''}
+                </div>`).join('');
+        }
+
+        function newEventRemoveImg(idx) { _newEventImages.splice(idx,1); renderNewEventImages(); }
+        function newEventSetCover(idx) {
+            const img = _newEventImages.splice(idx,1)[0];
+            _newEventImages.unshift(img);
+            renderNewEventImages();
+        }
+
+        function handleEventModalSubmit(e) {
+            e.preventDefault();
+
+            // Format date range from two date pickers
+            const startRaw = document.getElementById('new-date-start').value;
+            const endRaw = document.getElementById('new-date-end').value;
+            const fmtDate = raw => {
+                if (!raw) return '';
+                const d = new Date(raw + 'T00:00:00');
+                return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            };
+            const dateRange = startRaw && endRaw
+                ? fmtDate(startRaw) + ' – ' + fmtDate(endRaw)
+                : fmtDate(startRaw) || fmtDate(endRaw);
+
+            const newId = generateEventId();
+            const slug = newId.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+            const autoLink = `events/event-page.html?id=${newId}`;
+
+            const images = _newEventImages.map(i => i.dataUrl);
+
+            saveEvent({
+                id: newId,
+                title: document.getElementById('new-title').value,
+                eventType: document.getElementById('new-eventType').value,
+                status: document.getElementById('new-status').value,
+                location: document.getElementById('new-location').value,
+                course_id: document.getElementById('evt-course_id').value.trim() || null,
+                mapAddress: document.getElementById('new-mapAddress').value,
+                date: dateRange,
+                dateStart: startRaw,
+                dateEnd: document.getElementById('new-date-end').value,
+                registrationDeadline: document.getElementById('new-regDeadline').value,
+                spots: parseInt(document.getElementById('new-spots').value),
+                spotsSold: parseInt(document.getElementById('new-spotsSold').value) || 0,
+                price: parseInt(document.getElementById('new-price').value),
+                allowGuests: document.getElementById('new-allowGuests').checked,
+                description: document.getElementById('new-description').value,
+                includes: document.getElementById('new-includes').value,
+                itinerary: document.getElementById('new-itinerary').value,
+                format: document.getElementById('new-format').value,
+                schedule: {
+                    morning: document.getElementById('new-scheduleMorning').value,
+                    afternoon: document.getElementById('new-scheduleAfternoon').value,
+                    evening: document.getElementById('new-scheduleEvening').value,
+                },
+                images,
+                image: images[0] || '',
+                link: autoLink,
+                coordinator: document.getElementById('new-coordinator').value,
+                adminNotes: document.getElementById('new-adminNotes').value,
+                costVenue: parseInt(document.getElementById('new-costVenue').value) || 0,
+                costCatering: parseInt(document.getElementById('new-costCatering').value) || 0,
+                costTransportation: parseInt(document.getElementById('new-costTransportation').value) || 0,
+                costMarketing: parseInt(document.getElementById('new-costMarketing').value) || 0,
+                costStaff: parseInt(document.getElementById('new-costStaff').value) || 0,
+                costMisc: parseInt(document.getElementById('new-costMisc').value) || 0,
+                createdAt: new Date().toISOString(),
+            });
+
+            // Reset images
+            _newEventImages = [];
+            renderNewEventImages();
+
+            closeModals();
+            clearEventCourse();
+            renderEvents();
+            // Persist to Postgres
+            if (typeof EPICDB !== 'undefined') {
+                EPICDB.saveEvent({
+                    id: newId,
+                    title: document.getElementById('new-title').value,
+                    eventType: document.getElementById('new-eventType').value,
+                    status: document.getElementById('new-status').value,
+                    location: document.getElementById('new-location').value,
+                    course_id: document.getElementById('evt-course_id').value.trim() || null,
+                    mapAddress: document.getElementById('new-mapAddress').value,
+                    date: dateRange,
+                    dateStart: startRaw,
+                    dateEnd: document.getElementById('new-date-end').value,
+                    registrationDeadline: document.getElementById('new-regDeadline').value,
+                    spots: parseInt(document.getElementById('new-spots').value),
+                    spotsSold: 0,
+                    price: parseInt(document.getElementById('new-price').value),
+                    allowGuests: document.getElementById('new-allowGuests').checked,
+                    description: document.getElementById('new-description').value,
+                    includes: document.getElementById('new-includes').value,
+                    format: document.getElementById('new-format').value,
+                    image: images[0] || document.getElementById('new-image').value || '',
+                    images,
+                    link: autoLink,
+                    coordinator: document.getElementById('new-coordinator').value,
+                    adminNotes: document.getElementById('new-adminNotes').value,
+                    costVenue: parseInt(document.getElementById('new-costVenue').value) || 0,
+                    costCatering: parseInt(document.getElementById('new-costCatering').value) || 0,
+                    costTransportation: parseInt(document.getElementById('new-costTransportation').value) || 0,
+                    costMarketing: parseInt(document.getElementById('new-costMarketing').value) || 0,
+                    costStaff: parseInt(document.getElementById('new-costStaff').value) || 0,
+                    costMisc: parseInt(document.getElementById('new-costMisc').value) || 0,
+                    createdAt: new Date().toISOString(),
+                }).catch(console.warn);
+            }
+            // Auto-open the drawer for the newly created event
+            setTimeout(() => openDrawer(newId), 200);
+        }
+
+        function handleDestSubmit(e) {
+            e.preventDefault();
+            saveDestination({
+                name: document.getElementById('dest-name').value,
+                status: document.getElementById('dest-status').value,
+                image: document.getElementById('dest-image').value
+            });
+            closeModals();
+            renderDestinations();
+        }
+    
+        // Live unread-message badge
+        (function() {
+            try {
+                var msgs = JSON.parse(localStorage.getItem('epic_messages') || '[]');
+                var unread = msgs.filter(function(m){ return m.unread !== false && m.status !== 'closed'; }).length;
+                document.querySelectorAll('.nav-msg-badge').forEach(function(b){
+                    b.textContent = unread; b.style.display = unread > 0 ? 'inline-block' : 'none';
+                });
+            } catch(e) {}
+        })();
+    </script>
+</body>
+
+</html>

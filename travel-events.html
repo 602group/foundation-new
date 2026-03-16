@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel & Events - EPIC Foundation</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="travel-events.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        .epic-request-section {
+            background: #000000;
+            padding: 6rem 4rem;
+        }
+        .epic-request-inner {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+        .epic-request-eyebrow {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #888;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .epic-request-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 900;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 0.75rem;
+            line-height: 1.2;
+        }
+        .epic-request-subtitle {
+            font-size: 1rem;
+            color: #aaaaaa;
+            text-align: center;
+            max-width: 540px;
+            margin: 0 auto 3rem;
+            line-height: 1.75;
+        }
+        .epic-request-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 2.5rem 3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .epic-request-success {
+            display: none;
+            background: #e8f8f0;
+            color: #1a9e5c;
+            border: 1.5px solid #1a9e5c;
+            border-radius: 12px;
+            padding: 1.4rem 1.8rem;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        .epic-field label {
+            display: block;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #000000;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 0.55rem;
+        }
+        .epic-field input[type="text"],
+        .epic-field textarea {
+            width: 100%;
+            padding: 0.85rem 1.1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            color: #000;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+            background: #fafafa;
+        }
+        .epic-field input[type="text"]:focus,
+        .epic-field textarea:focus {
+            border-color: #000000;
+            background: #fff;
+        }
+        .epic-field textarea { resize: vertical; }
+        .epic-select-wrap {
+            position: relative;
+        }
+        .epic-select-wrap::after {
+            content: '';
+            position: absolute;
+            right: 1.1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 6px solid #000;
+            pointer-events: none;
+        }
+        .epic-select-wrap select {
+            width: 100%;
+            padding: 0.85rem 2.5rem 0.85rem 1.1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            color: #000;
+            background: #fafafa;
+            box-sizing: border-box;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .epic-select-wrap select:focus { border-color: #000; background: #fff; }
+        .epic-row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+        .epic-radio-group {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .epic-radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #333;
+            cursor: pointer;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+        .epic-radio-group input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #000;
+            cursor: pointer;
+        }
+        .epic-submit-btn {
+            background: #000000;
+            color: #ffffff;
+            border: 3px solid #000000;
+            padding: 1.1rem 2.5rem;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            align-self: flex-start;
+        }
+        .epic-submit-btn:hover {
+            background: #ffffff;
+            color: #000000;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        @media (max-width: 640px) {
+            .epic-request-section { padding: 4rem 1.5rem; }
+            .epic-request-card { padding: 2rem 1.5rem; }
+            .epic-row-2 { grid-template-columns: 1fr; }
+            .epic-request-title { font-size: 1.8rem; }
+            .epic-submit-btn { align-self: stretch; text-align: center; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="page-header">
+        <a href="/" class="logo">EPIC Foundation</a>
+        <nav class="nav-menu">
+            <a href="auctions.html" class="nav-link member-only-link" style="display:none;">Auction</a>
+            <a href="travel-events.html" class="nav-link member-only-link" style="display:none;">Travel &amp; Events</a>
+            <a href="about.html" class="nav-link">About Us</a>
+            <a href="contact.html" class="nav-link">Contact Us</a>
+            <a href="donate.html" class="nav-link" style="color:#fff;font-weight:700;">Donate &#9829;</a>
+            <button class="login-btn">Login</button>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="travel-hero" id="trips">
+        <div class="travel-hero-content">
+            <p style="font-size:0.75rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:0.75rem;">Member Exclusive</p>
+            <h1 class="travel-hero-title">Exclusive Golf Trips</h1>
+            <p class="travel-hero-subtitle">Every EPIC trip is built from scratch around you — your pace, your bucket-list courses, your group. We handle every detail from tee time to travel logistics so all you have to think about is your swing.</p>
+        </div>
+    </section>
+
+    <!-- Events Section -->
+    <section class="events-section" id="events">
+        <h2 class="section-title">Upcoming Events</h2>
+        <div class="events-grid" id="frontend-events-grid">
+            <!-- Events rendered dynamically from shared-events.js -->
+        </div>
+    </section>
+
+    <!-- Travel Preference Form -->
+    <section class="epic-request-section">
+        <div class="epic-request-inner">
+            <p class="epic-request-eyebrow">Coming Soon</p>
+            <h2 class="epic-request-title">Help Us Plan Your Next Trip</h2>
+            <p class="epic-request-subtitle">
+                The EPIC team is currently curating exclusive travel experiences for our members. Tell us what you're looking for and we'll make it happen.
+            </p>
+
+            <div id="travelFormSuccess" class="epic-request-success">
+                ✅ Your travel preferences have been submitted! The EPIC team will be in touch soon.
+            </div>
+
+            <form id="travelPrefForm" onsubmit="submitTravelPref(event)" class="epic-request-card">
+
+                <div class="epic-row-2">
+                    <div class="epic-field">
+                        <label>Destination / Course</label>
+                        <input type="text" id="tpDestination" placeholder="e.g. Pebble Beach, Scotland, Augusta…" required>
+                    </div>
+                    <div class="epic-field">
+                        <label>Preferred Season</label>
+                        <div class="epic-select-wrap">
+                            <select id="tpSeason">
+                                <option value="">Select season</option>
+                                <option>Spring (Mar–May)</option>
+                                <option>Summer (Jun–Aug)</option>
+                                <option>Fall (Sep–Nov)</option>
+                                <option>Winter (Dec–Feb)</option>
+                                <option>No preference</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="epic-row-2">
+                    <div class="epic-field">
+                        <label>Budget Per Person</label>
+                        <div class="epic-select-wrap">
+                            <select id="tpBudget">
+                                <option value="">Select budget</option>
+                                <option>Under $2,500</option>
+                                <option>$2,500 – $5,000</option>
+                                <option>$5,000 – $10,000</option>
+                                <option>$10,000 – $25,000</option>
+                                <option>$25,000+</option>
+                                <option>Flexible</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="epic-field">
+                        <label>Group Size</label>
+                        <div class="epic-select-wrap">
+                            <select id="tpGroupSize">
+                                <option value="">Select group size</option>
+                                <option>Just me (1)</option>
+                                <option>2 people</option>
+                                <option>3–4 people</option>
+                                <option>5–8 people</option>
+                                <option>9+ people</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="epic-field">
+                    <label>Would you like to bring guests?</label>
+                    <div class="epic-radio-group">
+                        <label><input type="radio" name="tpGuests" value="Yes"> Yes</label>
+                        <label><input type="radio" name="tpGuests" value="No"> No</label>
+                        <label><input type="radio" name="tpGuests" value="Undecided" checked> Undecided</label>
+                    </div>
+                </div>
+
+                <div class="epic-field">
+                    <label>Anything else we should know?</label>
+                    <textarea id="tpNotes" rows="3" placeholder="Specific courses, accessibility needs, type of experience, dates in mind…"></textarea>
+                </div>
+
+                <button type="submit" class="epic-submit-btn">Submit My Preferences →</button>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        function submitTravelPref(e) {
+            e.preventDefault();
+            let user = null;
+            try { user = JSON.parse(localStorage.getItem('epic_session')); } catch {}
+
+            const destination = document.getElementById('tpDestination').value.trim();
+            const season      = document.getElementById('tpSeason').value;
+            const budget      = document.getElementById('tpBudget').value;
+            const groupSize   = document.getElementById('tpGroupSize').value;
+            const guests      = (document.querySelector('input[name="tpGuests"]:checked') || {}).value || 'Undecided';
+            const notes       = document.getElementById('tpNotes').value.trim();
+
+            const body = [
+                '🌍 Destination: '   + (destination || '—'),
+                '🗓 Season: '        + (season      || '—'),
+                '💰 Budget/person: ' + (budget      || '—'),
+                '👥 Group Size: '    + (groupSize   || '—'),
+                '🧳 Guests: '        + guests,
+                notes ? '📝 Notes: ' + notes : null
+            ].filter(Boolean).join('\n');
+
+            let msgs = [];
+            try { msgs = JSON.parse(localStorage.getItem('epic_messages') || '[]'); } catch {}
+            msgs.push({
+                id: 'msg_' + Date.now(),
+                firstName:  user ? user.firstName : 'Member',
+                lastName:   user ? user.lastName  : '',
+                email:      user ? user.email     : '',
+                phone:      user ? (user.phone || '') : '',
+                subject:    'events',
+                message:    body,
+                receivedAt: new Date().toISOString(),
+                status:     'new',
+                unread:     true,
+                source:     'travel_preference_form',
+                memberId:   user ? user.id : null
+            });
+            localStorage.setItem('epic_messages', JSON.stringify(msgs));
+            document.getElementById('travelPrefForm').style.display = 'none';
+            document.getElementById('travelFormSuccess').style.display = 'block';
+        }
+    </script>
+
+
+    <!-- Email Signup Section -->
+    <section class="email-signup-section">
+        <div class="email-signup-overlay">
+            <div class="email-signup-content">
+                <h2 class="email-signup-title">Stay in the Loop</h2>
+                <p class="email-signup-description">Get exclusive access to upcoming auctions, golf experiences, and
+                    charitable events.</p>
+                <form class="email-signup-form">
+                    <input type="email" class="email-input" placeholder="Enter your email address" required>
+                    <button type="submit" class="subscribe-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3 class="footer-heading">EPIC Foundation</h3>
+                <p class="footer-description">Creating once-in-a-lifetime golf experiences while supporting charitable
+                    causes.</p>
+            </div>
+
+            <div class="footer-column">
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="auctions.html" class="member-only-link" style="display:none;">Auctions</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4 class="footer-title">Explore</h4>
+                <ul class="footer-links">
+                    <li><a href="travel-events.html" class="member-only-link" style="display:none;">Travel & Events</a>
+                    </li>
+                    <li><a href="#">Content</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Login</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4 class="footer-title">Legal</h4>
+                <ul class="footer-links">
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                    <li><a href="#terms">Terms of Service</a></li>
+                    <li><a href="#cookies">Cookie Policy</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 EPIC Foundation. All rights reserved.</p>
+        </div>
+
+        <div class="footer-admin-bar" style="display:none;">
+            <a href="admin/dashboard.html" class="admin-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                Admin
+            </a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="db.js"></script>
+    <script src="auth.js"></script>
+    <script src="shared-events.js"></script>
+    <script src="shared-courses.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Events are publicly visible — do NOT require login here.
+            // Nav/header still reflects auth state (profile vs login button).
+            AUTH.applyGatedNav('');
+
+            let events = [];
+            let destinations = [];
+
+            // Attempt to load from live DB first for true state
+            if (typeof EPICDB !== 'undefined') {
+                try {
+                    events = await EPICDB.getEvents() || [];
+                } catch(e) { console.warn("Could not fetch events from DB"); }
+            }
+            if (events.length === 0 && typeof loadSharedEvents === 'function') {
+                events = loadSharedEvents();
+            }
+
+            if (typeof loadSharedDestinations === 'function') {
+                destinations = loadSharedDestinations();
+            }
+
+            // Show events with any "live" status — active, new, or live (not draft/cancelled/archived)
+            const VISIBLE_STATUSES = new Set(['active', 'new', 'live']);
+            const activeEvents = events.filter(e => VISIBLE_STATUSES.has(e.status || 'active'));
+            const eventsGrid = document.getElementById('frontend-events-grid');
+            if (eventsGrid && activeEvents.length > 0) {
+                eventsGrid.innerHTML = activeEvents.map(event => {
+                    const price = Number(event.price) || 0;
+                    const spots = Number(event.spots) || 0;
+                    const spotsSold = Number(event.spotsSold) || 0;
+                    const remaining = Math.max(0, spots - spotsSold);
+
+                    // Fetch course image as fallback if event lacks custom image
+                    let finalImg = event.image || '';
+                    if (!finalImg && event.course_id && typeof loadSharedCourses === 'function') {
+                        const c = loadSharedCourses().find(x => x.id === event.course_id);
+                        if (c) finalImg = c.featured_image_url || (c.gallery && c.gallery[0]) || '';
+                    }
+
+                    return `
+                    <a href="${event.link || '#'}" style="text-decoration: none; color: inherit;">
+                        <div class="event-card">
+                            <div class="event-image" style="background: url('${finalImg}') center/cover; background-color:#1a1a2e;"></div>
+                            <div class="event-content">
+                                <h3 class="event-title">${event.title || 'Untitled Event'}</h3>
+                                <p class="event-location">${event.location || ''}</p>
+                                <p class="event-date">${event.date || ''}</p>
+                                <div class="event-details">
+                                    <span class="event-spots">${spots > 0 ? remaining + ' Spots Remaining' : 'Contact for Availability'}</span>
+                                    <span class="event-price">${price > 0 ? '$' + price.toLocaleString() + ' per person' : 'Price on Request'}</span>
+                                </div>
+                                <button class="event-btn">Learn More</button>
+                            </div>
+                        </div>
+                    </a>`;
+                }).join('');
+            } else if (eventsGrid) {
+                eventsGrid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #666; padding: 2rem;">No upcoming events listed at this time.</p>';
+            }
+
+            // Load and Render Destinations (only active ones)
+            const activeDestinations = destinations.filter(d => (d.status || 'active') === 'active');
+            const destGrid = document.getElementById('frontend-destinations-grid');
+            if (destGrid && activeDestinations.length > 0) {
+                destGrid.innerHTML = activeDestinations.map(dest => `
+                    <div class="destination-card">
+                        <div class="destination-image" style="background: url('${dest.image}') center/cover;"></div>
+                        <h3 class="destination-name">${dest.name}</h3>
+                    </div>
+                `).join('');
+            } else if (destGrid) {
+                destGrid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #666; padding: 2rem;">Destinations coming soon.</p>';
+            }
+        });
+    </script>
+
+    <script>
+        document.querySelector('.email-signup-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const emailInput = this.querySelector('input[type="email"]');
+            const email = emailInput.value.trim().toLowerCase();
+            if (!email) return;
+
+            // Check if this email belongs to a known member
+            let firstName = '', lastName = '', memberType = 'public';
+            try {
+                const users = JSON.parse(localStorage.getItem('epic_users') || '[]');
+                const match = users.find(u => u.email.toLowerCase() === email);
+                if (match) {
+                    firstName  = match.firstName || '';
+                    lastName   = match.lastName  || '';
+                    memberType = match.memberType || 'public';
+                }
+            } catch {}
+
+            // Save to epic_newsletter (deduplicate by email)
+            let list = [];
+            try { list = JSON.parse(localStorage.getItem('epic_newsletter') || '[]'); } catch {}
+            if (!list.find(s => s.email === email)) {
+                list.push({ email, firstName, lastName, memberType, subscribedAt: new Date().toISOString() });
+                localStorage.setItem('epic_newsletter', JSON.stringify(list));
+            }
+
+            emailInput.value = '';
+            const btn = this.querySelector('button[type="submit"]');
+            const orig = btn.textContent;
+            btn.textContent = '✅ Subscribed!';
+            setTimeout(() => btn.textContent = orig, 3000);
+        });
+    </script>
+
+</body>
+
+</html>

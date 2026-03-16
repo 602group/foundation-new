@@ -1,0 +1,318 @@
+/* ========================================
+   HOST A ROUND - HERO SECTION
+   ======================================== */
+body {
+    padding-top: 100px;
+    background: #ffffff;
+}
+
+.host-hero {
+    background: #000000;
+    padding: 6rem 4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Abstract background shape for visual interest */
+.host-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -20%;
+    width: 80%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0) 70%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.host-hero-content {
+    max-width: 1000px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+.host-hero h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1.1;
+}
+
+.host-hero p {
+    font-size: 1.3rem;
+    color: #cccccc;
+    font-weight: 400;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* ========================================
+   PILLARS SECTION (Creative Redesign)
+   ======================================== */
+.pillars-section {
+    padding: 8rem 4rem;
+    background: #ffffff;
+}
+
+.pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+    max-width: 1400px;
+    margin: 4rem auto 0;
+}
+
+.pillar-card {
+    background: #f9f9f9;
+    padding: 3.5rem 2.5rem;
+    border-radius: 20px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid transparent;
+}
+
+.pillar-card:hover {
+    transform: translateY(-10px);
+    background: #ffffff;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    border-color: #f0f0f0;
+}
+
+.pillar-icon {
+    width: 70px;
+    height: 70px;
+    background: #000000;
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+    transition: transform 0.4s ease;
+}
+
+.pillar-card:hover .pillar-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.pillar-card:hover .pillar-icon svg {
+    stroke-width: 2.5;
+}
+
+.pillar-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    color: #000000;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pillar-description {
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.7;
+}
+
+/* ========================================
+   PROCESS SECTION (Step-by-Step Flow)
+   ======================================== */
+.process-section {
+    padding: 8rem 4rem;
+    background: #f5f5f5;
+    /* Light grey contrasting background */
+    position: relative;
+}
+
+.process-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    /* 4 steps in a row */
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 5rem auto 0;
+    position: relative;
+}
+
+/* Connecting line design */
+.process-grid::before {
+    content: '';
+    position: absolute;
+    top: 50px;
+    /* Aligns with the circle */
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: #e0e0e0;
+    z-index: 1;
+}
+
+.process-card {
+    background: transparent;
+    padding: 20px;
+    border-radius: 0;
+    box-shadow: none;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+.process-number {
+    width: 100px;
+    height: 100px;
+    background: #ffffff;
+    border: 4px solid #000000;
+    color: #000000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 2.5rem;
+    margin: 0 auto 2rem;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.process-card:hover .process-number {
+    background: #000000;
+    color: #ffffff;
+    transform: scale(1.1);
+}
+
+.process-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    color: #000000;
+    text-transform: uppercase;
+}
+
+.process-description {
+    font-size: 1rem;
+    color: #666;
+}
+
+/* ========================================
+   CTA SECTION (Premium)
+   ======================================== */
+.host-cta-section {
+    padding: 10rem 2rem;
+    background: #000000;
+    color: white;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Background image texture */
+.host-cta-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('hero.png') center/cover;
+    opacity: 0.2;
+    z-index: 1;
+}
+
+.host-cta-container {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.host-cta-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 900;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.host-cta-text {
+    font-size: 1.3rem;
+    color: #cccccc;
+    margin-bottom: 3rem;
+    font-weight: 400;
+}
+
+.host-cta-btn {
+    display: inline-block;
+    background: #ffffff;
+    color: #000000;
+    padding: 1.2rem 3.5rem;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.host-cta-btn:hover {
+    transform: translateY(-5px);
+    background: #000000;
+    color: #ffffff;
+    border-color: #ffffff;
+    box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+@media (max-width: 1024px) {
+    .host-hero h1 {
+        font-size: 3rem;
+    }
+
+    .process-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 3rem;
+    }
+
+    .process-grid::before {
+        display: none;
+        /* Hide line on tablet/mobile */
+    }
+
+    .pillars-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .host-hero {
+        padding: 6rem 2rem;
+    }
+
+    .host-hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .pillars-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .process-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .host-cta-title {
+        font-size: 2.5rem;
+    }
+}

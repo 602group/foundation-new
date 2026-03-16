@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users - EPIC Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <style>
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 220px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .search-box input:focus {
+            border-color: #4A90E2;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+        }
+
+        .users-table-wrap {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            background: #f8f9fa;
+            padding: 0.9rem 1rem;
+            text-align: left;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tbody td {
+            padding: 1rem;
+            font-size: 0.88rem;
+            color: #333;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: #fafafa;
+        }
+
+        .avatar-cell {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #000;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.82rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .user-name-cell strong {
+            display: block;
+        }
+
+        .user-name-cell span {
+            font-size: 0.78rem;
+            color: #888;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-active {
+            background: #e8f8f0;
+            color: #1a9e5c;
+        }
+
+        .badge-new {
+            background: #e8f0ff;
+            color: #4A90E2;
+        }
+
+        .row-btn {
+            padding: 0.3rem 0.7rem;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            background: white;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .row-btn:hover {
+            background: #000;
+            color: #fff;
+            border-color: #000;
+        }
+
+        .row-btn.danger:hover {
+            background: #e74c3c;
+            border-color: #e74c3c;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #aaa;
+        }
+
+        .stat-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .mini-stat {
+            background: white;
+            border-radius: 12px;
+            padding: 1.2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .mini-stat .label {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .mini-stat .value {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #000;
+        }
+
+        /* User Detail Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1300;
+            backdrop-filter: blur(3px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 20px;
+            width: 500px;
+            max-width: 95vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalIn 0.2s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #000;
+            color: white;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .modal-header h3 {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.4rem;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid #f5f5f5;
+            font-size: 0.88rem;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-row .key {
+            color: #888;
+            font-weight: 500;
+        }
+
+        .detail-row .val {
+            font-weight: 600;
+            color: #222;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+
+        .btn-primary {
+            padding: 0.7rem 1.4rem;
+            background: #000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.88rem;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            padding: 0.7rem 1.4rem;
+            background: white;
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 0.88rem;
+            cursor: pointer;
+        }
+
+        .badge-epic {
+            background: #e8f0fe;
+            color: #1a73e8;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .badge-public {
+            background: #f3f3f3;
+            color: #888;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .tier-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            align-items: flex-start;
+        }
+
+        .tier-select {
+            font-size: 0.78rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            background: #fafafa;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+
+        .tier-select:focus {
+            border-color: #1a73e8;
+        }
+    </style>
+</head>
+
+<body>
+                    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="../index.html" class="logo">EPIC ADMIN</a>
+        </div>
+        <nav class="nav-links">
+            <a href="dashboard.html" class="nav-item" data-section="dashboard"><span class="nav-icon">📊</span> Dashboard</a>
+            <a href="auctions.html?v=2" class="nav-item" data-section="auctions"><span class="nav-icon">⛳</span> Auctions</a>
+            <a href="courses.html?v=2" class="nav-item" data-section="courses"><span class="nav-icon">&#127948;&#65039;</span> Courses</a>
+            <a href="users.html?v=2" class="nav-item active" data-section="users"><span class="nav-icon">👥</span> Users</a>
+            <a href="events.html?v=2" class="nav-item" data-section="events"><span class="nav-icon">✈️</span> Events &amp; Trips</a>
+            <a href="messages.html" class="nav-item" data-section="messages"><span class="nav-icon">&#128172;</span> Messages <span class="nav-msg-badge" style="display:none;background:#e74c3c;color:#fff;border-radius:10px;padding:1px 6px;font-size:0.7rem;font-weight:700;margin-left:4px;"></span></a>
+            <a href="tasks.html" class="nav-item" data-section="tasks"><span class="nav-icon">✅</span> Tasks</a>
+            <a href="financials.html" class="nav-item" data-section="financials"><span class="nav-icon">📈</span> Financials</a>
+            <a href="newsletter.html?v=2" class="nav-item" data-section="newsletter"><span class="nav-icon">📧</span> Newsletter</a>
+            <a href="bids.html?v=2" class="nav-item" data-section="bids"><span class="nav-icon">💰</span> Bids</a>
+            <a href="settings.html?v=2" class="nav-item" data-section="settings"><span class="nav-icon">⚙️</span> Settings</a>
+        </nav>
+        <div class="user-profile">
+            <div class="avatar"></div>
+            <div class="user-info">
+                <h4>Admin User</h4>
+                <p>admin@epic.org</p>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <header class="top-header">
+            <h2 class="page-title">Users</h2>
+            <div class="header-actions">
+                <button class="btn-primary" onclick="openNewUserModal()" style="background:#000;color:#fff;border:none;padding:0.6rem 1.2rem;border-radius:8px;font-family:Poppins,sans-serif;font-weight:700;cursor:pointer;font-size:0.87rem;">+ New User</button>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <div class="stat-row">
+                <div class="mini-stat">
+                    <div class="label">Total Users</div>
+                    <div class="value" id="statTotal">0</div>
+                </div>
+                <div class="mini-stat">
+                    <div class="label">Epic Members</div>
+                    <div class="value" id="statEpic">0</div>
+                </div>
+                <div class="mini-stat">
+                    <div class="label">New This Month</div>
+                    <div class="value" id="statNew">0</div>
+                </div>
+                <div class="mini-stat">
+                    <div class="label">With Bids</div>
+                    <div class="value" id="statBidders">0</div>
+                </div>
+            </div>
+
+            <div class="toolbar">
+                <div class="search-box">
+                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.35-4.35" />
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Search by name or email…" oninput="renderTable()">
+                </div>
+                <!-- Native CSV File Input -->
+                <input type="file" id="csvFileInput" accept=".csv" style="display:none;"
+                    onchange="handleCSVUpload(event)">
+                <button class="btn-primary" onclick="document.getElementById('csvFileInput').click()"
+                    style="display:flex; align-items:center; gap:0.5rem; background:#1a9e5c;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    Mass Import CSV
+                </button>
+            </div>
+
+            <div class="users-table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:50px"></th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Member Tier</th>
+                            <th>Phone</th>
+                            <th>Joined</th>
+                            <th>Bids</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Detail Modal -->
+    <div class="modal-overlay" id="userModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modalTitle">User Details</h3>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer">
+                <button class="btn-secondary danger" id="modalDeleteBtn"
+                    style="color:#e74c3c;border-color:#e74c3c;">Delete User</button>
+                <button class="btn-secondary" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../db.js"></script>
+    <script src="../auth.js"></script>
+    <script>
+        const USERS_KEY = 'epic_users';
+        let _cachedUsers = [];
+
+        function loadUsers() {
+            // Return DB-fetched cache if available, else fall back to localStorage
+            if (_cachedUsers.length > 0) return _cachedUsers;
+            try { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; }
+            catch { return []; }
+        }
+
+        function renderStats(users) {
+            const now = new Date();
+            const month = now.getMonth();
+            const year = now.getFullYear();
+            document.getElementById('statTotal').textContent = users.length;
+            document.getElementById('statEpic').textContent = users.filter(u => u.memberType === 'epic_member').length;
+            document.getElementById('statNew').textContent = users.filter(u => { const d = new Date(u.joinedAt); return d.getMonth() === month && d.getFullYear() === year; }).length;
+            document.getElementById('statBidders').textContent = users.filter(u => (u.bids || []).length > 0).length;
+        }
+
+        function renderTable(usersOverride) {
+            const users = usersOverride || loadUsers();
+            const q = document.getElementById('searchInput').value.toLowerCase().trim();
+            const list = q ? users.filter(u =>
+                ((u.firstName || '') + ' ' + (u.lastName || '')).toLowerCase().includes(q) ||
+                (u.email || '').toLowerCase().includes(q)
+            ) : users;
+
+            renderStats(users);
+
+            const tbody = document.getElementById('usersTbody');
+            if (!list.length) {
+                tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state">No users found. Users appear here once they register on the site.</div></td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = list.map(u => {
+                const initials = (u.firstName[0] + (u.lastName[0] || '')).toUpperCase();
+                const joined = new Date(u.joinedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                const isNew = (Date.now() - new Date(u.joinedAt)) < 7 * 24 * 60 * 60 * 1000;
+                const tier = u.memberType === 'epic_member' ? 'epic_member' : 'public';
+                const tierBadge = tier === 'epic_member'
+                    ? '<span class="badge-epic">Epic Member</span>'
+                    : '<span class="badge-public">Public</span>';
+                return `
+                    <tr style="cursor:pointer;" onclick="window.location.href='user-profile?id=${u.id}'">
+                        <td><div class="avatar-cell">${initials}</div></td>
+                        <td class="user-name-cell">
+                            <strong><a href="user-profile?id=${u.id}" style="color:#000;text-decoration:none;" onclick="event.stopPropagation()">${u.firstName} ${u.lastName}</a></strong>
+                            ${isNew ? '<span class="badge badge-new">New</span>' : ''}
+                        </td>
+                        <td>${u.email}</td>
+                        <td onclick="event.stopPropagation()">
+                            <div class="tier-cell">
+                                ${tierBadge}
+                                <select class="tier-select" onchange="changeTier('${u.id}', this.value)">
+                                    <option value="public" ${tier === 'public' ? 'selected' : ''}>Public</option>
+                                    <option value="epic_member" ${tier === 'epic_member' ? 'selected' : ''}>Epic Member</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td>${u.phone || '—'}</td>
+                        <td>${joined}</td>
+                        <td>${(u.bids || []).length}</td>
+                        <td style="display:flex;gap:0.4rem;" onclick="event.stopPropagation()">
+                            <a href="user-profile?id=${u.id}" class="row-btn" style="text-decoration:none;display:inline-flex;align-items:center;">View Profile</a>
+                            <button class="row-btn danger" onclick="deleteUser('${u.id}')">Delete</button>
+                        </td>
+                    </tr>`;
+            }).join('');
+        }
+
+        function changeTier(userId, type) {
+            const users = loadUsers();
+            const idx = users.findIndex(u => u.id === userId);
+            if (idx === -1) return;
+            users[idx].memberType = type;
+            localStorage.setItem(USERS_KEY, JSON.stringify(users));
+            // Sync to server
+            if (typeof EPICDB !== 'undefined') EPICDB.saveUser(users[idx]).catch(console.warn);
+            // Also refresh the session if this is the currently logged-in user
+            try {
+                const session = JSON.parse(localStorage.getItem('epic_session'));
+                if (session && session.id === userId) {
+                    localStorage.setItem('epic_session', JSON.stringify({ ...session, memberType: type }));
+                }
+            } catch (e) { }
+            renderTable();
+        }
+
+        function deleteUser(id) {
+            const users = loadUsers();
+            const u = users.find(x => x.id === id);
+            if (!u) return;
+            const updated = users.filter(x => x.id !== id);
+            localStorage.setItem(USERS_KEY, JSON.stringify(updated));
+            renderTable();
+        }
+
+        // ── Mass CSV Import ───────────────────────────────────────────────
+        function handleCSVUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const text = e.target.result;
+                processCSV(text);
+                event.target.value = ''; // Reset input to allow re-uploading the same file if needed
+            };
+            reader.readAsText(file);
+        }
+
+        function processCSV(csvText) {
+            // Very rudimentary CSV parser handling commas and basic quotes
+            const lines = csvText.split(/\r?\n/).filter(l => l.trim() !== '');
+            if (lines.length < 2) {
+                alert("CSV file seems empty or missing data rows.");
+                return;
+            }
+
+            // Extract Headers
+            const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+
+            // Map known attributes to their exact expected indices for defensive parsing.
+            const idxFirstName = headers.indexOf('firstname');
+            const idxLastName = headers.indexOf('lastname');
+            const idxEmail = headers.indexOf('email');
+            const idxPhone = headers.indexOf('phone');
+            const idxMemberType = headers.indexOf('membertype');
+
+            if (idxFirstName === -1 || idxEmail === -1) {
+                alert("Error: CSV must at a minimum contain 'FirstName' and 'Email' columns.");
+                return;
+            }
+
+            const users = loadUsers();
+            let newCount = 0;
+            const nowIso = new Date().toISOString();
+
+            for (let i = 1; i < lines.length; i++) {
+                // Ignore empty lines
+                if (!lines[i].trim()) continue;
+
+                // Basic naive split. Complex inner-quotes would break this, but assuming standardized dumps.
+                const cols = lines[i].split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+
+                const fName = cols[idxFirstName] || '';
+                const email = cols[idxEmail] ? cols[idxEmail].toLowerCase() : '';
+
+                if (!fName || !email) continue; // Skip malformed rows missing required data
+
+                // Prevent duplicates based on email
+                if (users.some(u => u.email === email)) continue;
+
+                let mType = (idxMemberType !== -1 && cols[idxMemberType]) ? cols[idxMemberType].toLowerCase() : 'public';
+                if (mType !== 'epic_member' && mType !== 'public') mType = 'public';
+
+                const newEpicUser = {
+                    id: 'u_' + Date.now() + '_' + Math.floor(Math.random() * 10000),
+                    firstName: fName,
+                    lastName: idxLastName !== -1 ? (cols[idxLastName] || '') : '',
+                    email: email,
+                    phone: idxPhone !== -1 ? (cols[idxPhone] || '') : '',
+                    password: 'epic1234' + Math.floor(Math.random() * 100), // dummy secure-ish hash fallback
+                    memberType: mType,
+                    joinedAt: nowIso,
+                    watchlist: [],
+                    bids: [],
+                    purchases: [],
+                    trips: []
+                };
+
+                users.push(newEpicUser);
+                newCount++;
+            }
+
+            if (newCount > 0) {
+                localStorage.setItem(USERS_KEY, JSON.stringify(users));
+                renderTable();
+                alert(`Successfully imported ${newCount} new users!`);
+            } else {
+                alert("No new users imported. Ensure the file has valid data or checks for existing emails.");
+            }
+        }
+
+        // Always fetch from live DB then render
+        (async function init() {
+            const tbody = document.getElementById('usersTbody');
+            tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state">Loading users from database…</div></td></tr>';
+            if (typeof EPICDB !== 'undefined') {
+                const fresh = await EPICDB.getUsers();
+                if (fresh && fresh.length >= 0) _cachedUsers = fresh;
+            }
+            renderTable(_cachedUsers.length > 0 ? _cachedUsers : null);
+        })();
+    
+        // ══════════════════════════════════════════════════════════════
+        // USER CREATION
+        // ══════════════════════════════════════════════════════════════
+
+        function generateUserId() {
+            // Format: EPIC-USR-YYYYMMDD-NNNNN
+            const today = new Date();
+            const datePart = today.getFullYear().toString()
+                + String(today.getMonth() + 1).padStart(2, '0')
+                + String(today.getDate()).padStart(2, '0');
+            const prefix = 'EPIC-USR-' + datePart + '-';
+            const stored = loadUsers();
+            let maxSeq = 0;
+            stored.forEach(u => {
+                if (u.id && u.id.startsWith(prefix)) {
+                    const seq = parseInt(u.id.replace(prefix, ''), 10);
+                    if (!isNaN(seq) && seq > maxSeq) maxSeq = seq;
+                }
+            });
+            return prefix + String(maxSeq + 1).padStart(5, '0');
+        }
+
+        let _pendingNewUid = null;
+
+        function openNewUserModal() {
+            _pendingNewUid = generateUserId();
+            document.getElementById('nu-firstName').value = '';
+            document.getElementById('nu-lastName').value = '';
+            document.getElementById('nu-email').value = '';
+            document.getElementById('nu-phone').value = '';
+            document.getElementById('nu-password').value = '';
+            document.getElementById('nu-notes').value = '';
+            document.getElementById('nu-location').value = '';
+            document.getElementById('nu-tier').value = 'basic';
+            document.getElementById('newUser-uid-display').textContent = 'ID: ' + _pendingNewUid;
+            const modal = document.getElementById('newUserModal');
+            modal.style.display = 'flex';
+        }
+
+        function closeNewUserModal() {
+            document.getElementById('newUserModal').style.display = 'none';
+        }
+
+        async function createNewUser() {
+            const firstName = document.getElementById('nu-firstName').value.trim();
+            const lastName  = document.getElementById('nu-lastName').value.trim();
+            const email     = document.getElementById('nu-email').value.trim().toLowerCase();
+            const phone     = document.getElementById('nu-phone').value.trim();
+            const password  = document.getElementById('nu-password').value;
+            const tier      = document.getElementById('nu-tier').value;
+            const location  = document.getElementById('nu-location').value.trim();
+            const notes     = document.getElementById('nu-notes').value.trim();
+
+            if (!firstName || !email) {
+                alert('First name and email are required.');
+                return;
+            }
+            if (password && password.length < 8) {
+                alert('Password must be at least 8 characters.');
+                return;
+            }
+
+            const existing = loadUsers();
+            if (existing.find(u => u.email === email)) {
+                alert('A user with this email already exists.');
+                return;
+            }
+
+            // ── Build the full user record ─────────────────────────────
+            const newUser = {
+                id:          _pendingNewUid,
+                firstName,
+                lastName,
+                email,
+                phone,
+                location,
+                memberType:  tier,
+                notes,
+                // Hashed password for portal login (base64 — matches auth.js pattern)
+                passwordHash: password ? btoa(password) : null,
+                // Full profile scaffold
+                avatar:      '',
+                bio:         '',
+                handicap:    '',
+                homeCourse:  '',
+                // Activity arrays
+                purchases:   [],
+                bids:        [],
+                trips:       [],
+                watchlist:   [],
+                donated:     [],
+                // Metadata
+                createdAt:   new Date().toISOString(),
+                createdBy:   'admin',
+                lastLogin:   null,
+                active:      true,
+            };
+
+            // ── Save to localStorage ───────────────────────────────────
+            existing.push(newUser);
+            localStorage.setItem(USERS_KEY, JSON.stringify(existing));
+
+            // ── Sync to EPICDB if available ────────────────────────────
+            if (typeof EPICDB !== 'undefined' && EPICDB.saveUser) {
+                try { await EPICDB.saveUser(newUser); } catch (e) { console.warn('EPICDB sync:', e); }
+            }
+
+            // ── Log activity ───────────────────────────────────────────
+            if (typeof logActivity === 'function') {
+                logActivity('user', 'New user created: ' + firstName + ' ' + lastName + ' (' + email + ')', newUser.id);
+            }
+
+            closeNewUserModal();
+            renderTable();
+            renderStats(loadUsers());
+
+            // Show confirmation toast
+            const t = document.createElement('div');
+            t.textContent = '✅ User ' + firstName + ' ' + lastName + ' created — ID: ' + newUser.id;
+            Object.assign(t.style, {
+                position:'fixed', bottom:'2rem', right:'2rem',
+                background:'#111', color:'#fff', padding:'0.8rem 1.4rem',
+                borderRadius:'10px', fontSize:'0.85rem', fontWeight:'600',
+                zIndex:'9999', opacity:'0', transition:'opacity 0.25s',
+                maxWidth:'420px'
+            });
+            document.body.appendChild(t);
+            requestAnimationFrame(() => { t.style.opacity = '1'; });
+            setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 4000);
+        }
+
+        // Live unread-message badge
+        (function() {
+            try {
+                var msgs = JSON.parse(localStorage.getItem('epic_messages') || '[]');
+                var unread = msgs.filter(function(m){ return m.unread !== false && m.status !== 'closed'; }).length;
+                document.querySelectorAll('.nav-msg-badge').forEach(function(b){
+                    b.textContent = unread; b.style.display = unread > 0 ? 'inline-block' : 'none';
+                });
+            } catch(e) {}
+        })();
+    </script>
+
+    <!-- ── NEW USER MODAL ──────────────────────────────────────────────── -->
+    <div class="modal-overlay" id="newUserModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:3000;align-items:center;justify-content:center;padding:1rem;">
+        <div class="modal-box" style="background:#fff;border-radius:18px;padding:2rem;width:100%;max-width:540px;box-shadow:0 20px 60px rgba(0,0,0,0.2);max-height:90vh;overflow-y:auto;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.3rem;">
+                <h3 style="font-size:1.05rem;font-weight:800;margin:0;">Create New User</h3>
+                <button onclick="closeNewUserModal()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#888;">×</button>
+            </div>
+            <p id="newUser-uid-display" style="font-size:0.76rem;color:#bbb;margin-bottom:1.4rem;font-family:monospace;"></p>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                <div>
+                    <label style="font-size:0.78rem;font-weight:700;color:#444;display:block;margin-bottom:0.35rem;">First Name *</label>
+                    <input id="nu-firstName" type="text" placeholder="Jane"
+                        style="width:100%;padding:0.62rem 0.85rem;border:1.5px solid #e5e5e5;border-radius:9px;font-family:Poppins,sans-serif;font-size:0.87rem;outline:none;">
+                </div>
+                <div>
+                    <label style="font-size:0.78rem;font-weight:700;color:#444;display:block;margin-bottom:0.35rem;">Last Name *</label>
+                    <input id="nu-lastName" type="text" placeholder="Smith"
+                        style="width:100%;padding:0.62rem 0.85rem;border:1.5px solid #e5e5e5;border-radius:9px;font-family:Poppins,sans-serif;font-size:0.87rem;outline:none;">
+                </div>
+            </div>
+
+            <div style="margin-top:1rem;">
+                <label style="font-size:0.78rem;font-weight:700;color:#444;display:block;margin-bottom:0.35rem;">Email Address *</label>
+                <input id="nu-email" type="email" placeholder="jane@example.com"
+                    style="width:100%;padding:0.62rem 0.85rem;border:1.5px solid #e5e5e5;border-radius:9px;font-family:Poppins,sans-serif;font-size:0.87rem;outline:none;">
+            </div>
+
+            <div style="margin-top:1rem;">
+                <label style="font-size:0.78rem;font-weight:700;color:#444;display:block;margin-bottom:0.35rem;">Phone</label>
+                <input id="nu-phone" type="tel" placeholder="(555) 000-0000"
+                    style="width:100%;padding:0.62rem 0.85rem;border:1.5px solid #e5e5e5;border-radius:9px;font-family:Poppins,sans-serif;font-size:0.87rem;outline:none;">
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;">
+                <div>
+                    <label style="font-size:0.78rem;font-weight:700;color:#444;display:block;margin-bottom:0.35rem;">Member Tier</label>
+                    <select id="nu-tier" style="width:100%;padding:0.62rem 0.85rem;border:1.5px solid #e5e5e5;border-radius:9px;font-family:Poppins,sans-serif;font-size:0.87rem;outline:none;">
+                        <option value="basic">Basic</option>
+                        <option value="epic">Epic Member</option>
+                        <option value="vip">VIP</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size:0.78rem;font-weight:700;color:#444;display:block;margin-bottom:0.35rem;">Location</label>
+                    <input id="nu-location" type="text" placeholder="New York, NY"
+                        style="width:100%;padding:0.62rem 0.85rem;border:1.5px solid #e5e5e5;border-radius:9px;font-family:Poppins,sans-serif;font-size:0.87rem;outline:none;">
+                </div>
+            </div>
+
+            <div style="margin-top:1rem;">
+                <label style="font-size:0.78rem;font-weight:700;color:#444;display:block;margin-bottom:0.35rem;">
+                    Portal Password <span style="color:#bbb;font-weight:400;">(min. 8 chars — required for portal login)</span>
+                </label>
+                <input id="nu-password" type="password" placeholder="Set a temporary password"
+                    style="width:100%;padding:0.62rem 0.85rem;border:1.5px solid #e5e5e5;border-radius:9px;font-family:Poppins,sans-serif;font-size:0.87rem;outline:none;">
+            </div>
+
+            <div style="margin-top:1rem;">
+                <label style="font-size:0.78rem;font-weight:700;color:#444;display:block;margin-bottom:0.35rem;">Notes</label>
+                <textarea id="nu-notes" placeholder="Internal admin notes…" rows="2"
+                    style="width:100%;padding:0.62rem 0.85rem;border:1.5px solid #e5e5e5;border-radius:9px;font-family:Poppins,sans-serif;font-size:0.87rem;outline:none;resize:vertical;"></textarea>
+            </div>
+
+            <div style="display:flex;gap:0.8rem;justify-content:flex-end;margin-top:1.6rem;">
+                <button onclick="closeNewUserModal()" style="padding:0.7rem 1.2rem;background:#f0f0f0;color:#444;border:none;border-radius:9px;font-family:Poppins,sans-serif;font-size:0.87rem;font-weight:600;cursor:pointer;">Cancel</button>
+                <button onclick="createNewUser()" style="padding:0.7rem 1.6rem;background:#000;color:#fff;border:none;border-radius:9px;font-family:Poppins,sans-serif;font-size:0.87rem;font-weight:700;cursor:pointer;">Create User</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

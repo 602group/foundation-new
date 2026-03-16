@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - EPIC Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <style>
+        /* ── BACK BREADCRUMB ── */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 1.5rem;
+        }
+
+        .breadcrumb a {
+            color: #888;
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+
+        .breadcrumb a:hover {
+            color: #000;
+        }
+
+        .breadcrumb-sep {
+            color: #ccc;
+        }
+
+        /* ── PROFILE HERO ── */
+        .profile-hero {
+            background: #000;
+            color: white;
+            border-radius: 18px;
+            padding: 2rem 2rem 0;
+            margin-bottom: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-hero::after {
+            content: '⛳';
+            position: absolute;
+            right: 2.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 8rem;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        .profile-hero-inner {
+            display: flex;
+            align-items: flex-end;
+            gap: 1.5rem;
+            padding-bottom: 1.5rem;
+        }
+
+        .profile-big-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .profile-hero-info h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .profile-hero-info p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.88rem;
+            margin-top: 0.15rem;
+        }
+
+        .profile-hero-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 0.6rem;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .profile-hero-meta span strong {
+            color: rgba(255, 255, 255, 0.9);
+            display: block;
+            font-size: 1rem;
+        }
+
+        /* ── TABS ── */
+        .profile-tabs {
+            display: flex;
+            border-bottom: 2px solid #f0f0f0;
+            background: white;
+            border-radius: 0 0 0 0;
+            padding: 0 1.5rem;
+            overflow-x: auto;
+        }
+
+        .profile-tab {
+            padding: 1rem 1.2rem;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #888;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: 'Poppins', sans-serif;
+            border-bottom: 2.5px solid transparent;
+            margin-bottom: -2px;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .profile-tab.active {
+            color: #000;
+            border-bottom-color: #000;
+        }
+
+        .profile-tab:hover:not(.active) {
+            color: #444;
+        }
+
+        /* ── PANELS ── */
+        .panel {
+            display: none;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        /* ── CARDS ── */
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 1.6rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.7rem;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* ── FORM ELEMENTS ── */
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            margin-bottom: 0.9rem;
+        }
+
+        .form-group label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 0.65rem 0.9rem;
+            border: 1.5px solid #e5e5e5;
+            border-radius: 9px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.88rem;
+            color: #222;
+            background: #fafafa;
+            outline: none;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #000;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.07);
+            background: #fff;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .section-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #bbb;
+            margin: 1rem 0 0.6rem;
+        }
+
+        /* ── BUTTONS ── */
+        .btn-save {
+            padding: 0.7rem 1.8rem;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 9px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-save:hover {
+            opacity: 0.82;
+        }
+
+        .btn-danger {
+            padding: 0.65rem 1.4rem;
+            background: #fff;
+            color: #e74c3c;
+            border: 1.5px solid #e74c3c;
+            border-radius: 9px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-danger:hover {
+            background: #e74c3c;
+            color: #fff;
+        }
+
+        /* ── SUCCESS / ERROR ── */
+        .toast-inline {
+            padding: 0.55rem 0.9rem;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            display: none;
+            margin-top: 0.8rem;
+        }
+
+        .toast-inline.ok {
+            background: #e8f5f0;
+            color: #1a9e5c;
+            border: 1px solid #a8d5be;
+            display: block;
+        }
+
+        .toast-inline.err {
+            background: #fff0f0;
+            color: #c0392b;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        /* ── INFO ROWS (read-only display) ── */
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.7rem 0;
+            border-bottom: 1px solid #f5f5f5;
+            font-size: 0.88rem;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-row .key {
+            color: #888;
+            font-weight: 500;
+        }
+
+        .info-row .val {
+            font-weight: 600;
+            color: #222;
+        }
+
+        /* ── STAT MINI CARDS ── */
+        .stat-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-mini {
+            background: white;
+            border-radius: 12px;
+            padding: 1.1rem 1.2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-mini .sm-label {
+            font-size: 0.75rem;
+            color: #999;
+        }
+
+        .stat-mini .sm-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #000;
+        }
+
+        /* ── EMPTY STATE ── */
+        .empty-msg {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #bbb;
+            font-size: 0.88rem;
+        }
+
+        .empty-msg .em-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ── BID / ACTIVITY TABLE ── */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .delete-bid-btn {
+            background: #fff0f0;
+            color: #e74c3c;
+            border: 1.5px solid #fecaca;
+            border-radius: 6px;
+            padding: 0.25rem 0.6rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .delete-bid-btn:hover {
+            background: #fee2e2;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .data-table td {
+            padding: 0.85rem 1rem;
+            font-size: 0.86rem;
+            color: #333;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ── PASSWORD TOGGLE ── */
+        .pw-field-wrap {
+            position: relative;
+        }
+
+        .pw-field-wrap input {
+            padding-right: 2.8rem;
+        }
+
+        .pw-toggle {
+            position: absolute;
+            right: 0.7rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #aaa;
+            font-size: 1rem;
+            line-height: 1;
+        }
+
+        /* Tab row wrapper */
+        .tab-card-wrap {
+            background: white;
+            border-radius: 0 0 14px 14px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+                    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="../index.html" class="logo">EPIC ADMIN</a>
+        </div>
+        <nav class="nav-links">
+            <a href="dashboard.html" class="nav-item" data-section="dashboard"><span class="nav-icon">📊</span> Dashboard</a>
+            <a href="auctions.html?v=2" class="nav-item" data-section="auctions"><span class="nav-icon">⛳</span> Auctions</a>
+            <a href="courses.html?v=2" class="nav-item" data-section="courses"><span class="nav-icon">&#127948;&#65039;</span> Courses</a>
+            <a href="users.html?v=2" class="nav-item active" data-section="users"><span class="nav-icon">👥</span> Users</a>
+            <a href="events.html?v=2" class="nav-item" data-section="events"><span class="nav-icon">✈️</span> Events &amp; Trips</a>
+            <a href="messages.html" class="nav-item" data-section="messages"><span class="nav-icon">&#128172;</span> Messages <span class="nav-msg-badge" style="display:none;background:#e74c3c;color:#fff;border-radius:10px;padding:1px 6px;font-size:0.7rem;font-weight:700;margin-left:4px;"></span></a>
+            <a href="tasks.html" class="nav-item" data-section="tasks"><span class="nav-icon">✅</span> Tasks</a>
+            <a href="financials.html" class="nav-item" data-section="financials"><span class="nav-icon">📈</span> Financials</a>
+            <a href="newsletter.html?v=2" class="nav-item" data-section="newsletter"><span class="nav-icon">📧</span> Newsletter</a>
+            <a href="bids.html?v=2" class="nav-item" data-section="bids"><span class="nav-icon">💰</span> Bids</a>
+            <a href="settings.html?v=2" class="nav-item" data-section="settings"><span class="nav-icon">⚙️</span> Settings</a>
+        </nav>
+        <div class="user-profile">
+            <div class="avatar"></div>
+            <div class="user-info">
+                <h4>Admin User</h4>
+                <p>admin@epic.org</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <header class="top-header">
+            <h2 class="page-title" id="pageTitle">User Profile</h2>
+            <div class="header-actions">
+                <button class="btn-danger" id="deleteUserBtn">🗑 Delete User</button>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <a href="users.html?v=2">← Users</a>
+                <span class="breadcrumb-sep">/</span>
+                <span id="breadcrumbName">Loading…</span>
+            </div>
+
+            <!-- Profile Hero -->
+            <div class="profile-hero">
+                <div class="profile-hero-inner">
+                    <div class="profile-big-avatar" id="heroAvatar">—</div>
+                    <div class="profile-hero-info">
+                        <h1 id="heroName">—</h1>
+                        <p id="heroEmail">—</p>
+                        <div class="profile-hero-meta">
+                            <span><strong id="heroBids">0</strong>Active Bids</span>
+                            <span><strong id="heroWon">0</strong>Won</span>
+                            <span><strong id="heroWatchlist">0</strong>Watchlist</span>
+                            <span><strong id="heroJoined">—</strong>Member Since</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="profile-tabs">
+                    <button class="profile-tab active" onclick="switchTab('profile', this)">👤 Profile</button>
+                    <button class="profile-tab" onclick="switchTab('security', this)">🔐 Login & Security</button>
+                    <button class="profile-tab" onclick="switchTab('bids', this)">💰 Bids</button>
+                    <button class="profile-tab" onclick="switchTab('won', this)">🏆 Won</button>
+                    <button class="profile-tab" onclick="switchTab('trips', this)">✈️ Trips & Events</button>
+                    <button class="profile-tab" onclick="switchTab('activity', this)">📋 Activity</button>
+                    <button class="profile-tab" onclick="switchTab('donated', this)">🎁 Donated Rounds</button>
+                    <button class="profile-tab" onclick="switchTab('tasks', this)">&#9989; Tasks</button>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════
+                 TAB: PROFILE
+            ═══════════════════════════════════════════════════════ -->
+            <div class="tab-card-wrap">
+                <div class="panel active" id="panel-profile" style="padding:1.6rem">
+                    <div id="profileSaveMsg" class="toast-inline" style="margin-bottom:1rem;display:none;"></div>
+                    <div class="section-label">Personal Information</div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input type="text" id="p-firstName">
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" id="p-lastName">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="p-email">
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="tel" id="p-phone">
+                        </div>
+                        <div class="form-group">
+                            <label>Date of Birth</label>
+                            <input type="date" id="p-dob">
+                        </div>
+                    </div>
+
+                    <div class="section-label">Address</div>
+                    <div class="form-group">
+                        <label>Street Address</label>
+                        <input type="text" id="p-address">
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>City</label>
+                            <input type="text" id="p-city">
+                        </div>
+                        <div class="form-group">
+                            <label>State</label>
+                            <input type="text" id="p-state" maxlength="2">
+                        </div>
+                    </div>
+                    <div class="form-group" style="max-width:200px">
+                        <label>ZIP Code</label>
+                        <input type="text" id="p-zip" maxlength="10">
+                    </div>
+
+                    <div class="section-label">Admin Notes</div>
+                    <div class="form-group">
+                        <label>Internal Notes (not visible to user)</label>
+                        <textarea id="p-notes" placeholder="Add any internal notes about this user…"></textarea>
+                    </div>
+
+                    <button class="btn-save" onclick="saveProfile()">Save Profile</button>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════
+                 TAB: LOGIN & SECURITY
+            ═══════════════════════════════════════════════════════ -->
+            <div class="tab-card-wrap">
+                <div class="panel" id="panel-security" style="padding:1.6rem">
+                    <div class="section-label">Account Credentials</div>
+                    <div class="info-row">
+                        <span class="key">Login Email</span>
+                        <span class="val" id="sec-email">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="key">Account ID</span>
+                        <span class="val" id="sec-id" style="font-size:0.75rem;font-family:monospace;">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="key">Joined</span>
+                        <span class="val" id="sec-joined">—</span>
+                    </div>
+
+                    <div class="section-label" style="margin-top:1.5rem">Current Password (stored)</div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div class="pw-field-wrap">
+                            <input type="password" id="sec-pw-display" readonly
+                                style="background:#f0f0f0;color:#555;cursor:default;">
+                            <button class="pw-toggle" type="button" onclick="togglePwView()"
+                                title="Show/hide">👁</button>
+                        </div>
+                        <span style="font-size:0.72rem;color:#bbb;margin-top:0.3rem;">Read-only view of stored
+                            password.</span>
+                    </div>
+
+                    <div class="section-label" style="margin-top:1.5rem">Reset Password</div>
+                    <div id="pwResetMsg" class="toast-inline" style="margin-bottom:1rem;display:none;"></div>
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <div class="pw-field-wrap">
+                            <input type="password" id="new-pw" placeholder="Min. 8 characters">
+                            <button class="pw-toggle" type="button" onclick="toggleNewPw()"
+                                title="Show/hide">👁</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm New Password</label>
+                        <input type="password" id="confirm-pw" placeholder="Re-enter new password">
+                    </div>
+                    <button class="btn-save" onclick="resetPassword()">Set New Password</button>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════
+                 TAB: BIDS
+            ═══════════════════════════════════════════════════════ -->
+            <div class="tab-card-wrap">
+                <div class="panel" id="panel-bids" style="padding:1.6rem">
+                    <div class="stat-strip" id="bidStats">
+                        <div class="stat-mini">
+                            <div class="sm-label">Total Bids</div>
+                            <div class="sm-value" id="bs-total">0</div>
+                        </div>
+                        <div class="stat-mini">
+                            <div class="sm-label">Active</div>
+                            <div class="sm-value" id="bs-active">0</div>
+                        </div>
+                        <div class="stat-mini">
+                            <div class="sm-label">Outbid</div>
+                            <div class="sm-value" id="bs-outbid">0</div>
+                        </div>
+                        <div class="stat-mini">
+                            <div class="sm-label">Highest Bid</div>
+                            <div class="sm-value" id="bs-highest">—</div>
+                        </div>
+                    </div>
+                    <div id="bidsContent">
+                        <div class="empty-msg">
+                            <div class="em-icon">💰</div>
+                            This user hasn't placed any bids yet.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════
+                 TAB: WON
+            ═══════════════════════════════════════════════════════ -->
+            <div class="tab-card-wrap">
+                <div class="panel" id="panel-won" style="padding:1.6rem">
+                    <div id="wonContent">
+                        <div class="empty-msg">
+                            <div class="em-icon">🏆</div>
+                            No auctions won yet.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════
+                 TAB: TRIPS & EVENTS
+            ═══════════════════════════════════════════════════════ -->
+            <div class="tab-card-wrap">
+                <div class="panel" id="panel-trips" style="padding:1.6rem">
+                    <div
+                        style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:1px solid #f0f0f0;">
+                        <div>
+                            <h3 style="font-size:1.1rem;font-weight:700;">Registered Trips</h3>
+                            <p style="font-size:0.8rem;color:#888;margin-top:0.2rem;">Manually inject registered trips
+                                and events so the user can easily track them on their portal sidebar.</p>
+                        </div>
+                    </div>
+
+                    <div id="tripsContent" style="margin-bottom:2rem;">
+                        <div class="empty-msg">
+                            <div class="em-icon">✈️</div>
+                            No trips or events assigned yet.
+                        </div>
+                    </div>
+
+                    <div style="background:#f8f9fa; border:1px solid #eee; border-radius:12px; padding:1.2rem;">
+                        <span class="section-label" style="display:block; margin:0 0 1rem 0;">+ Add Trip / Event to
+                            Profile</span>
+                        <div style="display:grid; grid-template-columns:2fr 1fr auto; gap:0.8rem; align-items:end;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label>Event Name</label>
+                                <input type="text" id="newTripName" placeholder="e.g. Pebble Beach Invitational">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label>Date (Optional)</label>
+                                <input type="text" id="newTripDate" placeholder="e.g. Nov 14-18, 2026">
+                            </div>
+                            <button onclick="addTrip()"
+                                style="height:42px; padding:0 1.5rem; background:#1a9e5c; color:#fff; border:none; border-radius:9px; font-weight:600; font-family:'Poppins',sans-serif; cursor:pointer;"
+                                onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">Inject
+                                Trip</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════
+                 TAB: ACTIVITY
+            ═══════════════════════════════════════════════════════ -->
+            <div class="tab-card-wrap">
+                <div class="panel" id="panel-activity" style="padding:1.6rem">
+                    <div id="activityContent"></div>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════
+                 TAB: DONATED ROUNDS
+            ═══════════════════════════════════════════════════════ -->
+            <div class="tab-card-wrap">
+                <div class="panel" id="panel-donated" style="padding:1.6rem">
+                    <div style="margin-bottom:1rem;">
+                        <h3 style="font-size:1rem;font-weight:700;margin-bottom:0.3rem;">Donated Rounds</h3>
+                        <p style="font-size:0.8rem;color:#888;">Auction rounds this member donated, imported via CSV import.</p>
+                    </div>
+                    <div id="donatedContent">
+                        <div class="empty-msg">
+                            <div class="em-icon">🎁</div>
+                            No donated rounds on record.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════ TASKS TAB ═══════ -->
+            <div class="tab-card-wrap">
+                <div class="panel" id="panel-tasks" style="padding:1.6rem">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+                        <h3 style="font-size:1rem;font-weight:700;margin:0;">&#9989; Tasks</h3>
+                        <button onclick="openUserLinkedTask()" style="padding:0.4rem 0.9rem;background:#000;color:#fff;border:none;border-radius:7px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;">+ Add Task</button>
+                    </div>
+                    <p style="font-size:0.8rem;color:#888;margin-bottom:1rem;">All tasks linked to this member's profile.</p>
+                    <div id="userTasksList"></div>
+                </div>
+            </div>
+
+        </div><!-- /content-wrapper -->
+    </div><!-- /main-content -->
+
+    <script>
+        const USERS_KEY = 'epic_users';
+        let currentUserId = null;
+        let currentUser = null;
+
+        // ── Load user from URL param ──────────────────────────────────────
+        function loadUser() {
+            const params = new URLSearchParams(window.location.search);
+            currentUserId = params.get('id');
+            if (!currentUserId) { window.location.href = 'users.html'; return; }
+
+            const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
+            currentUser = users.find(u => u.id === currentUserId);
+            if (!currentUser) { window.location.href = 'users.html'; return; }
+
+            renderHero();
+            fillProfileForm();
+            fillSecurityTab();
+            renderBidsTab();
+            renderWonTab();
+            renderTripsTab();
+            renderActivityTab();
+            renderDonatedTab();
+            renderUserTasks();
+        }
+
+        // ── Hero ──────────────────────────────────────────────────────────
+        function renderHero() {
+            const u = currentUser;
+            const initials = (u.firstName[0] + (u.lastName[0] || '')).toUpperCase();
+            document.getElementById('heroAvatar').textContent = initials;
+            document.getElementById('heroName').textContent = u.firstName + ' ' + u.lastName;
+            document.getElementById('heroEmail').textContent = u.email;
+            document.getElementById('heroBids').textContent = (u.bids || []).length;
+            document.getElementById('heroWon').textContent = (u.won || []).length;
+            document.getElementById('heroWatchlist').textContent = (u.watchlist || []).length;
+            document.getElementById('heroJoined').textContent = new Date(u.joinedAt).getFullYear();
+            document.getElementById('pageTitle').textContent = u.firstName + ' ' + u.lastName;
+            document.getElementById('breadcrumbName').textContent = u.firstName + ' ' + u.lastName;
+        }
+
+        // ── Profile tab ───────────────────────────────────────────────────
+        function fillProfileForm() {
+            const u = currentUser;
+            document.getElementById('p-firstName').value = u.firstName || '';
+            document.getElementById('p-lastName').value = u.lastName || '';
+            document.getElementById('p-email').value = u.email || '';
+            document.getElementById('p-phone').value = u.phone || '';
+            document.getElementById('p-dob').value = u.dob || '';
+            document.getElementById('p-address').value = u.address || '';
+            document.getElementById('p-city').value = u.city || '';
+            document.getElementById('p-state').value = u.state || '';
+            document.getElementById('p-zip').value = u.zip || '';
+            document.getElementById('p-notes').value = u.adminNotes || '';
+        }
+
+        function saveProfile() {
+            const updates = {
+                firstName: document.getElementById('p-firstName').value.trim(),
+                lastName: document.getElementById('p-lastName').value.trim(),
+                email: document.getElementById('p-email').value.trim().toLowerCase(),
+                phone: document.getElementById('p-phone').value.trim(),
+                dob: document.getElementById('p-dob').value,
+                address: document.getElementById('p-address').value.trim(),
+                city: document.getElementById('p-city').value.trim(),
+                state: document.getElementById('p-state').value.trim(),
+                zip: document.getElementById('p-zip').value.trim(),
+                adminNotes: document.getElementById('p-notes').value.trim(),
+            };
+            persistUser(updates);
+            renderHero();
+            showMsg('profileSaveMsg', 'ok', '✅ Profile saved successfully!');
+        }
+
+        // ── Security tab ──────────────────────────────────────────────────
+        function fillSecurityTab() {
+            const u = currentUser;
+            document.getElementById('sec-email').textContent = u.email;
+            document.getElementById('sec-id').textContent = u.id;
+            document.getElementById('sec-joined').textContent = new Date(u.joinedAt).toLocaleString();
+            document.getElementById('sec-pw-display').value = u.password || '';
+        }
+
+        function togglePwView() {
+            const f = document.getElementById('sec-pw-display');
+            f.type = f.type === 'password' ? 'text' : 'password';
+        }
+        function toggleNewPw() {
+            const f = document.getElementById('new-pw');
+            f.type = f.type === 'password' ? 'text' : 'password';
+        }
+
+        function resetPassword() {
+            const np = document.getElementById('new-pw').value;
+            const cp = document.getElementById('confirm-pw').value;
+            if (np.length < 8) return showMsg('pwResetMsg', 'err', '❌ Password must be at least 8 characters.');
+            if (np !== cp) return showMsg('pwResetMsg', 'err', '❌ Passwords do not match.');
+            persistUser({ password: np });
+            document.getElementById('sec-pw-display').value = np;
+            document.getElementById('new-pw').value = '';
+            document.getElementById('confirm-pw').value = '';
+            showMsg('pwResetMsg', 'ok', '✅ Password updated successfully!');
+        }
+
+        // ── Bids tab ──────────────────────────────────────────────────────
+        function renderBidsTab() {
+            const u = currentUser;
+
+            // SANITIZE: Permanently remove legacy string-based bids (e.g. 'bid_001')
+            let bidsChanged = false;
+            if (u.bids) {
+                const initLen = u.bids.length;
+                u.bids = u.bids.filter(b => typeof b === 'object' && b !== null && b.title);
+                if (u.bids.length !== initLen) bidsChanged = true;
+            }
+            if (u.purchases) {
+                const initLen = u.purchases.length;
+                u.purchases = u.purchases.filter(p => typeof p === 'object' && p !== null && p.title);
+                if (u.purchases.length !== initLen) bidsChanged = true;
+            }
+            if (bidsChanged) {
+                const users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+                const idx = users.findIndex(x => x.id === u.id);
+                if (idx > -1) {
+                    users[idx] = u;
+                    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+                }
+            }
+
+            const bids = u.bids || [];
+            document.getElementById('bs-total').textContent = bids.length;
+            document.getElementById('bs-active').textContent = bids.filter(b => typeof b === 'object' && b.status === 'active').length;
+            document.getElementById('bs-outbid').textContent = bids.filter(b => typeof b === 'object' && b.status === 'outbid').length;
+            const amounts = bids.filter(b => typeof b === 'object' && b.amount).map(b => b.amount);
+            document.getElementById('bs-highest').textContent = amounts.length ? '$' + Math.max(...amounts).toLocaleString() : '—';
+
+            if (!bids.length) {
+                document.getElementById('bidsContent').innerHTML = `
+                    <div class="empty-msg">
+                        <div class="em-icon">💰</div>
+                        This user hasn't placed any bids yet.
+                    </div>`;
+                return;
+            }
+            document.getElementById('bidsContent').innerHTML = `
+                <table class="data-table">
+                    <thead><tr><th>Auction</th><th>Bid Amount</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody>${bids.map(b => `
+                        <tr>
+                            <td>${b.title || '—'}</td>
+                            <td>$${(b.amount || 0).toLocaleString()}</td>
+                            <td>${b.date ? new Date(b.date).toLocaleDateString() : '—'}</td>
+                            <td><span style="padding:2px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;background:${b.status === 'active' ? '#e8f8f0' : '#fff0f0'};color:${b.status === 'active' ? '#1a9e5c' : '#e74c3c'}">${b.status || '—'}</span></td>
+                            <td>
+                                <button class="delete-bid-btn" onclick="deleteBid('${u.id}', '${b.auctionId}', '${b.amount}', '${(b.title || '').replace(/'/g, "\\'")}')">✕ Drop</button>
+                            </td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>`;
+        }
+
+        function deleteBid(userId, auctionId, amountStr, title) {
+            if (!confirm(`Are you sure you want to permanently delete the $${amountStr} bid for "${title}"?\n\nThis will remove it from the user's profile and instantly recalculate the auction's global price.`)) return;
+
+            const users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+            const userIndex = users.findIndex(u => u.id === userId);
+            if (userIndex === -1) return alert("User not found.");
+
+            const u = users[userIndex];
+            const amount = Number(amountStr);
+            let bidRemoved = false;
+
+            if (u.bids) {
+                const bidIndex = u.bids.findIndex(b => b.auctionId === auctionId && Number(b.amount) === amount);
+                if (bidIndex !== -1) {
+                    u.bids.splice(bidIndex, 1);
+                    bidRemoved = true;
+                }
+            }
+            if (!bidRemoved && u.purchases) {
+                const purchaseIndex = u.purchases.findIndex(p => p.auctionId === auctionId && Number(p.amount) === amount);
+                if (purchaseIndex !== -1) {
+                    u.purchases.splice(purchaseIndex, 1);
+                    bidRemoved = true;
+                }
+            }
+            if (!bidRemoved) return alert("Bid could not be found. It may have already been removed.");
+
+            // Save modified users payload back to localStorage permanently
+            localStorage.setItem(USERS_KEY, JSON.stringify(users));
+            // Update in-memory reference
+            currentUser = u;
+
+            // Adjust the global Auction metrics
+            try {
+                const auctions = JSON.parse(localStorage.getItem('epic_auctions')) || [];
+                const auctionIndex = auctions.findIndex(a => a.id === auctionId);
+                if (auctionIndex !== -1) {
+                    const auc = auctions[auctionIndex];
+                    if (auc.bidCount > 0) auc.bidCount -= 1;
+                    if (auc.bids > 0) auc.bids -= 1;
+
+                    let secondHighestBidAmount = auc.startBid || 0;
+                    let secondHighestBidder = '';
+
+                    users.forEach(iterUser => {
+                        (iterUser.bids || []).forEach(iterBid => {
+                            if (iterBid.auctionId === auctionId && Number(iterBid.amount) > secondHighestBidAmount) {
+                                secondHighestBidAmount = Number(iterBid.amount);
+                                secondHighestBidder = iterUser.email;
+                            }
+                        });
+                    });
+
+                    auc.currentBid = secondHighestBidAmount;
+                    auc.highestBidder = secondHighestBidder;
+                    localStorage.setItem('epic_auctions', JSON.stringify(auctions));
+                }
+            } catch (err) {
+                console.error("Failed to recalculate global auction data:", err);
+            }
+
+            renderHero();
+            renderBidsTab();
+        }
+
+        // ── Won tab ───────────────────────────────────────────────────────
+        function renderWonTab() {
+            const won = currentUser.purchases || [];
+            if (!won.length) {
+                document.getElementById('wonContent').innerHTML = `
+                    <div class="empty-msg"><div class="em-icon">🏆</div>No auctions won yet.</div>`;
+                return;
+            }
+            document.getElementById('wonContent').innerHTML = `
+                <table class="data-table">
+                    <thead><tr><th>Auction</th><th>Winning Bid</th><th>Date Won</th><th>Status</th><th style="width:80px;"></th></tr></thead>
+                    <tbody>${won.map((w, i) => `
+                        <tr>
+                            <td>${w.title || '—'}</td>
+                            <td>$${(w.amount || 0).toLocaleString()}</td>
+                            <td>${w.date ? new Date(w.date).toLocaleDateString() : '—'}</td>
+                            <td><span style="padding:2px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;background:#e8f8f0;color:#1a9e5c">Won</span></td>
+                            <td>
+                                <button onclick="removeWon(${i})" style="padding:4px 10px;background:#fff;color:#e74c3c;border:1.5px solid #e74c3c;border-radius:7px;font-family:'Poppins',sans-serif;font-size:0.75rem;font-weight:600;cursor:pointer;transition:all 0.2s;"
+                                    onmouseover="this.style.background='#e74c3c';this.style.color='#fff'" onmouseout="this.style.background='#fff';this.style.color='#e74c3c'">Remove</button>
+                            </td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>`;
+        }
+
+        function removeWon(index) {
+            const won = currentUser.purchases || [];
+            const item = won[index];
+            if (!item) return;
+            if (!confirm(`Remove "${item.title || 'this auction'}" from ${currentUser.firstName}'s won auctions? This cannot be undone.`)) return;
+            won.splice(index, 1);
+            persistUser({ purchases: won });
+            // Update hero count
+            document.getElementById('heroWon').textContent = (currentUser.purchases || []).length;
+            renderWonTab();
+        }
+
+        // ── Trips & Events tab ────────────────────────────────────────────
+        function renderTripsTab() {
+            const trips = currentUser.trips || [];
+            if (!trips.length) {
+                document.getElementById('tripsContent').innerHTML = `
+                    <div class="empty-msg"><div class="em-icon">✈️</div>No trips or events assigned yet.</div>`;
+                return;
+            }
+            document.getElementById('tripsContent').innerHTML = `
+                <table class="data-table">
+                    <thead><tr><th>Trip / Event Name</th><th>Scheduled Date</th><th style="width:80px;"></th></tr></thead>
+                    <tbody>${trips.map((t, i) => `
+                        <tr>
+                            <td><strong>${t.name}</strong></td>
+                            <td>${t.date ? t.date : '<span style="color:#aaa;font-size:0.8rem">TBD</span>'}</td>
+                            <td>
+                                <button onclick="removeTrip(${i})" style="padding:4px 10px;background:#fff;color:#e74c3c;border:1.5px solid #e74c3c;border-radius:7px;font-family:'Poppins',sans-serif;font-size:0.75rem;font-weight:600;cursor:pointer;transition:all 0.2s;"
+                                    onmouseover="this.style.background='#e74c3c';this.style.color='#fff'" onmouseout="this.style.background='#fff';this.style.color='#e74c3c'">Remove</button>
+                            </td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>`;
+        }
+
+        function addTrip() {
+            const nameEl = document.getElementById('newTripName');
+            const dateEl = document.getElementById('newTripDate');
+
+            const nameStr = nameEl.value.trim();
+            const dateStr = dateEl.value.trim();
+
+            if (!nameStr) return alert('Event Name is required.');
+
+            const trips = currentUser.trips || [];
+            trips.unshift({
+                name: nameStr,
+                date: dateStr || ''
+            });
+
+            persistUser({ trips: trips });
+
+            nameEl.value = '';
+            dateEl.value = '';
+            renderTripsTab();
+        }
+
+        function removeTrip(index) {
+            const trips = currentUser.trips || [];
+            const t = trips[index];
+            if (!t) return;
+            if (!confirm(`Are you absolutely sure you want to cancel the registration for "${t.name}"? They will lose access to view it on their user portal.`)) return;
+
+            trips.splice(index, 1);
+            persistUser({ trips: trips });
+            renderTripsTab();
+        }
+
+        // ── Activity tab ──────────────────────────────────────────────────
+        function renderActivityTab() {
+            const u = currentUser;
+            const events = [];
+
+            events.push({ icon: '🎉', text: 'Account created', date: new Date(u.joinedAt) });
+            (u.bids || []).filter(b => typeof b === 'object' && b.date).forEach(b => {
+                events.push({ icon: '💰', text: `Placed bid of $${(b.amount || 0).toLocaleString()} on ${b.auction || 'auction'}`, date: new Date(b.date) });
+            });
+            (u.won || []).filter(w => w.date).forEach(w => {
+                events.push({ icon: '🏆', text: `Won auction: ${w.auction || 'Unknown'}`, date: new Date(w.date) });
+            });
+            events.sort((a, b) => b.date - a.date);
+
+            document.getElementById('activityContent').innerHTML = events.map(e => `
+                <div class="info-row">
+                    <span class="key">${e.icon} ${e.text}</span>
+                    <span class="val" style="font-weight:400;color:#888;font-size:0.8rem">${e.date.toLocaleString()}</span>
+                </div>`).join('');
+        }
+
+        // ── User Tasks tab ───────────────────────────────────────────────────
+        function renderUserTasks() {
+            const u = currentUser;
+            if (!u) return;
+            const TASKS_KEY = 'epic_tasks';
+            let saved = {};
+            try { saved = JSON.parse(localStorage.getItem(TASKS_KEY)) || {}; } catch(e) {}
+            const linked = Object.values(saved).filter(function(t) { return t.entityId === u.id && !t.deleted; });
+            const el = document.getElementById('userTasksList');
+            if (!el) return;
+            if (!linked.length) {
+                el.innerHTML = '<div class="empty-msg"><div class="em-icon">&#9989;</div>No tasks linked to this member yet.<br><small style="color:#bbb;font-size:0.78rem;">Click &ldquo;+ Add Task&rdquo; above to link a task to this user.</small></div>';
+                return;
+            }
+            const scMap = { todo:'#f39c12', scheduled:'#3498db', in_progress:'#3b82f6', completed:'#10b981' };
+            const slMap = { todo:'To Do', scheduled:'Scheduled', in_progress:'In Progress', completed:'Completed' };
+            const todayStr = new Date().toISOString().split('T')[0];
+            el.innerHTML = linked.map(function(t) {
+                const c  = scMap[t.status] || '#888';
+                const l  = slMap[t.status] || t.status;
+                const d  = t.date ? new Date(t.date).toLocaleDateString() : '—';
+                const past = t.date && t.date < todayStr && t.status !== 'completed';
+                return '<div class="info-row" style="align-items:flex-start;padding:0.8rem 0;border-bottom:1px solid #f5f5f5;">' +
+                    '<span class="key" style="display:flex;flex-direction:column;gap:3px;">' +
+                        '<strong style="font-size:0.88rem;">' + t.title + '</strong>' +
+                        (t.desc ? '<small style="color:#999;font-weight:400;">' + t.desc.slice(0,90) + '</small>' : '') +
+                        '<small style="color:' + (past ? '#e74c3c' : '#aaa') + ';font-weight:400;">Due: ' + (past ? '&#9888; ' : '') + d + '</small>' +
+                    '</span>' +
+                    '<span style="flex-shrink:0;padding:3px 12px;border-radius:10px;font-size:0.72rem;font-weight:700;background:' + c + '20;color:' + c + ';">' + l + '</span>' +
+                '</div>';
+            }).join('');
+        }
+
+        function openUserLinkedTask() {
+            if (!currentUser) return;
+            var label = ((currentUser.firstName || '') + ' ' + (currentUser.lastName || '')).trim();
+            var url = 'tasks.html?prefillEntityType=user&prefillEntityId=' + encodeURIComponent(currentUser.id) + '&prefillEntityLabel=' + encodeURIComponent(label);
+            window.open(url, '_blank');
+        }
+
+        // ── Donated Rounds tab ───────────────────────────────────────────
+        function renderDonatedTab() {
+
+            const donated = (currentUser.donatedRounds || []);
+            const el = document.getElementById('donatedContent');
+            if (!donated.length) {
+                el.innerHTML = `<div class="empty-msg"><div class="em-icon">🎁</div>No donated rounds on record.<br><small style="color:#bbb;font-size:0.78rem;">Rounds donated by this member will appear here after a CSV import.</small></div>`;
+                return;
+            }
+            el.innerHTML = `
+                <table class="data-table">
+                    <thead><tr><th>Round</th><th>Course</th><th>Winner</th><th>Amount</th><th>Date</th><th>Notes</th></tr></thead>
+                    <tbody>${donated.map(d => `
+                        <tr>
+                            <td><strong>${d.title || d.auctionId || '—'}</strong></td>
+                            <td>${d.course || '—'}</td>
+                            <td>${d.winnerName || d.winnerEmail || '—'}</td>
+                            <td style="font-weight:700;">$${(d.amount || 0).toLocaleString()}</td>
+                            <td>${d.date || '—'}</td>
+                            <td style="color:#888;font-size:0.8rem;">${d.notes || '—'}</td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>`;
+        }
+
+        // ── Helpers ───────────────────────────────────────────────────────
+        function persistUser(updates) {
+            const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
+            const idx = users.findIndex(u => u.id === currentUserId);
+            if (idx === -1) return;
+            users[idx] = { ...users[idx], ...updates };
+            currentUser = users[idx];
+            localStorage.setItem(USERS_KEY, JSON.stringify(users));
+            // Also update session if this is the logged-in user
+            const session = JSON.parse(localStorage.getItem('epic_session') || 'null');
+            if (session && session.id === currentUserId) {
+                localStorage.setItem('epic_session', JSON.stringify(users[idx]));
+            }
+        }
+
+        function showMsg(id, type, msg) {
+            const el = document.getElementById(id);
+            el.textContent = msg;
+            el.className = 'toast-inline ' + type;
+            el.style.display = 'block';
+            setTimeout(() => { el.style.display = 'none'; el.className = 'toast-inline'; }, 3500);
+        }
+
+        function switchTab(name, btn) {
+            document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+            if (name === 'tasks') renderUserTasks();
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('panel-' + name).classList.add('active');
+        }
+
+        // ── Delete user ───────────────────────────────────────────────────
+        document.getElementById('deleteUserBtn').addEventListener('click', () => {
+            if (!currentUser) return;
+            if (!confirm(`Permanently delete "${currentUser.firstName} ${currentUser.lastName}"? This cannot be undone.`)) return;
+            const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]').filter(u => u.id !== currentUserId);
+            localStorage.setItem(USERS_KEY, JSON.stringify(users));
+            window.location.href = 'users.html';
+        });
+
+        loadUser();
+    
+        // Live unread-message badge
+        (function() {
+            try {
+                var msgs = JSON.parse(localStorage.getItem('epic_messages') || '[]');
+                var unread = msgs.filter(function(m){ return m.unread !== false && m.status !== 'closed'; }).length;
+                document.querySelectorAll('.nav-msg-badge').forEach(function(b){
+                    b.textContent = unread; b.style.display = unread > 0 ? 'inline-block' : 'none';
+                });
+            } catch(e) {}
+        })();
+    </script>
+</body>
+
+</html>

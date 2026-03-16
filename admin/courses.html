@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses - EPIC Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <style>
+        .toolbar { display:flex; align-items:center; gap:1rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+        .search-box { flex:1; min-width:220px; position:relative; }
+        .search-box input { width:100%; padding:0.6rem 1rem 0.6rem 2.5rem; border:1px solid #e0e0e0; border-radius:8px; font-family:'Poppins',sans-serif; font-size:0.9rem; background:white; outline:none; transition:border 0.2s; }
+        .search-box input:focus { border-color:#4A90E2; }
+        .search-box .search-icon { position:absolute; left:0.8rem; top:50%; transform:translateY(-50%); color:#aaa; pointer-events:none; }
+        .toolbar select { padding:0.6rem 1rem; border:1px solid #e0e0e0; border-radius:8px; font-family:'Poppins',sans-serif; font-size:0.9rem; background:white; cursor:pointer; outline:none; }
+        .filter-tabs { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1.2rem; }
+        .filter-tab { padding:0.35rem 1rem; border-radius:20px; border:1px solid #e0e0e0; background:white; font-family:'Poppins',sans-serif; font-size:0.82rem; font-weight:500; cursor:pointer; transition:all 0.2s; color:#555; }
+        .filter-tab:hover { border-color:#4A90E2; color:#4A90E2; }
+        .filter-tab.active { background:#000; color:#fff; border-color:#000; }
+        .courses-table-wrap { background:white; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.05); overflow:hidden; }
+        .courses-table { width:100%; border-collapse:collapse; }
+        .courses-table thead th { background:#f8f9fa; padding:0.9rem 1rem; text-align:left; font-size:0.82rem; font-weight:600; color:#888; text-transform:uppercase; letter-spacing:0.4px; border-bottom:1px solid #eee; white-space:nowrap; }
+        .courses-table tbody td { padding:1rem; font-size:0.88rem; color:#333; border-bottom:1px solid #f0f0f0; vertical-align:middle; }
+        .courses-table tbody tr:last-child td { border-bottom:none; }
+        .courses-table tbody tr:hover { background:#fafafa; cursor:pointer; }
+        .course-thumb { width:56px; height:42px; border-radius:6px; object-fit:cover; background:#eee; display:block; }
+        .course-thumb-placeholder { width:56px; height:42px; border-radius:6px; background:#f0f0f0; display:flex; align-items:center; justify-content:center; font-size:1.2rem; }
+        .badge { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:20px; font-size:0.75rem; font-weight:600; white-space:nowrap; }
+        .badge::before { content:''; width:6px; height:6px; border-radius:50%; display:inline-block; }
+        .badge-active { background:#e8f8f0; color:#1a9e5c; } .badge-active::before { background:#1a9e5c; }
+        .badge-draft { background:#fdf0ff; color:#9b59b6; } .badge-draft::before { background:#9b59b6; }
+        .badge-archived { background:#f5f5f5; color:#888; } .badge-archived::before { background:#aaa; }
+        .badge-private { background:#fff3e0; color:#e65100; }
+        .badge-public { background:#e3f2fd; color:#1565c0; }
+        .row-actions { display:flex; gap:0.4rem; }
+        .row-btn { padding:0.3rem 0.7rem; border-radius:6px; border:1px solid #e0e0e0; background:white; font-size:0.78rem; font-weight:500; cursor:pointer; transition:all 0.15s; font-family:'Poppins',sans-serif; }
+        .row-btn:hover { background:#000; color:#fff; border-color:#000; }
+        .row-btn.danger:hover { background:#e74c3c; border-color:#e74c3c; }
+        .no-results { text-align:center; padding:3rem; color:#aaa; font-size:1rem; }
+        body.drawer-open { overflow:hidden; }
+        .drawer-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:1100; }
+        .drawer-overlay.open { display:block; }
+        .drawer { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:#fff; z-index:1200; flex-direction:column; box-shadow:-4px 0 24px rgba(0,0,0,0.12); }
+        .drawer.open { display:flex; }
+        .drawer-header { display:flex; align-items:center; justify-content:space-between; padding:0.9rem 1.5rem; border-bottom:1px solid #222; background:#000; color:white; flex-shrink:0; gap:1rem; }
+        .drawer-header h3 { font-size:1.05rem; font-weight:600; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .drawer-back { display:inline-flex; align-items:center; gap:0.4rem; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2); color:white; cursor:pointer; font-size:0.82rem; font-weight:600; padding:0.4rem 0.9rem; border-radius:6px; font-family:'Poppins',sans-serif; white-space:nowrap; transition:background 0.15s; flex-shrink:0; }
+        .drawer-back:hover { background:rgba(255,255,255,0.22); }
+        .drawer-close { background:none; border:none; color:white; cursor:pointer; font-size:1.4rem; line-height:1; padding:0 0.3rem; flex-shrink:0; }
+        .drawer-tabs { display:flex; border-bottom:1px solid #eee; background:#f8f9fa; flex-wrap:wrap; }
+        .drawer-tab { padding:0.75rem 1.2rem; font-size:0.85rem; font-weight:500; cursor:pointer; border:none; background:none; font-family:'Poppins',sans-serif; color:#888; border-bottom:3px solid transparent; transition:all 0.2s; }
+        .drawer-tab.active { color:#000; border-bottom-color:#000; }
+        .drawer-body { flex:1; overflow-y:auto; padding:1.5rem; }
+        .drawer-panel { display:none; }
+        .drawer-panel.active { display:block; }
+        .form-section { margin-bottom:1.5rem; }
+        .form-section-title { font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; color:#888; margin-bottom:0.75rem; padding-bottom:0.4rem; border-bottom:1px solid #eee; }
+        .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+        .form-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; }
+        .form-group { display:flex; flex-direction:column; gap:0.3rem; margin-bottom:0.9rem; }
+        .form-group label { font-size:0.8rem; font-weight:600; color:#444; }
+        .form-group input, .form-group select, .form-group textarea { padding:0.6rem 0.8rem; border:1px solid #e0e0e0; border-radius:8px; font-family:'Poppins',sans-serif; font-size:0.88rem; outline:none; transition:border 0.2s; background:white; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:#4A90E2; box-shadow:0 0 0 3px rgba(74,144,226,0.1); }
+        .form-group textarea { resize:vertical; min-height:90px; }
+        .amenity-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr)); gap:0.6rem; }
+        .amenity-item { display:flex; align-items:center; gap:0.5rem; padding:0.5rem 0.75rem; border:1px solid #e0e0e0; border-radius:8px; cursor:pointer; transition:all 0.15s; font-size:0.85rem; }
+        .amenity-item:hover { border-color:#4A90E2; }
+        .amenity-item input[type=checkbox] { accent-color:#000; width:15px; height:15px; cursor:pointer; flex-shrink:0; }
+        .amenity-item.checked { background:#f0f4ff; border-color:#4A90E2; }
+        .image-preview-strip { display:flex; gap:0.6rem; flex-wrap:wrap; margin-top:0.5rem; }
+        .image-preview-item { position:relative; width:90px; height:68px; }
+        .image-preview-item img { width:100%; height:100%; object-fit:cover; border-radius:8px; border:2px solid #eee; }
+        .image-preview-item .remove-img { position:absolute; top:-6px; right:-6px; width:20px; height:20px; background:#e74c3c; color:white; border:none; border-radius:50%; font-size:11px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+        .add-image-btn { width:90px; height:68px; border:2px dashed #ccc; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; font-size:0.7rem; color:#aaa; background:#fafafa; transition:all 0.2s; }
+        .add-image-btn:hover { border-color:#4A90E2; color:#4A90E2; }
+        .add-image-btn .plus { font-size:1.4rem; line-height:1; }
+        .drawer-footer { padding:1rem 1.5rem; border-top:1px solid #eee; display:flex; justify-content:space-between; align-items:center; gap:0.75rem; background:#fafafa; flex-shrink:0; }
+        .drawer-footer-right { display:flex; gap:0.75rem; }
+        .btn-primary { padding:0.7rem 1.6rem; background:#000; color:white; border:none; border-radius:8px; font-family:'Poppins',sans-serif; font-weight:600; font-size:0.9rem; cursor:pointer; transition:opacity 0.2s; }
+        .btn-primary:hover { opacity:0.85; }
+        .btn-secondary { padding:0.7rem 1.6rem; background:white; color:#333; border:1px solid #ddd; border-radius:8px; font-family:'Poppins',sans-serif; font-weight:500; font-size:0.9rem; cursor:pointer; transition:all 0.2s; }
+        .btn-secondary:hover { background:#f5f5f5; }
+        .btn-danger { padding:0.7rem 1.6rem; background:white; color:#e74c3c; border:1px solid #e74c3c; border-radius:8px; font-family:'Poppins',sans-serif; font-weight:500; font-size:0.9rem; cursor:pointer; transition:all 0.2s; }
+        .btn-danger:hover { background:#e74c3c; color:white; }
+        .toast { position:fixed; bottom:2rem; right:2rem; background:#000; color:#fff; padding:0.8rem 1.4rem; border-radius:10px; font-size:0.88rem; font-weight:500; z-index:9999; opacity:0; transform:translateY(10px); transition:all 0.3s; pointer-events:none; }
+        .toast.show { opacity:1; transform:translateY(0); }
+        .course-summary-card { background:#f8f9fa; border-radius:12px; padding:1.2rem; display:flex; gap:1rem; align-items:flex-start; margin-bottom:1.5rem; }
+        .course-summary-thumb { width:80px; height:60px; border-radius:8px; object-fit:cover; flex-shrink:0; background:#eee; }
+        .course-summary-info h4 { font-size:1rem; font-weight:700; margin-bottom:0.25rem; }
+        .course-summary-info p { font-size:0.82rem; color:#666; margin:0; }
+        .related-auctions-list { display:flex; flex-direction:column; gap:0.5rem; }
+        .related-auction-row { display:flex; align-items:center; justify-content:space-between; padding:0.7rem 1rem; background:#f8f9fa; border-radius:8px; font-size:0.85rem; }
+        .related-auction-row a { color:#4A90E2; text-decoration:none; font-weight:500; }
+        .related-auction-row a:hover { text-decoration:underline; }
+        .confirm-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1500; align-items:center; justify-content:center; }
+        .confirm-overlay.open { display:flex; }
+        .confirm-box { background:white; border-radius:16px; padding:2rem; max-width:400px; width:90%; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+        .confirm-box h3 { font-size:1.1rem; margin-bottom:0.75rem; }
+        .confirm-box p { font-size:0.88rem; color:#666; margin-bottom:1.5rem; line-height:1.6; }
+        .confirm-box .confirm-actions { display:flex; gap:0.75rem; justify-content:center; }
+        .stat-summary { display:flex; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+        .stat-chip { background:white; border-radius:10px; padding:0.7rem 1.2rem; box-shadow:0 2px 8px rgba(0,0,0,0.06); font-size:0.85rem; display:flex; align-items:center; gap:0.5rem; }
+        .stat-chip strong { font-size:1.1rem; font-weight:700; }
+        .color-swatch { width:24px; height:24px; border-radius:4px; border:1px solid #eee; display:inline-block; vertical-align:middle; margin-right:6px; }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="../index.html" class="logo">EPIC ADMIN</a>
+        </div>
+        <nav class="nav-links">
+            <a href="dashboard.html" class="nav-item" data-section="dashboard"><span class="nav-icon">📊</span> Dashboard</a>
+            <a href="auctions.html?v=2" class="nav-item" data-section="auctions"><span class="nav-icon">⛳</span> Auctions</a>
+            <a href="courses.html?v=2" class="nav-item active" data-section="courses"><span class="nav-icon">🏌️</span> Courses</a>
+            <a href="users.html?v=2" class="nav-item" data-section="users"><span class="nav-icon">👥</span> Users</a>
+            <a href="events.html?v=2" class="nav-item" data-section="events"><span class="nav-icon">✈️</span> Events & Trips</a>
+            <a href="messages.html" class="nav-item" data-section="messages"><span class="nav-icon">&#128172;</span> Messages <span class="nav-msg-badge" style="display:none;background:#e74c3c;color:#fff;border-radius:10px;padding:1px 6px;font-size:0.7rem;font-weight:700;margin-left:4px;"></span></a>
+            <a href="tasks.html" class="nav-item" data-section="tasks"><span class="nav-icon">✅</span> Tasks</a>
+            <a href="financials.html" class="nav-item" data-section="financials"><span class="nav-icon">📈</span> Financials</a>
+            <a href="newsletter.html?v=2" class="nav-item" data-section="newsletter"><span class="nav-icon">📧</span> Newsletter</a>
+            <a href="bids.html?v=2" class="nav-item" data-section="bids"><span class="nav-icon">💰</span> Bids</a>
+            <a href="settings.html?v=2" class="nav-item" data-section="settings"><span class="nav-icon">⚙️</span> Settings</a>
+        </nav>
+        <div class="user-profile">
+            <div class="avatar"></div>
+            <div class="user-info"><h4>Admin User</h4><p>admin@epic.org</p></div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <header class="top-header">
+            <h2 class="page-title">Golf Courses</h2>
+            <div class="header-actions">
+                <button onclick="openAddDrawer()">+ Add New Course</button>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <!-- Stats summary -->
+            <div class="stat-summary" id="stat-summary"></div>
+
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="search-input" placeholder="Search courses by name, city…" oninput="renderTable()">
+                </div>
+                <select id="filter-state" onchange="renderTable()">
+                    <option value="">All States</option>
+                </select>
+                <select id="filter-type" onchange="renderTable()">
+                    <option value="">Public & Private</option>
+                    <option value="Public">Public</option>
+                    <option value="Private">Private</option>
+                </select>
+                <button class="btn-primary" onclick="openAddDrawer()">+ Add New</button>
+            </div>
+
+            <!-- Filter tabs -->
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-status="all" onclick="setStatusFilter(this,'all')">All</button>
+                <button class="filter-tab" data-status="active" onclick="setStatusFilter(this,'active')">Active</button>
+                <button class="filter-tab" data-status="draft" onclick="setStatusFilter(this,'draft')">Draft</button>
+                <button class="filter-tab" data-status="archived" onclick="setStatusFilter(this,'archived')">Archived</button>
+            </div>
+
+            <!-- Table -->
+            <div class="courses-table-wrap">
+                <table class="courses-table">
+                    <thead>
+                        <tr>
+                            <th style="width:70px"></th>
+                            <th>Course</th>
+                            <th>Location</th>
+                            <th>Type</th>
+                            <th>Access</th>
+                            <th>Status</th>
+                            <th>Auctions</th>
+                            <th>Updated</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="courses-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Drawer Overlay -->
+    <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+
+    <!-- Course Drawer -->
+    <div class="drawer" id="course-drawer">
+        <div class="drawer-header">
+            <button class="drawer-back" onclick="closeDrawer()">← Back</button>
+            <h3 id="drawer-title">Add New Course</h3>
+            <button class="drawer-close" onclick="closeDrawer()">✕</button>
+        </div>
+        <div class="drawer-tabs" id="drawer-tabs">
+            <button class="drawer-tab active" onclick="switchTab(this,'tab-basic')">Basic Info</button>
+            <button class="drawer-tab" onclick="switchTab(this,'tab-location')">Location</button>
+            <button class="drawer-tab" onclick="switchTab(this,'tab-details')">Course Details</button>
+            <button class="drawer-tab" onclick="switchTab(this,'tab-amenities')">Amenities</button>
+            <button class="drawer-tab" onclick="switchTab(this,'tab-media')">Media</button>
+            <button class="drawer-tab" onclick="switchTab(this,'tab-links')">Links</button>
+            <button class="drawer-tab" onclick="switchTab(this,'tab-display')">Display</button>
+            <button class="drawer-tab" id="tab-related-btn" onclick="switchTab(this,'tab-related')" style="display:none">Related Auctions</button>
+        </div>
+        <div class="drawer-body">
+            <!-- Basic Info -->
+            <div class="drawer-panel active" id="tab-basic">
+                <div class="form-section">
+                    <div class="form-section-title">Basic Information</div>
+                    <div class="form-group"><label>Course Name *</label><input type="text" id="f-name" placeholder="e.g. Pebble Beach Golf Links" oninput="autoSlug()"></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Slug (URL Key)</label><input type="text" id="f-slug" placeholder="pebble-beach-golf-links"></div>
+                        <div class="form-group"><label>Short Headline</label><input type="text" id="f-headline" placeholder="Golf's Greatest Seaside Stage"></div>
+                    </div>
+                    <div class="form-group"><label>Short Description *</label><textarea id="f-short-desc" placeholder="2–3 sentence summary shown in listings and on auction pages…" rows="3"></textarea></div>
+                    <div class="form-group"><label>Full Description</label><textarea id="f-full-desc" placeholder="Detailed course history, signature holes, atmosphere…" rows="6"></textarea></div>
+                </div>
+            </div>
+
+            <!-- Location -->
+            <div class="drawer-panel" id="tab-location">
+                <div class="form-section">
+                    <div class="form-section-title">Location</div>
+                    <div class="form-group"><label>Street Address</label><input type="text" id="f-address" placeholder="1700 17-Mile Drive"></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>City *</label><input type="text" id="f-city" placeholder="Pebble Beach"></div>
+                        <div class="form-group"><label>State *</label><input type="text" id="f-state" placeholder="CA" maxlength="2" style="text-transform:uppercase;"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>ZIP Code</label><input type="text" id="f-zip" placeholder="93953"></div>
+                        <div class="form-group"><label>Country</label><input type="text" id="f-country" placeholder="USA" value="USA"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Latitude</label><input type="number" id="f-lat" placeholder="36.5681" step="0.0001"></div>
+                        <div class="form-group"><label>Longitude</label><input type="number" id="f-lng" placeholder="-121.9497" step="0.0001"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Details -->
+            <div class="drawer-panel" id="tab-details">
+                <div class="form-section">
+                    <div class="form-section-title">Course Details</div>
+                    <div class="form-row-3">
+                        <div class="form-group"><label>Holes</label><input type="number" id="f-holes" placeholder="18" min="1" max="36"></div>
+                        <div class="form-group"><label>Par</label><input type="number" id="f-par" placeholder="72" min="60" max="80"></div>
+                        <div class="form-group"><label>Yardage</label><input type="number" id="f-yardage" placeholder="7040" min="3000" max="9000"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Course Type</label>
+                            <select id="f-course-type">
+                                <option value="">— Select —</option>
+                                <option>Links</option>
+                                <option>Parkland</option>
+                                <option>Heathland</option>
+                                <option>Desert</option>
+                                <option>Mountain</option>
+                                <option>Parkland/Links</option>
+                                <option>Resort</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Public / Private *</label>
+                            <select id="f-access">
+                                <option value="">— Select —</option>
+                                <option value="Public">Public</option>
+                                <option value="Private">Private</option>
+                                <option value="Semi-Private">Semi-Private</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Designer / Architect</label><input type="text" id="f-designer" placeholder="Jack Neville & Douglas Grant"></div>
+                        <div class="form-group"><label>Year Opened</label><input type="number" id="f-year" placeholder="1919" min="1800" max="2030"></div>
+                    </div>
+                    <div class="form-group"><label>Resort Course</label>
+                        <select id="f-resort">
+                            <option value="false">No</option>
+                            <option value="true">Yes</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Amenities -->
+            <div class="drawer-panel" id="tab-amenities">
+                <div class="form-section">
+                    <div class="form-section-title">Amenities</div>
+                    <div class="amenity-grid" id="amenities-grid">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Media -->
+            <div class="drawer-panel" id="tab-media">
+                <div class="form-section">
+                    <div class="form-section-title">Course Images</div>
+                    <p style="font-size:0.83rem;color:#888;margin-bottom:1rem;">
+                        Upload course photos here. Drag thumbnails to reorder.
+                        The <strong>first image</strong> is the primary header / cover photo.
+                    </p>
+                    <div id="courseImgGrid" style="display:flex;flex-wrap:wrap;gap:0.72rem;margin-bottom:1.1rem;min-height:80px;"></div>
+                    <label id="courseImgUploadZone"
+                        style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;
+                               padding:1.4rem 1rem;border:2px dashed #d4d4d4;border-radius:12px;
+                               cursor:pointer;font-size:0.85rem;color:#999;transition:border-color 0.2s,background 0.2s;"
+                        ondragover="event.preventDefault();this.style.borderColor='#4A90E2';this.style.background='#f0f7ff'"
+                        ondragleave="this.style.borderColor='#d4d4d4';this.style.background=''"
+                        ondrop="courseImgZoneDrop(event)" onmouseover="this.style.borderColor='#aaa'"
+                        onmouseout="this.style.borderColor='#d4d4d4'">
+                        <input type="file" accept="image/*" multiple style="display:none" onchange="courseImgZoneAdd(this)">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="1.8">
+                            <rect x="3" y="3" width="18" height="18" rx="2" />
+                            <circle cx="8.5" cy="8.5" r="1.5" />
+                            <polyline points="21 15 16 10 5 21" />
+                        </svg>
+                        <span>Drop images here or <strong style="color:#4A90E2;">click to upload</strong></span>
+                        <span style="font-size:0.76rem;">PNG, JPG — multiple files supported</span>
+                    </label>
+                </div>
+                <div class="form-section">
+                    <div class="form-section-title">Logo & Documents</div>
+                    <div class="form-group"><label>Logo URL</label><input type="url" id="f-logo" placeholder="https://…"></div>
+                    <div class="form-group"><label>Scorecard PDF / File URL</label><input type="url" id="f-scorecard" placeholder="https://…"></div>
+                </div>
+            </div>
+
+            <!-- Links -->
+            <div class="drawer-panel" id="tab-links">
+                <div class="form-section">
+                    <div class="form-section-title">External Links</div>
+                    <div class="form-group"><label>Official Website</label><input type="url" id="f-website" placeholder="https://www.course.com"></div>
+                    <div class="form-group"><label>Booking / Tee Time Link</label><input type="url" id="f-booking" placeholder="https://…"></div>
+                    <div class="form-group"><label>Google Maps Link</label><input type="url" id="f-gmaps" placeholder="https://maps.google.com/?q=…"></div>
+                    <div class="form-group"><label>Instagram</label><input type="url" id="f-instagram" placeholder="https://instagram.com/…"></div>
+                    <div class="form-group"><label>Facebook</label><input type="url" id="f-facebook" placeholder="https://facebook.com/…"></div>
+                </div>
+            </div>
+
+            <!-- Display -->
+            <div class="drawer-panel" id="tab-display">
+                <div class="form-section">
+                    <div class="form-section-title">Display & Branding</div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Accent Color (hex)</label><input type="color" id="f-accent-color" value="#1a5276" style="height:40px;padding:2px 4px;"></div>
+                        <div class="form-group"><label>Badge Text</label><input type="text" id="f-badge" placeholder="World Top 10, Golf Digest #1…"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Display Order</label><input type="number" id="f-order" placeholder="1" min="0"></div>
+                        <div class="form-group"><label>Featured Course</label>
+                            <select id="f-featured">
+                                <option value="false">No</option>
+                                <option value="true">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <div class="form-section-title">Status *</div>
+                    <div class="form-group">
+                        <select id="f-status">
+                            <option value="draft">Draft</option>
+                            <option value="active">Active</option>
+                            <option value="archived">Archived</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Auctions (view only) -->
+            <div class="drawer-panel" id="tab-related">
+                <div class="course-summary-card" id="detail-summary-card"></div>
+                <div class="form-section">
+                    <div class="form-section-title">Linked Auctions</div>
+                    <div class="related-auctions-list" id="related-auctions-list">
+                        <p style="color:#aaa;font-size:0.85rem;">No auctions linked to this course yet.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="drawer-footer">
+            <div>
+                <button class="btn-danger" id="drawer-delete-btn" onclick="confirmDeleteCourse()" style="display:none">Delete Course</button>
+            </div>
+            <div class="drawer-footer-right">
+                <button class="btn-secondary" id="drawer-archive-btn" onclick="confirmArchiveCourse()" style="display:none">Archive</button>
+                <button class="btn-secondary" onclick="closeDrawer()">Cancel</button>
+                <button class="btn-primary" onclick="saveCourse()">Save Course</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Dialog -->
+    <div class="confirm-overlay" id="confirm-overlay">
+        <div class="confirm-box">
+            <h3 id="confirm-title">Are you sure?</h3>
+            <p id="confirm-msg"></p>
+            <div class="confirm-actions">
+                <button class="btn-secondary" onclick="closeConfirm()">Cancel</button>
+                <button class="btn-danger" id="confirm-ok">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script src="../shared-courses.js"></script>
+    <script src="../shared-auctions.js"></script>
+    <script src="../db.js"></script>
+    <script src="../auth.js"></script>
+    <script>
+        // ── State ────────────────────────────────────────────────────────────
+        let allCourses = [];
+        let allAuctions = [];
+        let currentStatusFilter = 'all';
+        let editingCourseId = null;
+        let _courseImages = [];
+        let galleryImages = [];
+            renderCourseImgGrid();
+
+        const AMENITY_LABELS = {
+            driving_range: 'Driving Range',
+            practice_green: 'Practice Green',
+            caddies: 'Caddies',
+            golf_shop: 'Golf Shop',
+            restaurant: 'Restaurant',
+            bar: 'Bar',
+            lodging: 'Lodging',
+            cart_available: 'Cart Available',
+            walking_allowed: 'Walking Allowed',
+            club_rentals: 'Club Rentals',
+            lessons_available: 'Lessons Available'
+        };
+
+        // ── Init ─────────────────────────────────────────────────────────────
+        (async () => {
+            if (typeof EPICDB !== 'undefined') {
+                allCourses = await EPICDB.getCourses() || loadSharedCourses();
+                allAuctions = await EPICDB.getAuctions() || loadSharedAuctions();
+            } else {
+                allCourses = loadSharedCourses();
+                allAuctions = loadSharedAuctions();
+            }
+            buildStateFilter();
+            buildAmenityGrid();
+            renderStats();
+            renderTable();
+        })();
+
+        // ── State Filter ──────────────────────────────────────────────────────
+        function buildStateFilter() {
+            const states = [...new Set(allCourses.map(c => c.state).filter(Boolean))].sort();
+            const sel = document.getElementById('filter-state');
+            states.forEach(s => {
+                const o = document.createElement('option');
+                o.value = s; o.textContent = s;
+                sel.appendChild(o);
+            });
+        }
+
+        // ── Stats ─────────────────────────────────────────────────────────────
+        function renderStats() {
+            const total = allCourses.length;
+            const active = allCourses.filter(c => c.status === 'active').length;
+            const draft = allCourses.filter(c => c.status === 'draft').length;
+            const linked = new Set(allAuctions.filter(a => a.course_id).map(a => a.course_id)).size;
+            document.getElementById('stat-summary').innerHTML = `
+                <div class="stat-chip"><strong>${total}</strong> Total Courses</div>
+                <div class="stat-chip"><strong>${active}</strong> Active</div>
+                <div class="stat-chip"><strong>${draft}</strong> Draft</div>
+                <div class="stat-chip"><strong>${linked}</strong> Linked to Auctions</div>
+            `;
+        }
+
+        // ── Status Filter ─────────────────────────────────────────────────────
+        function setStatusFilter(el, status) {
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            currentStatusFilter = status;
+            renderTable();
+        }
+
+        // ── Render Table ──────────────────────────────────────────────────────
+        function renderTable() {
+            const q = document.getElementById('search-input').value.toLowerCase();
+            const stateF = document.getElementById('filter-state').value;
+            const typeF = document.getElementById('filter-type').value;
+
+            let filtered = allCourses.filter(c => {
+                if (currentStatusFilter !== 'all' && c.status !== currentStatusFilter) return false;
+                if (stateF && c.state !== stateF) return false;
+                if (typeF && c.public_private !== typeF) return false;
+                if (q) {
+                    const haystack = `${c.name} ${c.city} ${c.state} ${c.designer || ''}`.toLowerCase();
+                    if (!haystack.includes(q)) return false;
+                }
+                return true;
+            });
+
+            const tbody = document.getElementById('courses-tbody');
+            if (!filtered.length) {
+                tbody.innerHTML = '<tr><td colspan="9" class="no-results">🏌️ No courses found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(c => {
+                const linkedCount = allAuctions.filter(a => a.course_id === c.id).length;
+                const updated = c.updated_at ? new Date(c.updated_at).toLocaleDateString() : '—';
+                const thumbHtml = c.featured_image_url
+                    ? `<img src="${c.featured_image_url}" alt="${c.name}" class="course-thumb" onerror="this.style.display='none'">`
+                    : `<div class="course-thumb-placeholder">⛳</div>`;
+                const statusBadge = `<span class="badge badge-${c.status}">${capitalize(c.status)}</span>`;
+                const accessBadge = c.public_private
+                    ? `<span class="badge badge-${c.public_private === 'Public' ? 'public' : 'private'}">${c.public_private}</span>` : '—';
+                return `<tr onclick="openEditDrawer('${c.id}')">
+                    <td>${thumbHtml}</td>
+                    <td><strong>${c.name || '—'}</strong><br><span style="font-size:0.76rem;color:#888;">${c.designer || ''}</span></td>
+                    <td>${c.city || '—'}, ${c.state || '—'}</td>
+                    <td style="font-size:0.82rem;color:#666;">${c.course_type || '—'}</td>
+                    <td>${accessBadge}</td>
+                    <td>${statusBadge}</td>
+                    <td style="text-align:center;font-weight:600;">${linkedCount || '—'}</td>
+                    <td style="font-size:0.82rem;color:#888;">${updated}</td>
+                    <td onclick="event.stopPropagation()">
+                        <div class="row-actions">
+                            <button class="row-btn" onclick="openEditDrawer('${c.id}')">Edit</button>
+                            <button class="row-btn danger" onclick="confirmDeleteById('${c.id}')">Delete</button>
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+
+        // ── Drawer Open/Close ─────────────────────────────────────────────────
+        function openAddDrawer() {
+            editingCourseId = null;
+            _courseImages = [];
+            renderCourseImgGrid();
+            clearForm();
+            document.getElementById('drawer-title').textContent = 'Add New Course';
+            document.getElementById('drawer-delete-btn').style.display = 'none';
+            document.getElementById('drawer-archive-btn').style.display = 'none';
+            document.getElementById('tab-related-btn').style.display = 'none';
+            switchTabById('tab-basic');
+            openDrawer();
+        }
+
+        function openEditDrawer(courseId) {
+            const course = allCourses.find(c => c.id === courseId);
+            if (!course) return;
+            editingCourseId = courseId;
+            fillForm(course);
+            document.getElementById('drawer-title').textContent = course.name || 'Edit Course';
+            document.getElementById('drawer-delete-btn').style.display = '';
+            document.getElementById('drawer-archive-btn').style.display = course.status !== 'archived' ? '' : 'none';
+            document.getElementById('tab-related-btn').style.display = '';
+            populateRelatedAuctions(course);
+            switchTabById('tab-basic');
+            openDrawer();
+        }
+
+        function openDrawer() {
+            document.getElementById('course-drawer').classList.add('open');
+            document.getElementById('drawer-overlay').classList.add('open');
+            document.body.classList.add('drawer-open');
+        }
+
+        function closeDrawer() {
+            document.getElementById('course-drawer').classList.remove('open');
+            document.getElementById('drawer-overlay').classList.remove('open');
+            document.body.classList.remove('drawer-open');
+        }
+
+        // ── Tabs ──────────────────────────────────────────────────────────────
+        function switchTab(btn, panelId) {
+            document.querySelectorAll('.drawer-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.drawer-panel').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(panelId).classList.add('active');
+        }
+
+        function switchTabById(panelId) {
+            document.querySelectorAll('.drawer-tab').forEach(t => {
+                const matches = t.getAttribute('onclick') && t.getAttribute('onclick').includes(panelId);
+                t.classList.toggle('active', matches);
+            });
+            document.querySelectorAll('.drawer-panel').forEach(p => p.classList.remove('active'));
+            const panel = document.getElementById(panelId);
+            if (panel) panel.classList.add('active');
+        }
+
+        // ── Amenity Grid ──────────────────────────────────────────────────────
+        function buildAmenityGrid() {
+            const grid = document.getElementById('amenities-grid');
+            grid.innerHTML = Object.entries(AMENITY_LABELS).map(([key, label]) => `
+                <label class="amenity-item" id="amenity-label-${key}">
+                    <input type="checkbox" id="amenity-${key}" onchange="updateAmenityStyle('${key}')"> ${label}
+                </label>
+            `).join('');
+        }
+
+        function updateAmenityStyle(key) {
+            const cb = document.getElementById(`amenity-${key}`);
+            document.getElementById(`amenity-label-${key}`).classList.toggle('checked', cb.checked);
+        }
+
+        function getAmenities() {
+            const result = {};
+            Object.keys(AMENITY_LABELS).forEach(key => {
+                result[key] = document.getElementById(`amenity-${key}`).checked;
+            });
+            return result;
+        }
+
+        function setAmenities(amenities) {
+            Object.keys(AMENITY_LABELS).forEach(key => {
+                const cb = document.getElementById(`amenity-${key}`);
+                if (cb) {
+                    cb.checked = amenities ? !!amenities[key] : false;
+                    updateAmenityStyle(key);
+                }
+            });
+        }
+
+        // ── Gallery ───────────────────────────────────────────────────────────
+        function addGalleryImage() {
+            const inp = document.getElementById('gallery-url-input');
+            const url = inp.value.trim();
+            if (!url) return;
+            galleryImages.push(url);
+            inp.value = '';
+            renderGalleryStrip();
+        }
+
+        function removeGalleryImage(idx) {
+            galleryImages.splice(idx, 1);
+            renderGalleryStrip();
+        }
+
+        function renderGalleryStrip() {
+            const strip = document.getElementById('gallery-strip');
+            if (!strip) return;
+            strip.innerHTML = galleryImages.map((url, i) => `
+                <div class="image-preview-item">
+                    <img src="${url}" alt="Gallery ${i+1}" onerror="this.src='data:image/svg+xml,<svg xmlns=\\'http://www.w3.org/2000/svg\\'><rect width=\\'90\\' height=\\'68\\' fill=\\'%23eee\\'/></svg>'">
+                    <button class="remove-img" onclick="removeGalleryImage(${i})">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function previewFeatured() {
+            const url = document.getElementById('f-featured-img').value.trim();
+            const preview = document.getElementById('featured-img-preview');
+            if (url) { preview.src = url; preview.style.display = 'block'; }
+            else { preview.style.display = 'none'; }
+        }
+
+        // ── Auto-slug ─────────────────────────────────────────────────────────
+        function autoSlug() {
+            const name = document.getElementById('f-name').value;
+            const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+            document.getElementById('f-slug').value = slug;
+        }
+
+        // ── Form Fill / Clear ─────────────────────────────────────────────────
+        function clearForm() {
+            ['f-name','f-slug','f-headline','f-short-desc','f-full-desc','f-address','f-city','f-state','f-zip','f-lat','f-lng','f-holes','f-par','f-yardage','f-designer','f-year','f-featured-img','f-logo','f-map-url','f-scorecard','f-website','f-booking','f-gmaps','f-instagram','f-facebook','f-badge','f-order'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            document.getElementById('f-country').value = 'USA';
+            document.getElementById('f-access').value = '';
+            document.getElementById('f-course-type').value = '';
+            document.getElementById('f-resort').value = 'false';
+            document.getElementById('f-featured').value = 'false';
+            document.getElementById('f-status').value = 'draft';
+            document.getElementById('f-accent-color').value = '#1a5276';
+            const previewEl = document.getElementById('featured-img-preview');
+            if (previewEl) previewEl.style.display = 'none';
+            _courseImages = [];
+            renderCourseImgGrid();
+            renderGalleryStrip();
+            setAmenities({});
+        }
+
+        function fillForm(c) {
+            const set = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined && val !== null) el.value = val; };
+            set('f-name', c.name); set('f-slug', c.slug); set('f-headline', c.short_headline);
+            set('f-short-desc', c.short_description); set('f-full-desc', c.full_description);
+            set('f-address', c.address); set('f-city', c.city); set('f-state', c.state);
+            set('f-zip', c.zip_code); set('f-country', c.country || 'USA');
+            set('f-lat', c.latitude); set('f-lng', c.longitude);
+            set('f-holes', c.holes); set('f-par', c.par); set('f-yardage', c.yardage);
+            set('f-course-type', c.course_type); set('f-access', c.public_private);
+            set('f-resort', c.resort_course ? 'true' : 'false');
+            set('f-designer', c.designer); set('f-year', c.year_opened);
+            // Replace image loading logic
+            _courseImages = [];
+            if (c.featured_image_url) _courseImages.push(c.featured_image_url);
+            if (c.gallery && c.gallery.length) _courseImages.push(...c.gallery);
+            renderCourseImgGrid();
+            setAmenities(c.amenities || {});
+        }
+
+        
+        // ── Course Image Manager (Drag & Drop) ──────────────────────────
+        
+        let _courseDragIdx = null;
+
+        function renderCourseImgGrid() {
+            const grid = document.getElementById('courseImgGrid');
+            if (!grid) return;
+            if (_courseImages.length === 0) {
+                grid.innerHTML = '<p style="color:#bbb;font-size:0.82rem;">No images yet. Upload some below.</p>';
+                return;
+            }
+            grid.innerHTML = _courseImages.map((url, i) => `
+                <div draggable="true" data-idx="${i}"
+                    ondragstart="courseImgDragStart(event,${i})"
+                    ondragover="courseImgDragOver(event)"
+                    ondrop="courseImgDrop(event,${i})"
+                    ondragend="courseImgDragEnd()"
+                    style="position:relative;width:120px;height:90px;flex-shrink:0;border-radius:10px;
+                           overflow:hidden;border:${i === 0 ? '3px solid #4A90E2' : '2px solid #e5e5e5'};
+                           cursor:grab;transition:opacity 0.2s; background:#fafafa;">
+                    <img src="${url}" style="width:100%;height:100%;object-fit:cover;display:block;">
+                    ${i === 0 ? '<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(74,144,226,0.9);color:#fff;font-size:0.58rem;font-weight:800;text-align:center;padding:3px;text-transform:uppercase;">Cover</div>' : ''}
+                    
+                    <!-- Numeric Indicator Badge -->
+                    <div style="position:absolute;top:4px;left:4px;background:rgba(0,0,0,0.65);color:#fff;font-size:0.7rem;font-weight:700;padding:2px 6px;border-radius:6px;line-height:1;display:flex;align-items:center;justify-content:center;">
+                        ${i + 1}
+                    </div>
+
+                    <div style="position:absolute;top:4px;right:4px;display:flex;gap:3px;">
+                        <button onclick="courseImgRemove(${i})" title="Remove"
+                            style="width:22px;height:22px;background:rgba(200,50,50,0.8);color:#fff;
+                                   border:none;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">×</button>
+                    </div>
+                </div>`).join('');
+        }
+
+        function courseImgDragStart(e, idx) { _courseDragIdx = idx; e.currentTarget.style.opacity = '0.4'; }
+        function courseImgDragEnd() { _courseDragIdx = null; document.querySelectorAll('#courseImgGrid [data-idx]').forEach(el => el.style.opacity = ''); }
+        function courseImgDragOver(e) { e.preventDefault(); }
+        function courseImgDrop(e, targetIdx) {
+            e.preventDefault();
+            if (_courseDragIdx === null || _courseDragIdx === targetIdx) return;
+            const moved = _courseImages.splice(_courseDragIdx, 1)[0];
+            _courseImages.splice(targetIdx, 0, moved);
+            renderCourseImgGrid();
+        }
+        function courseImgRemove(idx) {
+            if (!confirm('Remove this image?')) return;
+            _courseImages.splice(idx, 1);
+            renderCourseImgGrid();
+        }
+                function resizeImage(file, maxDist) {
+            return new Promise(resolve => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = new Image();
+                    img.onload = () => {
+                        let w = img.width;
+                        let h = img.height;
+                        if (w > maxDist || h > maxDist) {
+                            const ratio = Math.min(maxDist / w, maxDist / h);
+                            w = Math.floor(w * ratio);
+                            h = Math.floor(h * ratio);
+                        }
+                        const canvas = document.createElement('canvas');
+                        canvas.width = w;
+                        canvas.height = h;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, w, h);
+                        // Using 0.6 quality to heavily reduce base64 footprint for localStorage
+                        resolve(canvas.toDataURL('image/jpeg', 0.35));
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        async function courseImgZoneAdd(input) {
+            for (let file of input.files) {
+                if (!file.type.startsWith('image/')) continue;
+                const base64 = await resizeImage(file, 400);
+                _courseImages.push(base64);
+            }
+            renderCourseImgGrid();
+            input.value = '';
+        }
+        
+        async function courseImgZoneDrop(e) {
+            e.preventDefault();
+            const zone = document.getElementById('courseImgUploadZone');
+            if (zone) { zone.style.borderColor = '#d4d4d4'; zone.style.background = ''; }
+            for (let file of e.dataTransfer.files) {
+                if (!file.type.startsWith('image/')) continue;
+                const base64 = await resizeImage(file, 400);
+                _courseImages.push(base64);
+            }
+
+            renderCourseImgGrid();
+        }
+        // ── Collect Form ──────────────────────────────────────────────────────
+        function collectForm() {
+            const g = id => document.getElementById(id)?.value.trim() || '';
+            return {
+                id: editingCourseId || g('f-slug') || ('course-' + Date.now()),
+                name: g('f-name'),
+                slug: g('f-slug'),
+                short_headline: g('f-headline'),
+                short_description: g('f-short-desc'),
+                full_description: g('f-full-desc'),
+                address: g('f-address'),
+                city: g('f-city'),
+                state: g('f-state').toUpperCase(),
+                zip_code: g('f-zip'),
+                country: g('f-country') || 'USA',
+                latitude: parseFloat(g('f-lat')) || null,
+                longitude: parseFloat(g('f-lng')) || null,
+                holes: parseInt(g('f-holes')) || null,
+                par: parseInt(g('f-par')) || null,
+                yardage: parseInt(g('f-yardage')) || null,
+                course_type: g('f-course-type'),
+                public_private: g('f-access'),
+                resort_course: document.getElementById('f-resort').value === 'true',
+                designer: g('f-designer'),
+                year_opened: parseInt(g('f-year')) || null,
+                featured_image_url: _courseImages.length > 0 ? _courseImages[0] : '',
+                gallery: _courseImages.length > 1 ? _courseImages.slice(1) : [],
+                logo_url: g('f-logo'),
+                map_url: g('f-map-url'),
+                scorecard_url: g('f-scorecard'),
+                website_url: g('f-website'),
+                booking_url: g('f-booking'),
+                google_maps_url: g('f-gmaps'),
+                instagram_url: g('f-instagram'),
+                facebook_url: g('f-facebook'),
+                amenities: getAmenities(),
+                accent_color: document.getElementById('f-accent-color').value,
+                badge_text: g('f-badge'),
+                display_order: parseInt(g('f-order')) || 0,
+                is_featured: document.getElementById('f-featured').value === 'true',
+                status: document.getElementById('f-status').value || 'draft',
+                created_at: editingCourseId ? (allCourses.find(c => c.id === editingCourseId)?.created_at || new Date().toISOString()) : new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            };
+        }
+
+        // ── Save ──────────────────────────────────────────────────────────────
+        async function saveCourse() {
+            const course = collectForm();
+            if (!course.name) { showToast('Course Name is required.'); switchTabById('tab-basic'); return; }
+            if (!course.city || !course.state) { showToast('City and State are required.'); switchTabById('tab-location'); return; }
+            if (!course.short_description) { showToast('Short Description is required.'); switchTabById('tab-basic'); return; }
+
+            // Save images to a DEDICATED per-course localStorage key so they survive
+            // the main epic_courses localStorage entry getting evicted or the DB
+            // payload being rejected. This is the primary persistence layer for images.
+            const imgKey = 'epic_imgs_' + course.id;
+            const imgData = { featured_image_url: course.featured_image_url, gallery: course.gallery || [] };
+            try { localStorage.setItem(imgKey, JSON.stringify(imgData)); } catch(e) { console.warn('Image cache quota hit for', course.id); }
+
+            const idx = allCourses.findIndex(c => c.id === course.id);
+            if (idx > -1) allCourses[idx] = course;
+            else allCourses.push(course);
+
+            // Save full course array to localStorage (images included if quota allows)
+            try {
+                localStorage.setItem(COURSES_STORE_KEY, JSON.stringify(allCourses));
+            } catch (e) {
+                console.warn("localStorage quota exceeded. Images saved separately and will be restored on reload.");
+            }
+
+            // Save to the database — send a version WITHOUT the big base64 blobs
+            // so we stay under Vercel's 4.5MB limit. Images are served from local cache.
+            if (typeof EPICDB !== 'undefined' && EPICDB.saveCourse) {
+                const courseForDB = { ...course, featured_image_url: course.featured_image_url ? '[base64]' : '', gallery: (course.gallery || []).map(() => '[base64]') };
+                // Actually send the FULL course so DB has it — but at best effort
+                try {
+                    const result = await EPICDB.saveCourse(courseForDB);
+                    if (!result || result.error) {
+                        console.warn('DB sync failed (likely oversized payload). Images are safe in local cache.');
+                    }
+                } catch (e) {
+                    console.warn('saveCourse DB error (non-fatal, images cached locally):', e);
+                }
+            }
+
+            closeDrawer();
+            renderStats();
+            renderTable();
+            showToast(editingCourseId ? '✅ Course updated!' : '✅ Course created!');
+            logActivity('course', `Course "${course.name}" ${editingCourseId ? 'updated' : 'created'}.`);
+        }
+
+
+        // ── Archive ───────────────────────────────────────────────────────────
+        function confirmArchiveCourse() {
+            const course = allCourses.find(c => c.id === editingCourseId);
+            if (!course) return;
+            showConfirm(
+                'Archive Course?',
+                `"${course.name}" will be hidden from new auction selections but remain linked to existing auctions.`,
+                () => { archiveCourse(editingCourseId); }
+            );
+        }
+
+        function archiveCourse(id) {
+            const idx = allCourses.findIndex(c => c.id === id);
+            if (idx > -1) { allCourses[idx].status = 'archived'; allCourses[idx].updated_at = new Date().toISOString(); }
+            saveSharedCourses(allCourses);
+            closeDrawer();
+            renderStats();
+            renderTable();
+            showToast('Course archived.');
+        }
+
+        // ── Delete ────────────────────────────────────────────────────────────
+        function confirmDeleteCourse() { confirmDeleteById(editingCourseId); }
+
+        function confirmDeleteById(id) {
+            const course = allCourses.find(c => c.id === id);
+            if (!course) return;
+            showConfirm(
+                'Delete Course?',
+                `This will permanently delete "${course.name}". Any auctions linked to it will lose their course connection.`,
+                () => {
+                    allCourses = allCourses.filter(c => c.id !== id);
+                    if (typeof deleteCourse === 'function') deleteCourse(id);
+                    saveSharedCourses(allCourses);
+                    closeDrawer();
+                    renderStats();
+                    renderTable();
+                    showToast('Course deleted.');
+                    logActivity('course', `Course "${course.name}" deleted.`);
+                }
+            );
+        }
+
+        // ── Related Auctions ──────────────────────────────────────────────────
+        function populateRelatedAuctions(course) {
+            const linked = allAuctions.filter(a => a.course_id === course.id);
+            const card = document.getElementById('detail-summary-card');
+            card.innerHTML = `
+                ${course.featured_image_url ? `<img class="course-summary-thumb" src="${course.featured_image_url}" alt="${course.name}">` : ''}
+                <div class="course-summary-info">
+                    <h4>${course.name}</h4>
+                    <p>${course.city || ''}, ${course.state || ''} &bull; ${course.holes || '?'} holes &bull; Par ${course.par || '?'}</p>
+                    <p style="margin-top:4px;">${course.short_description || ''}</p>
+                </div>
+            `;
+            const list = document.getElementById('related-auctions-list');
+            if (!linked.length) {
+                list.innerHTML = '<p style="color:#aaa;font-size:0.85rem;">No auctions linked to this course yet.</p>';
+                return;
+            }
+            list.innerHTML = linked.map(a => `
+                <div class="related-auction-row">
+                    <div>
+                        <a href="../auction-round.html?id=${a.id}" target="_blank">${a.title}</a>
+                        <div style="font-size:0.75rem;color:#aaa;">${a.status ? capitalize(a.status) : ''}</div>
+                    </div>
+                    <a href="auctions.html?v=2" style="font-size:0.78rem;color:#888;">Edit →</a>
+                </div>
+            `).join('');
+        }
+
+        // ── Confirm Dialog ─────────────────────────────────────────────────────
+        let _confirmCallback = null;
+        function showConfirm(title, msg, cb) {
+            document.getElementById('confirm-title').textContent = title;
+            document.getElementById('confirm-msg').textContent = msg;
+            _confirmCallback = cb;
+            document.getElementById('confirm-overlay').classList.add('open');
+            document.getElementById('confirm-ok').onclick = () => { closeConfirm(); if (_confirmCallback) _confirmCallback(); };
+        }
+        function closeConfirm() { document.getElementById('confirm-overlay').classList.remove('open'); }
+
+        // ── Toast ─────────────────────────────────────────────────────────────
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        // ── Activity Log ──────────────────────────────────────────────────────
+        function logActivity(type, msg) {
+            try {
+                const log = JSON.parse(localStorage.getItem('epic_activity_log') || '[]');
+                log.unshift({ type, msg, ts: Date.now() });
+                localStorage.setItem('epic_activity_log', JSON.stringify(log.slice(0, 100)));
+            } catch(e) {}
+        }
+
+        // ── Unread message badge ───────────────────────────────────────────────
+        (function() {
+            try {
+                var msgs = JSON.parse(localStorage.getItem('epic_messages') || '[]');
+                var unread = msgs.filter(function(m){ return m.unread !== false && m.status !== 'closed'; }).length;
+                document.querySelectorAll('.nav-msg-badge').forEach(function(b){
+                    b.textContent = unread; b.style.display = unread > 0 ? 'inline-block' : 'none';
+                });
+            } catch(e) {}
+        })();
+    </script>
+</body>
+</html>
